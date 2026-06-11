@@ -1,0 +1,74 @@
+<select
+  v-if="normalizedType === 'select'"
+  :key="`select__${ name } `"
+  :name="name"
+  v-bind="$attrs"
+  @change="emit($event)"
+>
+  <option :disabled="required" value="">{{ "{{ labelForEmpty }}" }}</option>
+  <option
+    v-for="option in normalizedOptions"
+    :key="option.id"
+    :value="option.value || option"
+    :selected="currentValues.includes(String(option.value))"
+  >
+    {{ "{{ option.label || option }}" }}
+  </option>
+</select>
+<div class="list-box" :class="{'list-box--empty': !normalizedOptions.length}"
+tabindex="0" @focus="return false" v-else>
+  <ul class="list-box__container" :class="{'list-box--empty':
+  !normalizedOptions.length}" :title="title || null">
+    <li class="list-box__option list-box__option--empty" v-if="labelForEmpty || !required">
+      <input
+        :id="`option__${ name }--empty`"
+        value=""
+        :checked="!currentValues.length || currentValues.includes('')"
+        type="radio"
+        :name="name"
+        v-bind="$attrs"
+        @change.prevent="emit($event)"
+        class="list-box__input list-box__input--empty"
+        ref="empty"
+      />
+      <label
+        :for="`option__${ name }--empty`"
+        class="list-box__option-label"
+        >
+        {{ "{{ labelForEmpty }}" }}
+      </label>
+    </li>
+    <li
+      v-for="option in normalizedOptions"
+      :key="option.value"
+      class="list-box__option"
+      :class="{
+        'list-box__option--selected': currentValues.includes(option.value),
+        'list-box__option--last-selected': lastSelected ===
+          option.value || lastSelected === String(option)
+      }"
+    >
+      <input
+        :id="`option__${ name }--${ option.id || option }`"
+        :key="`option__${ option.id || option }`"
+        :value="option.value || option"
+        :checked="currentValues.includes(option.value)"
+        :true-value="option.value || option"
+        :type="normalizedType"
+        :name="name"
+        v-bind="$attrs"
+        @change.prevent="emit($event)"
+        class="list-box__input"
+      />
+      <label
+        :for="`option__${ name }--${ option.id || option }`"
+        class="list-box__option-label"
+        :title="option.acronym && option.name ? option.name : null"
+        >
+        {{ "{{ option.label || option }}" }}
+
+        <small class="list-box__option-helper" v-if="option.helper">{{ "{{ option.helper }}" }}</small>
+      </label>
+    </li>
+  </ul>
+</div>

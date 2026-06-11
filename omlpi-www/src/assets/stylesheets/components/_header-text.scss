@@ -1,0 +1,43 @@
+.header-text {
+  padding: 2rem 0;
+
+  color: palette('green');
+  text-align: center;
+
+  background-color: palette('white');
+}
+
+
+.header-text--purple {
+  color: palette('purple');
+}
+
+.header-text--library {
+  padding: 3rem 0;
+
+  color: palette('white');
+  text-align: left;
+
+  background-image: image('library-banner.jpg');
+  background-size: cover;
+}
+
+.header-text--library .container {
+  max-width: 50rem;
+}
+
+.header-text h1 {
+  color: inherit;
+}
+
+.header-text--library h1 {
+  line-height: 1.3;
+  color: palette('white');
+  text-transform: uppercase;
+}
+
+.header-text h1 span {
+  display: block;
+
+  font-size: 90%;
+}

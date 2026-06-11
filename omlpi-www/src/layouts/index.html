@@ -1,0 +1,214 @@
+  {{ partial "head.html" . }}
+
+  <body>
+    {{ partial "header.html" . }}
+
+    <main>
+      <section
+        id="app-home-banner"
+        class='search-area search-area--alternative search-area--home'
+        v-cloak
+      >
+        <template v-if="banner">
+          <div class="container">
+            <header>
+              <h1>
+                {{ "{{ banner.title }}" }}
+              </h1>
+            </header>
+            <div v-html="marked(banner.text)"></div>
+          </div>
+        </template>
+      </section>
+      <section id="app-axis" v-cloak>
+        <div
+          class="container main-areas"
+          v-if="axis"
+        >
+          <h1>{{ i18n "axisTitle" }}</h1>
+          <div class="main-area__boxes main-area__boxes--images">
+            <div
+              class="main-area__box"
+              v-for="(item, index) in axis"
+            >
+              <figure>
+                <img
+                  :src="`${storageDomain}${item.image.url}`"
+                  :alt="item.title"
+                >
+              </figure>
+            </div>
+          </div>
+        </div>
+        <div
+          class="main-areas bg-gray"
+          v-if="axis"
+        >
+          <div class="container">
+            <div class="main-area__boxes">
+              <div
+                class="main-area__box"
+                v-for="(item, index) in axis"
+              >
+                <figure>
+                  <img
+                    :src="`${storageDomain}${item.image.url}`"
+                    :alt="item.title"
+                  >
+                </figure>
+                <h2>{{ "{{ item.title }}" }}</h2>
+                <div v-html="marked(item.text)"></div>
+                <a :href="item.link" class="button button--purple">{{ "{{ item.link_title }}" }}</a>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+      <section id="app-home-indicators" v-cloak>
+        <div class="container">
+          <h1 class="indicator-title">{{ i18n "referencesTitle" }}</h1>
+          <div v-if="indicators" class="indicator-boxes">
+            <template v-for="(locale, index) in indicators.locales" >
+              <h2
+                :key="`${index}-title`"
+                v-if="index === 0"
+                class="brazil-header"
+              >
+                <span>{{ "{{ locale.name }}" }}</span>
+              </h2>
+              <h2
+                :key="`${index}-title`"
+                v-else
+              >
+                {{ i18n "city" }}
+                <transition name="fade" mode="out-in">
+                <span :key="locale.name">{{ "{{ locale.name }}" }}</span>
+                </transition>
+              </h2>
+              <template
+                v-for="(indicator, innerIndex) in locale.indicators"
+              >
+                <div
+                  :key="`${index}-box-${innerIndex}`"
+                  class="indicator-boxes__box"
+                >
+                  <span
+                    class="indicator-boxes-axis"
+                    :class="`indicator-boxes-axis--${getAxisClass(indicator.area.id)}`"
+                    :style="`transition-delay: ${(index > 0 ? innerIndex + animationCount : innerIndex)/4}s`"
+                  >
+                    {{ "{{ indicator.area.name }}" }}
+                  </span>
+                  <transition name="fade" mode="out-in">
+                    <h3
+                      :key="indicator.description"
+                      :style="`transition-delay: ${(index > 0 ? innerIndex + animationCount : innerIndex)/4}s`"
+                    >
+                      {{ "{{ indicator.description }}" }}
+                    </h3>
+                  </transition>
+                  <transition name="fade" mode="out-in">
+                    <h4
+                      :key="indicator.values.value_relative ? indicator.values.value_relative : indicator.values.value_absolute"
+                      :style="`transition-delay: ${(index > 0 ? innerIndex + animationCount : innerIndex)/4}s`"
+                    >
+                      <small v-if="(indicator.values.value_relative === null &&
+                      indicator.values.value_absolute === null) || !indicator.values">
+                        {{ i18n "unavailable" }}
+                      </small>
+                      <template v-else>
+                        {{ "{{ formatIndicatorValue(indicator.values, indicator.is_percentage) }}" }}
+                      </template>
+                    </h4>
+                  </transition>
+                </div>
+              </template>
+            </template>
+          </div>
+        </div>
+      </section>
+      <section id="app-news">
+        <div
+          class="news"
+          v-if="news && news.length > 0"
+        >
+          <div
+            class="container"
+            :class="news.length === 2 ? 'container--two-news' : ''"
+          >
+            <h1>{{ i18n "news" }}</h1>
+            <template v-for="(article, index) in news">
+              <div class="news__item">
+                <a
+                  v-if="article.image && article.image.url"
+                  target="_blank"
+                  :href="article.link"
+                >
+                <img
+                  :src="`${storageDomain}${article.image.url}`"
+                  :alt="article.title"
+                >
+                </a>
+                <a
+                  target="_blank"
+                  :href="article.link"
+                >
+                  <h2>{{ "{{ article.title }}" }}</h2>
+                </a>
+                <time
+                  v-if="!article.hide_date"
+                  :datetime="article.date"
+                >{{ "{{ convertDate(article.date) }}" }}</time>
+              </div>
+            </template>
+          </div>
+        </div>
+      </section>
+      <section
+        id="app-home-about"
+        class="about-us about-us--container"
+        :class="hasNews ? '' : 'about-us--boxed'"
+      >
+        <div
+          v-if="about"
+          :class="hasNews ? 'about-us about-us--no-bg' : 'container'"
+        >
+          <div
+            :class="hasNews ? 'container' : ''"
+          >
+            <div class="about-us__text">
+              <h1>{{ "{{ about.title }}" }}</h1>
+              <div v-html="marked(about.text)"></div>
+              <a
+                target="_blank"
+                class="button"
+                :href="about.link"
+              >
+                {{ "{{ about.link_title }}" }}
+              </a>
+              <a
+                v-if="about.link2"
+                target="_blank"
+                class="button"
+                :href="about.link2"
+              >
+                {{ "{{ about.link2_title }}" }}
+              </a>
+            </div>
+          </div>
+        </div>
+      </section>
+    </main>
+
+    {{ partial "footer.html" . }}
+
+    {{ $wow := resources.Get "vendor/wow.min.js" }}
+    <script src="{{ $wow.RelPermalink }}"></script>
+
+    {{ partial "scripts.html" . }}
+
+    <script>
+      new WOW().init();
+    </script>
+  </body>
+</html>

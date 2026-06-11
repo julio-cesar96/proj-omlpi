@@ -1,0 +1,199 @@
+    {{ partial "head.html" . }}
+
+    <body>
+      {{ partial "header.html" . }}
+
+      <script type="text/x-template" id="list-box-markup">
+        {{ partial "components/listBox.html" }}
+      </script>
+
+      <main class="alabaster" id="app">
+        <section class='search-area search-area--alternative search-area--library'>
+            <div class="container">
+              <header>
+                <h1>
+                  Um repositório de materiais de referência sobre a garantia dos direitos da primeira infância
+                </h1>
+              </header>
+              <p>
+                Marcos legais, documentos governamentais, estudos de organizações da sociedade civil, fundações empresariais e instituições de cooperação internacional.
+              </p>
+            </div>
+        </section>
+        <div class="search-area--gradient">
+          <section class="search-area search-area--no-image">
+            <div class="container">
+              <section class="search-area search-area__library">
+                <form action="" @submit.prevent="getArticles(false, true)" class="search-area__form">
+                  <fieldset class="search-area__fieldset">
+                    <legend class="search-area__legend">
+                      {{ i18n "exploreArticles" }}
+                    </legend>
+
+                    <fieldset class="list-box__wrapper
+                    search-area__field-wrapper search-area__field-wrapper--tags"
+                    v-if="tagAliases.length">
+                      <legend class="like-a__label list-box__label visually-hidden">
+                        {{ i18n "tags" }}
+                      </legend>
+                      <list-box
+                        class="search-area__filter"
+                        id="tags"
+                        name="tags"
+                        v-model="selectedTags"
+                        :value="selectedTags"
+                        @input="getArticles(false, true, false)"
+                        label-for-empty="{{ i18n "allTags" }}"
+                        title="Temas"
+                        :options="tagAliases"
+                        multiple
+                      ></list-box>
+                    </fieldset>
+
+                    <fieldset class="search-area__field-wrapper search-area__field-wrapper--search-terms-and-button">
+                      <label for="js-articles-search" class="visually-hidden">
+                        {{ i18n "searchTerms" }}
+                      </label>
+                      <input
+                        class="search-area__search-terms-field"
+                        id="js-articles-search"
+                        type="text"
+                        v-model="searchQuery"
+                        placeholder="{{ i18n "exploreArticlesPlaceholder" }}"
+                      />
+                      <button type="submit" class="search-area__search-text-button">{{ i18n "search" }}</button>
+                    </fieldset>
+
+                  </fieldset>
+
+                  <fieldset class="search-area__field-wrapper search-area__field-wrapper--selected-tags" v-if="selectedTagAlisesNames.length" >
+                    <output for="tags">
+                      {{ "{{ selectedTagAlisesNames.join(' ou ') }}" }}
+                    </output>
+                  </fieldset>
+                </form>
+              </section>
+            </div>
+          </section>
+        </div>
+
+        <div class="container">
+          <span v-if="searchQuery && 1 !== 1" class="search-area__informative">
+            Resultados de busca para: {{ "{{ searchQuery }}" }}
+          </span>
+          <div
+            class="library-container"
+            id="js-search-results"
+            v-if="articles && articles.length !== 0"
+          >
+            <article class="library-item" v-for="(article, articleIndex) in articles">
+              <div
+                class="library-item__image"
+                v-if="article.image && article.image.url"
+              >
+                <img
+                  :src="`${storageDomain}${article.image.url}`"
+                  :alt="article.title"
+                >
+              </div>
+              <div class="library-item__content" :ref="`js-description-${articleIndex}`">
+                <h2>{{ "{{ article.title }}" }}</h2>
+                <span class="library-item__author">
+                  <span>
+                    <template v-if="article.author">
+                      <strong>Autor: </strong>{{ "{{ article.author }}" }}
+                    </template>
+                  </span>
+                  <span>
+                    <strong v-if="article.organization">Organização:</strong> {{ "{{ article.organization }}" }}
+                  </span>
+                  <template v-if="article.date">
+                    <span>
+                      <strong>Ano:</strong>
+                      <time :datetime="article.date">{{ "{{ article.date }}" }}</time>
+                    </span>
+                  </template>
+                  <span v-if="article.tags?.length > 0" class="library-item__tags">
+                    <strong v-if="article.tags.length > 0">Tags:</strong>
+                    <template v-for="(tag, index) in article.tags">
+                      <span>
+                        {{ "{{ tag.name }}" }}<template v-if="index !== article.tags.length - 1">, </template></span>
+                    </template>
+                  </span>
+                </span>
+                <div class="library-item__description-container">
+                  <!--
+                  <p class="library-item__description" >
+                    {{ "{{ article.description }}" }}
+                  </p>
+
+                  <button
+                    hidden
+                    @click="showFullDescription"
+                    class="library-item__show-more"
+                  >
+                    Continuar lendo…
+                  </button>
+                  -->
+                </div>
+
+                <button
+                  v-if="article.youtube"
+                  id="open-modal"
+                  @click="toggleModal(article.youtube)"
+                  class="button button--blue button-video button--icon"
+                >
+                  Assistir
+                </button>
+
+                <a
+                  v-if="article.file && article.file.url"
+                  :href="`${storageDomain}${article.file.url}`"
+                  class="button button--purple button-download button--icon"
+                  target="_blank"
+                  download
+                >
+                  Download
+                </a>
+              </div>
+            </article>
+          </div>
+
+          <div class="loading" :aria-busy="pending.articles" v-if="pending.articles">
+            Aguarde, carregando as informações...
+          </div>
+
+          <a
+            class="button library-item__load-more"
+            v-else-if="has_more"
+            @click.prevent="getArticles(true)"
+          >
+            Carregar mais
+          </a>
+          <div v-else>
+            <p v-if="articles && articles.length">Não há mais resultados para sua busca</p>
+            <p v-else>Nenhum resultado para sua busca</p>
+          </div>
+        </div>
+
+        <div class="modal-overlay"
+          :class="{closed: !currentVideo}"
+          @click="toggleModal()" id="modal-overlay"
+        ></div>
+
+        <div class="modal" :class="{closed: !currentVideo}" id="modal">
+          <button class="close-button" id="close-button" @click="toggleModal()">&times;</button>
+            <div class="embed-container">
+              <iframe name="iframe-youtube" width="560" height="315"
+              :src="currentVideo" frameborder="0" allow="autoplay;
+             fullscreen; encrypted-media" allowfullscreen ref="iframeYoutube"></iframe>
+            </div>
+        </div>
+
+      </main>
+
+      {{ partial "footer.html" . }}
+
+      {{ partial "scripts.html" . }}
+    </body>
+</html>

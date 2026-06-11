@@ -1,0 +1,54 @@
+<footer class="site-footer">
+  <div class="container">
+    <section class="site-footer__colophon">
+      <div class="site-footer__first-row">
+        <div class="site-footer__logo">
+          <a href="{{ .Site.BaseURL }}" class="logo">{{ .Site.Title }}</a>
+        </div>
+
+        {{ with .Site.Data.footerLinks.email }}
+          <a class="site-footer__email" href="{{ .url }}">{{ .value }}</a>
+        {{ end }}
+      </div>
+
+      <div class="footer-logos">
+        <div class="footer-logos__first-row">
+          <div class="footer-logos__primeira-infancia">
+            {{ $img := resources.Get "images/footer/projeto-pip.svg" | resources.Minify }}
+            <img src="{{ $img.RelPermalink }}" alt="Projeto PIP">
+          </div>
+
+          <div class="footer-logos__rnpi-andi">
+            <h2>Realização:</h2>
+            {{ $img := resources.Get "images/footer/rnpi.svg" | resources.Minify }}
+            <img src="{{ $img.RelPermalink }}" class="footer-logos__rnpi" alt="Rede Nacional Primeira Infancia" />
+            {{ $img := resources.Get "images/footer/andi.svg" | resources.Minify }}
+            <img src="{{ $img.RelPermalink }}" class="footer-logos__andi" alt="Andi"/>
+          </div>
+        </div>
+
+        <div class="footer-logos__second-row">
+          <div class="footer-logos__bvl">
+            <h2>Parceria</h2>
+            {{ $img := resources.Get "images/footer/bvl.svg" | resources.Minify }}
+            <img src="{{ $img.RelPermalink }}" alt="Bernard van Leer" />
+          </div>
+
+          <div class="footer-logos__petrobras-gov-fed">
+            <h2>Patrocínio</h2>
+            {{ $img := resources.Get "images/footer/petrobras.svg" | resources.Minify }}
+            <img src="{{ $img.RelPermalink }}" class="footer-logos__petrobras" alt="Petrobrás" />
+            {{/*{{ $img := resources.Get "images/footer/governo-federal.svg" | resources.Minify }}
+            <img src="{{ $img.RelPermalink }}" class="footer-logos__governo-federal" alt="Governo Federal" />*/}}
+          </div>
+        </div>
+      </div>
+    </section>
+  </div>
+  <div class="footer__developed-by">
+    <span>{{ i18n "developedBy" }}</span>
+    <a href="{{ $.Site.Params.developedByLink }}" target="_blank">
+      {{ $.Site.Params.developedBy }}
+    </a>
+  </div>
+</footer>

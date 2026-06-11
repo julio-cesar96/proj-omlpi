@@ -1,0 +1,331 @@
+backend:
+  name: git-gateway
+  repo: AppCivico/appcivico-www # Path to your Github repository
+  branch: dev # Branch to update (optional; defaults to master)
+# This line should *not* be indented
+# publish_mode: editorial_workflow
+# This line should *not* be indented
+media_folder: "static/uploads" # Media files will be stored in the repo under images/uploads
+public_folder: "/uploads" # The src attribute for uploaded media will begin with /images/uploads
+
+collections:
+  -
+    label: "Cases"
+    name: "Cases"
+    folder: "content/cases"
+    create: true
+    delete: true
+    slug: "{{slug}}"
+    fields:
+      -
+        label: "Título"
+        name: "title"
+        widget: "string"
+        tagname: "h3"
+        pattern: ['.{3,40}', "Must have between 3 and 40 characters"]
+      -
+        label: "Data"
+        name: "date"
+        widget: "datetime"
+        format: "YYYY-MM-DDTHH:mm:ss[Z]" # date sample 2018-03-06T14:48:47-03:00
+      -
+        label: "Imagem (696x544)"
+        name: "image"
+        widget: "image"
+      -
+        label: "Link"
+        name: "link"
+        widget: "string"
+        required: false
+        pattern: ['.{3,40}', "Must have between 3 and 40 characters"]
+      -
+        label: "layout"
+        name: "layout"
+        widget: "hidden"
+        default: "none"
+      -
+        label: "type"
+        name: "type"
+        widget: "hidden"
+        default: "cases"
+      -
+        label: "Conteúdo"
+        name: "body"
+        widget: "markdown"
+      -
+        label: "Ordem"
+        name: "weight"
+        widget: "number"
+        default: 1
+        valueType: "int"
+        min: 0
+
+  -
+    label: "Parcerias"
+    name: "parcerias"
+    folder: "content/parcerias"
+    create: true
+    delete: true
+    slug: "{{slug}}"
+    fields:
+      -
+        label: "Título"
+        name: "title"
+        widget: "string"
+        tagname: "h3"
+        pattern: ['.{3,40}', "Must have between 3 and 40 characters"]
+      -
+        label: "Data"
+        name: "date"
+        widget: "datetime"
+        format: "YYYY-MM-DDTHH:mm:ss[Z]" # date sample 2018-03-06T14:48:47-03:00
+      -
+        label: "Imagem (696x544)"
+        name: "image"
+        widget: "image"
+      -
+        label: "Link"
+        name: "link"
+        widget: "string"
+        required: false
+        pattern: ['.{3,40}', "Must have between 3 and 40 characters"]
+      -
+        label: "layout"
+        name: "layout"
+        widget: "hidden"
+        default: "none"
+      -
+        label: "type"
+        name: "type"
+        widget: "hidden"
+        default: "parcerias"
+      -
+        label: "Conteúdo"
+        name: "body"
+        widget: "markdown"
+      -
+        label: "Ordem"
+        name: "weight"
+        widget: "number"
+        default: 1
+        valueType: "int"
+        min: 0
+
+
+
+
+  -
+    label: "Vagas"
+    name: "Vagas"
+    folder: "content/jobs"
+    create: true
+    delete: true
+    slug: "{{slug}}"
+    fields:
+      -
+        label: "Título"
+        name: "title"
+        widget: "string"
+        tagname: "h3"
+        pattern: ['.{3,40}', "Must have between 3 and 40 characters"]
+      -
+        label: "Rascunho"
+        name: "draft"
+        widget: "boolean"
+      -
+        label: "Data"
+        name: "date"
+        widget: "datetime"
+        format: "YYYY-MM-DDTHH:mm:ss[Z]" # date sample 2018-03-06T14:48:47-03:00
+      -
+        label: "Link"
+        name: "link"
+        widget: "string"
+      -
+        label: "Link"
+        name: "link"
+        widget: "string"
+      -
+        label: "layout"
+        name: "layout"
+        widget: "hidden"
+        default: "none"
+      -
+        label: "type"
+        name: "type"
+        widget: "hidden"
+        default: "jobs"
+      -
+        label: "Ordem"
+        name: "weight"
+        widget: "number"
+        default: 1
+        valueType: "int"
+        min: 0
+      -
+        label: "Conteúdo (manter sempre os espaçamentos)"
+        name: "body"
+        widget: "markdown"
+  -
+    label: "Sobre nós"
+    name: "Sobre nós"
+    slug: "{{slug}}"
+    files:
+      - label: "Sobre nós"
+        name: "sobre nós"
+        file: "content/sobre-nos.md"
+        fields:
+          -
+            label: "Título"
+            name: "title"
+            widget: "string"
+            tagname: "h3"
+          -
+            label: "Data"
+            name: "date"
+            widget: "datetime"
+            format: "YYYY-MM-DDTHH:mm:ss[Z]" # date sample 2018-03-06T14:48:47-03:00
+          -
+            label: "layout"
+            name: "layout"
+            widget: "hidden"
+            default: "sobre-nos"
+          -
+            label: "type"
+            name: "type"
+            widget: "hidden"
+            default: "page"
+          -
+            label: "url"
+            name: "url"
+            widget: "hidden"
+            default: "/sobre-nos"
+          -
+            label: "weight"
+            name: "weight"
+            widget: "hidden"
+            default: 1
+          -
+            label: "weight"
+            name: "weight"
+            widget: "hidden"
+            default: 1
+          -
+            label: "Rascunho"
+            name: "draft"
+            widget: "boolean"
+          -
+            label: "Conteúdo (manter sempre os espaçamentos)"
+            name: "body"
+            widget: "markdown"
+  -
+    label: "Depoimentos"
+    name: "Depoimentos"
+    folder: "content/testimonials"
+    create: false
+    delete: false
+    slug: "{{slug}}"
+    fields:
+      -
+        label: "Nome"
+        name: "title"
+        widget: "string"
+        tagname: "h3"
+        pattern: ['.{3,40}', "Must have between 3 and 40 characters"]
+      -
+        label: "Cargo"
+        name: "job"
+        widget: "string"
+        tagname: "h3"
+      -
+        label: "Destaque"
+        name: "destak"
+        widget: "boolean"
+        default: false
+        required: false
+      -
+        label: "Data"
+        name: "date"
+        widget: "datetime"
+        format: "YYYY-MM-DDTHH:mm:ss[Z]" # date sample 2018-03-06T14:48:47-03:00
+      -
+        label: "Imagem (80x80px)"
+        name: "image"
+        widget: "image"
+      -
+        label: "layout"
+        name: "layout"
+        widget: "hidden"
+        default: "none"
+      -
+        label: "type"
+        name: "type"
+        widget: "hidden"
+        default: "testimonials"
+      -
+        label: "Conteúdo"
+        name: "body"
+        widget: "markdown"
+      -
+        label: "Ordem"
+        name: "weight"
+        widget: "number"
+        default: 1
+        valueType: "int"
+        min: 0
+
+  -
+    label: "Frases home"
+    name: "Frases home"
+    folder: "content/home-headers"
+    create: true
+    delete: true
+    slug: "{{slug}}"
+    fields:
+      -
+        label: "Frase"
+        name: "title"
+        widget: "string"
+        tagname: "h3"
+        pattern: ['.{3,40}', "Must have between 3 and 40 characters"]
+      -
+        label: "Data"
+        name: "date"
+        widget: "datetime"
+        format: "YYYY-MM-DDTHH:mm:ss[Z]" # date sample 2018-03-06T14:48:47-03:00
+      -
+        label: "layout"
+        name: "layout"
+        widget: "hidden"
+        default: "none"
+      -
+        label: "type"
+        name: "type"
+        widget: "hidden"
+        default: "homeHeaders"
+      -
+        label: "Ordem"
+        name: "weight"
+        widget: "number"
+        default: 1
+        valueType: "int"
+        min: 0
+
+  # - label: "Introdução"
+  #   name: "saiba-tudo"
+  #   create: false # Allow users to create new documents in this collection
+  #   delete: false # Allow users to delete documents in this collection
+  #   files:
+  #     - label: "Texto principal"
+  #       name: "main-text"
+  #       file: "content/saiba-tudo.md"
+  #       fields:
+  #         - {label: "Título", name: "title", widget: "string"}
+  #         - {label: "Data", name: "date", widget: "datetime"}
+  #         - {label: "layout", name: "layout", widget: "hidden", default: "saiba-tudo"}
+  #         - {label: "type", name: "type", widget: "hidden", default: "page"}
+  #         - {label: "url", name: "url", widget: "hidden", default: "/saiba-tudo"}
+  #         - {label: "weight", name: "weight", widget: "hidden", default: "1"}
+  #         - {label: "draft", name: "draft", widget: "hidden", default: "false"}
+  #         - {label: "Texto", name: "body", widget: "markdown"}
+  #

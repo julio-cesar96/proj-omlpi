@@ -1,0 +1,14 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="60" height="72" viewBox="0 0 60 72">
+    <g fill="none" fill-rule="evenodd">
+        <rect width="57" height="69" y="3" fill="#EAEAEA" rx="5"/>
+        <rect width="55" height="68" x="5" fill="#F9F9F9" rx="5"/>
+        <circle cx="45" cy="4" r="2" fill="#E3E3E3"/>
+        <circle cx="53" cy="4" r="2" fill="#E3E3E3"/>
+        <g stroke="#979797" stroke-linecap="round" stroke-linejoin="round" stroke-width="2">
+            <path d="M.5.5L18.5.5M.5 7.5L18.5 7.5M.5 19.5L18.5 19.5M.5 32.5L18.5 32.5M21.5.5L39.5.5M24.5 7.5L42.5 7.5M22.5 32.5L40.5 32.5M.5 13.5L11.5 13.5M.5 26.5L11.5 26.5M22.5 19.5L40.5 19.5M14.5 13.5L24.5 13.5M27.5 13.5L38.5 13.5M14.5 26.5L24.5 26.5M27.5 26.5L38.5 26.5" transform="translate(11 25)"/>
+        </g>
+        <text fill="#463581" font-family="Lato-Heavy, Lato" font-size="10" font-weight="600">
+            <tspan x="11.23" y="12">PDF</tspan>
+        </text>
+    </g>
+</svg>

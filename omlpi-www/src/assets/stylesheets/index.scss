@@ -1,0 +1,69 @@
+@charset 'UTF-8';
+
+// 2. Vendors
+@import '../../node_modules/modularscale-sass/stylesheets/modularscale',
+  '../../node_modules/awesomplete/awesomplete',
+  '../../node_modules/sweetalert2/src/sweetalert2';
+// '../../node_modules/awesomplete/awesomplete.theme';
+// '../../node_modules/include-media/dist/include-media';
+
+// 1. Configuration and helpers
+@import 'abstracts/constants',
+  'abstracts/font-stacks',
+  'abstracts/functions',
+  'abstracts/variables',
+  'abstracts/mixins';
+
+// 3. Base stuff
+@import 'base/base',
+  'base/fonts',
+  'base/typography',
+  'base/helpers';
+
+// 4. Layout-related sections
+@import 'layout/header',
+  'layout/footer',
+  'layout/footer-logos',
+  'layout/bgs';
+// 'layout/h-feed';
+
+// 5. Components
+@import 'components/search-area',
+  'components/map-area',
+  'components/chart',
+  'components/chart-text',
+  'components/buttons-group',
+  'components/buttons',
+  'components/big-number',
+  'components/info-box',
+  'components/info-chart',
+  'components/awesomplete',
+  'components/loading',
+  'components/plans-search',
+  'components/big-banner',
+  'components/send-plan',
+  'components/plans-result',
+  'components/library-item',
+  'components/white-box',
+  'components/main-areas',
+  'components/indicator-header',
+  'components/indicator-boxes',
+  'components/embed-container',
+  'components/modal',
+  'components/news',
+  'components/about-us',
+  'components/history',
+  'components/header-text',
+  'components/card-links',
+  'components/open-data',
+  'components/consent',
+  'components/list-boxes';
+
+// 6. Page-specific styles
+// @import
+// 'pages/investor-relations';
+
+// 7. Themes
+// @import
+// 'themes/default',
+// 'themes/print';

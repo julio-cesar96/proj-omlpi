@@ -1,0 +1,224 @@
+    {{ partial "head.html" . }}
+
+    <body>
+      {{ partial "header.html" . }}
+      <main class="alabaster" id="app">
+        <section class="search-area search-area--alternative search-area--children-hands">
+          <div class="container">
+            <header>
+              <h1>
+                Os planos pela primeira infância são importantes ferramentas para promover as políticas públicas.
+              </h1>
+            </header>
+          </div>
+        </section>
+        <div class="search-area--gradient search-area--clip-path">
+          <section class="search-area search-area--no-image">
+            <div class="container">
+              <form action="" id="js-submit-region">
+                <label for="js-plan-search">
+                  {{ i18n "exploreData" }}
+                </label>
+                <input
+                  id="js-plan-search"
+                  disabled
+                  aria-busy="true"
+                  type="text"
+                  data-listlabel="{{ i18n "exploreData" }}"
+                  placeholder="Olinda ou Pernambuco"
+                />
+              </form>
+            </div>
+          </section>
+
+          <section class="plans-result" v-if="selectedLocale">
+            <div class="container">
+              <a href="#enviar-plano" class="plans-result__send-plan">Não encontrou o plano do seu estado? Envie-o para nós.</a>
+              <header class="plans-result__header">
+                <span
+                  class="plans-result__location"
+                  :class="selectedLocale.plan ? 'plans-result__location--with-plan' : ''"
+                >
+                  <span
+                    class="plans-result__first-letter"
+                    :class="selectedLocale.type === 'state' ? 'plans-result__first-letter--state' : ''"
+                  >
+                    {{ "{{ selectedLocale.type === 'state' ? '' : selectedLocale.name.split('')[0].toUpperCase() }}" }}
+                  </span>
+                    {{ "{{ selectedLocale.name }}" }} -
+                    <a
+                      v-if="selectedLocale.plan"
+                      :href="`${storageDomain}${selectedLocale.plan.url}`"
+                      target="_blank"
+                    >
+                      Download do documento
+                    </a>
+                    <template v-else>{{ i18n "unavailable" }}</template>
+                </span>
+                <span
+                  v-if="capital"
+                  class="plans-result__capital-icon"
+                >
+                  {{ "{{ capital.name }}" }} - {{ "{{ capital.state }}" }} -
+                  <a
+                    v-if="capital.plan"
+                    :href="`${storageDomain}${capital.plan.url}`"
+                    target="_blank"
+                  >
+                    Download do documento
+                  </a>
+                  <template v-else>{{ i18n "unavailable" }}</template>
+                </span>
+              </header>
+              <template v-if="relatedLocales">
+                <ul
+                  v-for="relatedLocale in relatedLocales"
+                  class="plans-result__list"
+                >
+                  <li class="plans-result__list-first-letter">
+                    {{ "{{ relatedLocale.title }}" }}
+                  </li>
+                  <template v-for="locale in relatedLocale.data">
+                    <li
+                      :class="locale.plan ? 'plans-result__has-plan' : ''"
+                    >
+                      {{ "{{ locale.name }}" }}
+                      {{ "{{ locale.type === 'city' ? `- ${locale.state}` : '' }}" }}
+                      -
+                      <a
+                        v-if="locale.plan"
+                        :href="`${storageDomain}${locale.plan.url}`"
+                        target="_blank"
+                      >
+                        Download do documento
+                      </a>
+                      <template v-else>{{ i18n "unavailable" }}</template>
+                    </li>
+                  </template>
+                </ul>
+              </template>
+            </div>
+          </section>
+
+          <div class="container">
+            <div class="big-banner">
+              <div class="big-banner__text" v-if="guides && guides.length">
+                <h1>
+                  Documentos de referência
+                </h1>
+                <ul>
+                  <template v-for="(guide, idx) in guides">
+                    <li class="big-banner__text--small" v-if="guide.url" :key="idx">
+                      <a :href="guide.url" target="_blank" download>
+                        <strong>{{ "{{ guide.title }}" }}</strong>
+                      </a>
+                        {{ "{{ guide.description }}" }}
+                    </li>
+                  </template>
+                </ul>
+              </div>
+              <div class="big-banner__image">
+                <div id="map"></div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="send-plan-bg">
+          <div class="container">
+            <form
+              class="send-plan"
+              @submit.prevent="sendPlan"
+              id="enviar-plano"
+              method="POST"
+            >
+              <div class="send-plan__text">
+                <h2>Não encontrou o plano do seu município?</h2>
+                <p>Seu município possui um Plano para a Primeira Infância?</p>
+
+                <p>Envie para o Observatório para que ele seja disponibilizado aqui, preenchendo o formulário.</p>
+
+                <p>Faça parte do Observatório!</p>
+              </div>
+              <div class="send-plan__fields">
+                <label for="name">
+                  Nome
+                  <input
+                    v-model="form.name"
+                    type="text"
+                    name="name"
+                    required
+                  >
+                </label>
+
+                <label for="email">
+                  Email
+                  <input
+                    v-model="form.email"
+                    type="email"
+                    name="email"
+                    required
+                  >
+                </label>
+
+                <label for="location">
+                  Localidade
+                  <input
+                    v-model="form.message"
+                    type="text"
+                    name="location"
+                    required
+                  >
+                </label>
+
+                <label for="plan">
+                  Enviar (pdf)
+                  <input
+                    type="file"
+                    id="plan"
+                    @change="updateFile"
+                    name="plan"
+                    accept="application/pdf,application/vnd.ms-excel"
+                    required
+                  >
+                  <span class="plan__custom-upload">
+                    <span class="plan__custom-upload-text">
+                      {{ "{{ form.fileName }}" }}
+                    </span>
+                    <div class="plan__custom-upload-button">Enviar</div>
+                  </span>
+                </label>
+                <button
+                  type="submit"
+                  class="button button--purple"
+                  :disabled="formLoading"
+                  title="{{ i18n "send" }}"
+                >
+                  <template v-if="formLoading">{{ i18n "sending" }}</template>
+                  <template v-else>{{ i18n "send" }}</template>
+                </button>
+              </div>
+            </form>
+          </div>
+        </div>
+      </main>
+
+      {{ partial "footer.html" . }}
+
+      {{ partial "scripts.html" . }}
+
+
+      <style>
+        #map {
+          width: 100%;
+          height: 600px;
+          max-width: 74rem;
+          margin-right: auto;
+          margin-left: auto;
+        }
+      </style>
+
+      <script>
+      </script>
+    </body>
+</html>

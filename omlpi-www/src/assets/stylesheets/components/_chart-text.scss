@@ -1,0 +1,38 @@
+.chart-text {
+  @media screen and (min-width: breakpoint('tablet')) {
+    column-gap: 2.5rem;
+
+    margin-bottom: 3rem;
+    columns: 2;
+  }
+}
+
+.chart-text blockquote {
+  padding: 0;
+  margin: 0;
+
+  font-size: ms(0);
+  text-align: left;
+}
+
+.chart-text__content {
+  @media screen and (min-width: breakpoint('desktop')) {
+    width: 50%;
+    padding: 0 1rem;
+
+    &:first-child {
+      margin-left: -1rem;
+    }
+
+    &:last-child {
+      margin-right: -1rem;
+    }
+  }
+}
+
+.chart-text__content blockquote {
+  padding: 0;
+
+  font-size: ms(0);
+  text-align: left;
+}

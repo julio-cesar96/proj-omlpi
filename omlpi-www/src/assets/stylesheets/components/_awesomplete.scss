@@ -1,0 +1,73 @@
+.awesomplete-container {
+  position: relative;
+}
+
+.awesomplete {
+  display: block;
+}
+
+.awesomplete > ul {
+  border: 0;
+}
+
+.awesomplete > ul > li {
+  padding: 0.8rem;
+
+  background: palette('white');
+}
+
+.awesomplete > ul > li small {
+  display: block;
+
+  width: 100%;
+
+  color: palette('gray', 'light');
+}
+
+.awesomplete > ul > li[aria-selected='true'] {
+  color: palette('gray');
+
+  background: palette('gray', 'pale');
+}
+
+.awesomplete > ul > .awesomplete__empty[class] {
+  cursor: not-allowed;
+
+  background-color: palette('gray', 'alabaster');
+  filter: grayscale(0.5);
+}
+
+.awesomplete__country,
+.awesomplete__region,
+.awesomplete__state,
+.awesomplete__city {
+  display: flex;
+
+  align-items: center;
+
+  &::before {
+    display: inline-block;
+
+    width: 1.25rem;
+    height: 1.25rem;
+    margin-right: 1.2rem;
+
+    content: '';
+  }
+}
+
+.awesomplete__country::before {
+  background-image: image('icons/brazil.svg');
+}
+
+.awesomplete__region::before {
+  background-image: image('icons/region.svg');
+}
+
+.awesomplete__state::before {
+  background-image: image('icons/location-pin.svg');
+}
+
+.awesomplete__city::before {
+  background-image: image('icons/city.svg');
+}

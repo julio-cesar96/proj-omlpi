@@ -1,0 +1,203 @@
+    {{ partial "head.html" . }}
+
+    <body>
+      {{ partial "header.html" . }}
+
+      <main class="alabaster" id="app-compare">
+        <header class="header-text header-text--purple">
+          <div class="container">
+            <h1>{{ .Title }}</h1>
+          </div>
+        </header>
+        <div class="loading" v-if="loading">
+          Aguarde, carregando as informações...
+        </div>
+        <div v-else class="container history">
+          <div class="history__filters history__filters--purple white-box">
+            <form action="" @submit.prevent="generateIndicatorChart">
+              <h4>Selecione outro tema</h4>
+              <div class="history__radio-buttons">
+                <template v-for="area in areas">
+                  <input
+                    type="radio"
+                    name="theme"
+                    :id="`area-${area.id}`"
+                    :value="area.id"
+                    v-model="selectedArea"
+                  >
+                  <label
+                    :for="`area-${area.id}`"
+                    class="button--icon button--purple"
+                    :class="`button--${area.class}`"
+                  >
+                    {{ "{{ area.name }}" }}
+                  </label>
+                </template>
+              </div>
+
+              <h4>
+                <label for="myLocation">Selecione outra localidade</label>
+              </h4>
+              <input id="myLocation" data-listlabel="Selecione outra localidade">
+              <h4 id="indicator-label">Selecione outro indicador</h4>
+              <select
+                id="indicator"
+                name="indicator"
+                v-if="locale && locale.indicators"
+                v-model="selectedIndicator"
+                aria-labelledby="indicator-label"
+              >
+                <option
+                  v-if="loadingLocale"
+                  disabled
+                  selected
+                >
+                  Carregando...
+                </option>
+                <option
+                  v-else
+                  v-for="(indicator, index) in indicators"
+                  :value="indicator"
+                  :selected="index === 0"
+                >
+                  {{ "{{ indicator.description }}" }}
+                </option>
+              </select>
+              <span v-if="!indicators.length">
+                Não há indicadores para essa localidade
+              </span>
+              <h4 id="year-label">Filtrar por ano</h4>
+              <select
+                id="selectedYearOnIndicator"
+                name="selectedYearOnIndicator"
+                v-if="locale && availableYearsOnIndicator.length"
+                v-model="selectedYearOnIndicator"
+                aria-labelledby="year-label"
+              >
+                <option
+                  :disabled="loadingLocale"
+                  selected
+                  :value="0"
+                >
+                  <template v-if="loadingLocale">
+                    Carregando...
+                  </template>
+                  <template v-else>
+                    Todos os anos disponíveis
+                  </template>
+                </option>
+
+                <template v-if="!loadingLocale">
+                  <option
+                    v-for="(year, idx) in availableYearsOnIndicator"
+                    :value="year"
+                    :key="idx"
+                  >
+                    {{ "{{ year }}" }}
+                  </option>
+                </template>
+              </select>
+              <span v-if="!availableYearsOnIndicator.length">
+                Não há indicadores para essa localidade
+              </span>
+            </form>
+          </div>
+          <div class="history__graphics white-box">
+            <div id="js-history"></div>
+          </div>
+
+          <div
+            class="history__desagregation history__desagregation--purple white-box"
+            :class="emptyIndicator ? 'history__desagregation--full' : ''"
+            >
+            <div
+              v-if="emptyIndicator"
+            >
+              Não há desagregadores para esse indicador
+            </div>
+            <form
+              @submit.prevent="generateSubindicatorChart()"
+              v-else
+            >
+              <h2>Compare as desagregações</h2>
+              <h4 id="subindicator-label">Selecione outra desagregação</h4>
+              <select id="subindicators" name="subindicators" v-model="selectedSubindicator" aria-labelledby="subindicator-label">
+                <option
+                  v-if="loadingLocale"
+                  disabled
+                  selected
+                >
+                  Carregando...
+                </option>
+                <option
+                  v-if="!selectedIndicator || selectedIndicator.subindicators === 0"
+                  disabled
+                  selected
+                >
+                  Não há desagregadores para essa localidade
+                </option>
+                <option
+                  v-else
+                  v-for="(subindicator, index) in selectedIndicator.subindicators"
+                  :value="subindicator"
+                  :selected="index === 0"
+                >
+                  {{ "{{ subindicator.classification }}" }}
+                </option>
+              </select>
+              <h4 id="subindicator-year-label">Selecione outro ano</h4>
+              <select
+                id=""
+                name=""
+                required
+                v-model="selectedYear"
+                aria-labelledby="subindicator-year-label"
+              >
+              <template v-for="year in years">
+                <option :value="year">{{ "{{ year }}" }}</option>
+              </template>
+              </select>
+            </form>
+          </div>
+          <div
+            :hidden="emptyIndicator"
+            class="history__graphics white-box"
+          >
+            <div id="js-subindicators-chart"></div>
+          </div>
+        </div>
+
+        <div class="container">
+          <section class="card-links">
+            <a
+              class="card-links__indicators"
+              :href="`/city?location_id=${localeId}&area=${this.selectedArea}`"
+            >
+              <i aria-hidden="true"></i>Indicadores
+            </a>
+            <a
+              class="card-links__history"
+              :href="`/historico?location_id=${localeId}&area=${this.selectedArea}`"
+            >
+                <i aria-hidden="true"></i>Histórico
+            </a>
+            <a
+              class="card-links__data"
+              target="_blank"
+              :href="`${apiUrl}data/resume/?locale_id=${localeId}`"
+            >
+                <i aria-hidden="true"></i>Relatório personalizado
+            </a>
+          </section>
+        </div>
+
+        {{ partial "open-data.html" . }}
+
+      </main>
+
+      {{ partial "footer.html" . }}
+
+      {{ partial "scripts.html" . }}
+
+    </body>
+</html>

@@ -1,0 +1,62 @@
+# - id: actionLine
+#   translation:
+#     one: "Linha de ação"
+#     other: "Linhas de ação"
+
+
+# Generic
+- id: search
+  translation: "Pesquisar"
+- id: send
+  translation: "Enviar"
+- id: developedBy
+  translation: "Desenvolvido por:"
+- id: unavailable
+  translation: "Não disponível"
+
+# Home
+- id: exploreData
+  translation: "Digite o nome do Município ou Unidade da Federação"
+- id: exploreArticles
+  translation: "Pesquise por título, por autor ou por temática"
+- id: exploreArticlesPlaceholder
+  translation: "Ex. Primeira Infancia"
+- id: exploreDataPlaceholder
+  translation: "Ex: Oiapoque, Amapá, Norte"
+- id: city
+  translation: "Município"
+- id: cities
+  translation: "Municípios"
+- id: news
+  translation: "Destaques"
+- id: referencesTitle
+  translation: "Primeira infância em números"
+- id: axisTitle
+  translation: "Conheça os três eixos do Observa"
+
+# Indicadores
+- id: brazilOverview
+  translation: "Panorama Geral do Brasil"
+
+#buttons
+- id: sending
+  translation: "Enviando..."
+- id: allTags
+  translation: "Sem filtro"
+- id: tags
+  translation: "Temas"
+- id: searchTerms
+  translation: "Termos"
+
+#consent
+- id: consent
+  translation: >
+    A visitação a esse site implica no aceite
+    <a href="/rastreio" id="cookies-eu-more">
+      do rastreio usando cookies do Google Analytics e do Facebook
+    </a>
+    para propósitos estatísticos.
+- id: reject
+  translation: Rejeitar
+- id: accept
+  translation: Aceitar

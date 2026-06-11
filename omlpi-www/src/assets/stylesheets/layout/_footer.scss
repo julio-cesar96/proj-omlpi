@@ -1,0 +1,196 @@
+.site-footer {
+  font-size: ms(-2);
+  color: palette('white');
+
+  background-color: palette('dark-blue-grey');
+
+  @media screen and (min-width: breakpoint('tablet')) {
+    font-size: ms(-1);
+  }
+}
+
+.site-footer__colophon {
+  display: flex;
+
+  flex-direction: row;
+  flex-wrap: wrap;
+
+  justify-content: space-between;
+  // padding-bottom: 3rem;
+}
+
+.site-footer__first-row {
+  display: flex;
+
+  flex-direction: column;
+
+  width: 100%;
+  margin-bottom: 1.5rem;
+
+  @media screen and (min-width: breakpoint('tablet')) {
+    flex-direction: row;
+
+    align-items: center;
+    justify-content: center;
+
+    padding-top: 2rem;
+    padding-bottom: 2rem;
+
+    border-bottom: 2px solid palette('blue-footer-border');
+  }
+
+  @media screen and (min-width: breakpoint('desktop')) {
+    margin-bottom: auto;
+  }
+}
+
+.site-footer__logo > a {
+  @include image-replacement;
+
+  display: block;
+
+  width: 10rem;
+  height: 2.55rem;
+  margin-top: 2rem;
+
+  background-image: image('logos/logo.svg');
+  background-size: contain;
+
+  @media screen and (min-width: breakpoint('tablet')) {
+    margin-top: 0;
+
+    background-position: center;
+  }
+
+  @media screen and (min-width: breakpoint('phablet')) {
+    width: 19rem;
+    height: 3.15rem;
+  }
+}
+
+.site-footer__email {
+  font-size: ms(1);
+  color: palette('white');
+
+  @media screen and (min-width: breakpoint('tablet')) {
+    height: 3.15rem;
+    padding-left: 2rem;
+    margin-left: 2rem;
+
+    line-height: 2.5;
+
+    border-left: 2px solid palette('blue-footer-border');
+  }
+}
+
+.site-footer__social {
+  display: flex;
+
+  align-items: center;
+
+  width: auto;
+  margin-top: 2rem;
+}
+
+.site-footer__social ul {
+  display: flex;
+
+  padding: 0;
+  margin: 0;
+}
+
+.site-footer__social li {
+  margin-left: 0.7rem;
+
+  list-style: none;
+
+  &:first-child {
+    margin-left: 0;
+  }
+}
+
+.site-footer__social li a {
+  display: block;
+
+  width: 1.4rem;
+  height: 1.4rem;
+  overflow: hidden;
+
+  text-indent: 999em;
+
+  background-repeat: no-repeat;
+  background-size: contain;
+}
+
+.site-footer__social .facebook {
+  background-image: image('logos/facebook.svg');
+}
+
+.site-footer__social .twitter {
+  background-image: image('logos/twitter.svg');
+}
+
+.site-footer__social .instagram {
+  background-image: image('logos/instagram.svg');
+}
+
+.site-footer__social .whatsapp {
+  background-image: image('logos/whatsapp.svg');
+}
+
+.site-footer__social .github {
+  background: image('logos/github.svg');
+}
+
+
+.site-footer address {
+  display: flex;
+
+  flex-direction: column;
+
+  width: 100%;
+  margin-top: 1rem;
+
+  font-style: normal;
+}
+
+.site-footer address a {
+  margin-bottom: 0.7rem;
+
+  line-height: 1;
+  color: palette('white');
+  text-decoration: underline;
+}
+
+.site-footer address span {
+  margin-top: 1rem;
+  margin-right: auto;
+  margin-left: auto;
+
+  font-size: ms(-1);
+  text-align: center;
+}
+
+.footer__developed-by {
+  display: flex;
+
+  align-items: center;
+  justify-content: center;
+
+  padding-top: 1em;
+  padding-bottom: 1em;
+
+  background-color: palette('dark-blue-grey');
+}
+
+.footer__developed-by a {
+  width: 7rem;
+  height: 1.3rem;
+  margin-left: 0.5rem;
+
+  font-size: 0;
+  color: palette('white');
+  text-decoration: none;
+
+  background-image: image('logos/appcivico.svg');
+}

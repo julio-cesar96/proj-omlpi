@@ -1,0 +1,583 @@
+// -----------------------------------------------------------------------------
+// This file contains very basic styles.
+// -----------------------------------------------------------------------------
+
+/**
+ * 1. Make all elements from the DOM inherit from the parent box-sizing
+ * See: https://css-tricks.com/inheriting-box-sizing-probably-slightly-better-best-practice/
+ */
+*,
+::before,
+::after {
+  box-sizing: inherit;
+
+  tab-size: inherit;
+
+  background-repeat: no-repeat;
+}
+
+/* User interaction (https://www.w3.org/TR/html5/editing.html)
+========================================================================== */
+::selection {
+  color: palette('selection', 'foreground');
+  text-shadow: none;
+
+  background-color: palette('selection', 'background');
+}
+
+/**
+ * ARIA roles should include visual cursor hints
+ */
+[aria-busy='true'] {
+  cursor: progress;
+}
+
+[aria-controls] {
+  cursor: pointer;
+}
+
+/*
+ * Change the cursor on disabled, not-editable, or otherwise
+ * inoperable elements (opinionated).
+ */
+[aria-disabled] {
+  cursor: default;
+}
+
+/*
+ * Remove the tapping delay on clickable elements (opinionated).
+ * 1. Remove the tapping delay in IE 10.
+ */
+a,
+area,
+button,
+input,
+label,
+select,
+summary,
+textarea,
+[tabindex] {
+  touch-action: manipulation; /* 1 */
+}
+
+:target {
+  animation: highlight 0.8s ease-out;
+
+  @keyframes highlight {
+    0% {
+      opacity: 0;
+    }
+
+    100% {
+      opacity: 1;
+    }
+  }
+}
+
+/**
+ * 1. Corrects text resizing oddly in IE6/7 when body font-size is set using em units
+ * http://clagnut.com/blog/348/#c790
+ * 2. Scaling HTML element to window height
+ * https://github.com/necolas/normalize.css/pull/422#issuecomment-78379521
+ * 3. Keeps page centred in all browsers regardless of content height
+ * 4. Prevents iOS text size adjust after orientation change, without disabling user zoom
+ * www.456bereastreet.com/archive/201012/controlling_text_size_in_safari_for_ios_without_disabling_user_zoom/
+ */
+html {
+  box-sizing: border-box;
+
+  height: 100%; /* 2 */
+  padding: 0;
+  margin: 0;
+  overflow-y: scroll; /* 3 */
+
+  font-size: 100.01%; /* 1 */
+  tab-size: 4;
+
+  background: palette('white');
+
+  text-size-adjust: 100%; /* 4 */
+}
+
+/**
+ * 1. Set sticky footer
+ * 2. Prevents IE10-11 flex container bug
+ * https: //github.com/philipwalton/flexbugs#flexbug-3
+ */
+body {
+  position: relative;
+
+  display: flex; /* 1 */
+
+  flex-direction: column;
+  // height: 100vh; /* 2 */
+
+  min-height: 100%;
+  margin: 0;
+  // overflow: auto;
+
+  color: palette('black');
+
+  > * {
+    flex-grow: 1; /* 1 */
+    flex-shrink: 0; /* 1 */
+  }
+}
+
+/* section items HTML5
+============================================================================ */
+/**
+ * Correct `block` display not defined for any HTML5 element in IE 8/9.
+ * Correct `block` display not defined for `details` or `summary` in IE 10/11
+ * and Firefox.
+ * Correct `block` display not defined for `main` in IE 11.
+ */
+article,
+aside,
+details,
+figcaption,
+figure,
+footer,
+header,
+main,
+menu,
+nav,
+section {
+  display: block;
+}
+
+/**
+ * 1. Set sticky footer
+ */
+main,
+[role='main'] {
+  display: flex;
+
+  flex-direction: column;
+  flex-grow: 1; /* 1 */
+}
+
+[id='app'] {
+  flex-grow: 1; /* 1 */
+}
+
+/*
+ * Add the correct display in all browsers.
+ */
+summary {
+  position: relative;
+
+  display: list-item;
+
+  padding-right: 1rem;
+  margin-bottom: 1rem;
+
+  font-weight: font-weight('text');
+  list-style-type: none;
+
+  cursor: pointer;
+
+  &::-webkit-details-marker {
+    display: none;
+  }
+
+  &:focus {
+    outline: -webkit-focus-ring-color auto 5px;
+  }
+
+  &::after {
+    position: absolute;
+    top: 0.75rem;
+    right: 0;
+
+    content: '';
+
+    border-top-color: palette('blue', 'greeny');
+    border-top-style: solid;
+    border-top-width: 5px;
+    border-right: solid transparent;
+    border-right-width: 5px;
+    border-left: solid transparent;
+    border-left-width: 5px;
+
+    transition: transform 0.3s;
+
+    @media screen and (min-width: breakpoint('phablet')) {
+      border-top-width: 8px;
+      border-right-width: 8px;
+      border-left-width: 8px;
+    }
+  }
+
+  @media screen and (min-width: breakpoint('desktop')) {
+    font-size: ms(1);
+  }
+
+  details[open] > &::after {
+    transform: rotate(90deg);
+  }
+}
+
+details {
+  margin-bottom: 0.5rem;
+}
+
+details[open] > summary {
+  margin-bottom: 0;
+
+  font-size: ms(3);
+  font-weight: bold;
+  color: palette('blue', 'dianne');
+}
+
+details[open] > summary strong {
+  display: none;
+}
+
+
+details summary ~ * {
+  animation: sweep 0.5s ease-in-out;
+}
+
+@keyframes sweep {
+  0% {
+    margin-left: -10px;
+
+    opacity: 0;
+  }
+
+  100% {
+    margin-left: 0;
+
+    opacity: 1;
+  }
+}
+
+
+/**
+ * Address `[hidden]` styling not present in IE 8/9.
+ * Hide the `template` element in IE, Safari, and Firefox < 22.
+ */
+[hidden][hidden],
+template,
+[v-cloak] {
+  display: none;
+}
+
+/**
+ * Visually hidden content should remain accessible
+ */
+[hidden][aria-hidden='false'] {
+  position: absolute;
+
+  display: inherit;
+
+  clip: rect(0, 0, 0, 0);
+
+  &:focus {
+    clip: auto;
+  }
+}
+
+
+/* BLOCK TEXT
+============================================================================ */
+
+/**
+ * @see http://sonspring.com/journal/styling-hr
+ *
+ * 1. Add the correct box sizing in Firefox.
+ * 2. Show the overflow in Edge and IE.
+ */
+/**
+ */
+hr {
+  /* line-height */
+  @include fallback('margin', calc(#{$leading * 1em} - 1px) 0 #{$leading * 1em}, #{$leading * 1em} 0);
+
+  box-sizing: content-box; /* 1 */
+  display: block;
+
+  height: 0; /* 1 */
+  padding: 0;
+  overflow: visible; /* 2 */
+  clear: both;
+
+  color: palette('gray');
+
+  border: 0;
+  border-top: 1px solid palette('gray');
+}
+
+/* MEDIA ELEMENTS
+============================================================================ */
+/**
+ * Corrects overflow displayed oddly in IE9
+ */
+svg:not(:root) {
+  overflow: hidden;
+}
+
+/**
+ * SVGs should fallback to their surrounding text color
+ */
+svg {
+  fill: currentcolor;
+}
+
+a > svg {
+  pointer-events: none;
+}
+
+/**
+ * 1. Corrects inline-block display not defined in IE6/7/8/9 & FF3
+ * 2. Remove the gap between images, videos, audio and canvas and the bottom of
+ * their containers: h5bp.com/i/440
+ */
+audio,
+canvas,
+iframe,
+progress,
+svg,
+video {
+  display: inline-block; /* 1 */
+
+  vertical-align: middle; /* 2 */
+}
+
+/**
+ * Prevent modern browsers from displaying `audio` without controls.
+ * Add the correct display in iOS 4-7.
+ * Remove excess height in iOS 5 devices.
+ */
+audio:not([controls]) {
+  display: none;
+
+  height: 0;
+}
+
+meter,
+progress {
+  background-size: auto;
+
+  appearance: none;
+}
+
+audio {
+}
+
+iframe,
+img,
+object {
+  font-size: 83.3333%;
+  color: currentcolor;
+
+  border-style: none;
+}
+
+img,
+embed,
+object,
+video {
+  max-width: 100%;
+}
+
+video {
+}
+
+video > source {
+  width: 100%;
+  height: auto;
+}
+
+.ie:not(.ie6-8),
+object > img {
+  position: relative;
+  z-index: layer('below');
+
+  font-size: 1em;
+
+  pointer-events: none;
+}
+
+/// Stylize broken images
+/// @author [Ire Aderinokun](https://ireaderinokun.com/)
+/// @author Sobral
+/// @group helpers
+/// @link https://bitsofco.de/styling-broken-images/
+%broken-image {
+  font-style: normal;
+  text-align: center;
+
+  &::before {
+    display: block;
+
+    margin-bottom: $leading * 1em;
+
+    content: '\f127' ' Broken Image of ' attr(alt);
+  }
+
+  &::after {
+    display: block;
+
+    font-size: small;
+    color: palette('gray');
+
+    content: '(url: ' attr(src) ')';
+  }
+}
+
+/**
+ * 1. Improving quality of image resampling
+ * @see  https://developer.mozilla.org/En/CSS/Image-rendering
+ * @see  code.flickr.com/blog/2008/11/12/on-ui-quality-the-little-things-client-side-image-resizing/
+ */
+img {
+  @extend %broken-image;
+  max-width: 100%;
+  height: auto;
+
+  image-rendering: optimizequality; /* 1 */
+  /* stylelint-disable-next-line property-no-unknown */
+  interpolation-mode: bicubic; /* 1 */
+}
+
+[usemap] {
+  color: palette('anchor');
+}
+
+map {
+}
+
+area {
+}
+
+object {
+}
+
+li img,
+p img {
+  vertical-align: middle;
+}
+
+a img,
+a > picture {
+  border: 0;
+}
+
+/* links
+============================================================================ */
+a {
+  padding: 0;
+  margin: 0;
+
+  font-size: 100%;
+  vertical-align: baseline;
+
+  @include on-event {
+    text-decoration: underline;
+  }
+
+  &:link {
+    text-decoration: inherit;
+
+    cursor: pointer;
+    -webkit-tap-highlight-color: palette('tap-highlight'); // stylelint-disable-line no-vendor-prefixes
+  }
+
+  &:visited {
+    @include on-event {
+      text-decoration: underline;
+    }
+  }
+
+  &:hover,
+  &:focus {
+  }
+
+  &:focus {
+    outline: 1px dotted;
+    outline-offset: 2px;
+  }
+
+  /**
+   * Improve readability when focused and also mouse hovered in all browsers.
+   */
+  &:hover,
+  &:active {
+    outline-width: 0;
+  }
+
+  /**
+   * Remove the gray background color from active links in IE 10.
+   * @see https://github.com/necolas/normalize.css/issues/473
+   */
+  // &:active {
+  //   background-color: transparent;
+  // }
+
+  &[target='_blank'],
+  &[rel='external'] {
+  }
+
+  &[download] {
+    &::after {
+      @include download;
+
+      display: inline-block;
+
+      margin-top: -1rem;
+      margin-right: 0.25em;
+      margin-left: 0.25em;
+
+      content: '';
+    }
+
+    &:hover,
+    &:focus,
+    &:active {
+      &::after {
+        @include download--hover;
+      }
+    }
+  }
+}
+
+/* Contact info and addresses
+---------------------------------------------------------------------------- */
+address {
+  padding: 0;
+  margin: 0;
+
+  font-style: italic;
+}
+
+/* Code blocks
+---------------------------------------------------------------------------- */
+pre {
+  padding: $leading * 0.5rem $gutter * 0.5;
+  margin: 0 0 $leading * 1rem;
+  overflow: auto;
+
+  font-size: ms(-1);
+  color: palette('text', 'light');
+
+  background-color: palette('text', 'dark');
+}
+
+/* Code blocks
+---------------------------------------------------------------------------- */
+ul {
+  padding: 0;
+  margin: 0 0 #{$gutter * 0.5} 0;
+}
+
+ul ul {
+  padding: 0 0 0 #{$gutter * 0.5};
+}
+
+ul li {
+  &::marker {
+    color: #47b3af;
+  }
+}

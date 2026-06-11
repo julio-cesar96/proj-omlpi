@@ -1,0 +1,32 @@
+<div class="container">
+  <span class="open-data">
+    Baixe os <a :href="`${apiUrl}data/download`" target="_blank">
+      dados abertos
+    </a>
+    ou a
+
+    {{ $pdf := resources.Get "pdfs/Metodologia_Observa.pdf" | fingerprint }}
+
+    <a
+      target="_blank"
+      download="Metodologia_Observa.pdf"
+      href="{{ $pdf.Permalink }}"
+    >
+      metodologia
+    </a>
+    ou
+
+    {{ $pdf := resources.Get "pdfs/Metadados_Observa@2022-01.pdf" | fingerprint }}
+
+    <a
+      target="_blank"
+      download="Metadados_Observa.pdf"
+      href="{{ $pdf.Permalink }}"
+    >
+      metadados
+    </a>.
+    <span>
+      Acesse a <a :href="apiDocsUrl" target="_blank">api para desenvolvedores</a>
+    </span>
+  </span>
+</div>

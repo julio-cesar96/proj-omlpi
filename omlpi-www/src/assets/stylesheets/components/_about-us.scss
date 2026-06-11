@@ -1,0 +1,133 @@
+.about-us {
+  display: flex;
+
+  flex-direction: column;
+
+  padding-top: 1rem;
+  padding-bottom: 1rem;
+  margin-right: auto;
+  margin-left: auto;
+
+  background-color: palette('purple');
+  background-position: bottom left;
+
+  @media screen and (min-width: breakpoint('tablet')) {
+    flex-direction: row;
+
+    justify-content: flex-end;
+  }
+
+  @media screen and (min-width: breakpoint('desktop')) {
+    background-image: image('home/about-us-ornament.png'), image('home/about-us.jpg');
+    background-position: left bottom, center;
+    background-size: 250px, cover;
+  }
+}
+
+.about-us--no-bg {
+  background-color: transparent;
+  background-image: none;
+}
+
+.about-us--container {
+  margin-right: 0;
+  margin-left: 0;
+
+  @media screen and (min-width: breakpoint('wide')) {
+    padding-right: 1.875rem;
+    padding-left: 1.875rem;
+  }
+}
+
+.about-us--container .about-us {
+  justify-content: flex-end;
+
+  width: 100%;
+}
+
+.about-us--boxed {
+  padding-top: 7rem;
+  padding-bottom: 4rem;
+  margin-top: -4rem;
+}
+
+.about-us--boxed .container {
+  display: flex;
+
+  flex-direction: column;
+
+  @media screen and (min-width: breakpoint('tablet')) {
+    flex-direction: row;
+
+    justify-content: flex-end;
+  }
+}
+
+.about-us--boxed .button {
+  justify-content: center;
+
+  @media screen and (min-width: breakpoint('phablet')) {
+    margin-right: auto;
+    margin-left: auto;
+  }
+}
+
+.about-us--boxed .about-us__text {
+  padding-bottom: 0;
+
+  @media screen and (min-width: breakpoint('tablet')) {
+    padding-left: 2rem;
+  }
+}
+
+.about-us__image {
+  display: flex;
+
+  align-items: center;
+  justify-content: center;
+
+  margin: 0;
+}
+
+.about-us__image img {
+  display: block;
+}
+
+.about-us__text {
+  padding-bottom: 3rem;
+
+  color: palette('white');
+
+  @media screen and (min-width: breakpoint('tablet')) {
+    max-width: 45.5rem;
+  }
+
+  @media screen and (min-width: breakpoint('desktop')) {
+    text-shadow: 1px 1px 10px palette('black');
+  }
+
+  @media screen and (min-width: breakpoint('wide')) {
+    padding-right: 3rem;
+    padding-left: 3rem;
+    margin-left: auto;
+
+    text-shadow: none;
+  }
+}
+
+.about-us__text h1 {
+  font-weight: font-weight('text');
+  color: palette('white');
+  text-transform: uppercase;
+}
+
+.about-us__text .button {
+  margin-right: 1rem;
+  margin-bottom: 1rem;
+
+  text-shadow: none;
+
+  @media screen and (min-width: breakpoint('tablet')) {
+    margin-bottom: 0;
+  }
+}

@@ -1,0 +1,60 @@
+  {{ partial "head.html" . }}
+
+  <body>
+    {{ partial "header.html" . }}
+
+    <main>
+      <section class="search-area search-area--alternative search-area--indicators">
+        <div class="container">
+          <header>
+            <h1>
+              Indicadores referenciados no marco legal da primeira infância, desagregados por aspectos socioeconômicos.
+            </h1>
+          </header>
+        </div>
+      </section>
+
+      <div class="search-area search-area--no-image search-area--gradient">
+        <div class="container">
+          <form action="" id="js-submit-region">
+            <label for="js-region-input">
+              {{ i18n "exploreData" }}
+            </label>
+            <input
+              type="text"
+              disabled
+              aria-busy="true"
+              id="js-region-input"
+              data-listlabel="{{ i18n "exploreData" }}"
+              placeholder="{{ i18n "exploreDataPlaceholder" }}"
+            >
+            <small class="search-area__info">Para os dados nacionais, digite Brasil.</small>
+            <section>
+              <div class="container">
+                <div class="js-areas-buttons buttons-group buttons-group__submit">
+                  <button id="js-area-1" disabled hidden class="button--icon button--social-care">Assistência Social</button>
+                  <button id="js-area-2" disabled hidden class="button--icon button--education">Educação</button>
+                  <button id="js-area-3" disabled hidden class="button--icon button--health">Saúde</button>
+                  <button id="js-area-4" disabled hidden class="button--icon button--violence">Violência</button>
+                </div>
+              </div>
+            </section>
+          </form>
+        </div>
+      </div>
+
+      <section id="app-indicators-text" v-cloak>
+        <div class="container" v-if="text">
+          <h1>{{ "{{ text.titulo }}" }}</h1>
+          <div v-html="marked(text.texto)" class="chart-text">
+          </div>
+        </div>
+        <div class="container" v-else>Carregando...</div>
+      </section>
+    </main>
+
+    {{ partial "footer.html" . }}
+
+    {{ partial "scripts.html" . }}
+  </body>
+</html>

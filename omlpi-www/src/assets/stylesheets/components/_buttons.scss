@@ -1,0 +1,168 @@
+%button {
+  display: inline-flex;
+
+  align-items: baseline;
+
+  padding: 0.6rem 1.2rem;
+
+  font-size: ms(1);
+  font-weight: font-weight('bold');
+  font-variant: small-caps;
+  color: palette('white');
+  text-decoration: none;
+  text-transform: lowercase;
+
+  cursor: pointer;
+
+  background-color: palette('blue', 'greeny');
+  border: 0;
+  border-radius: 10px;
+
+  > * {
+    margin-right: 0.125em;
+    margin-left: 0.125em;
+  }
+
+  &[disabled] {
+    cursor: not-allowed;
+
+    background-color: palette('gray', 'light');
+  }
+
+  &[download]::after {
+    content: none;
+  }
+}
+
+.button {
+  @extend %button;
+
+  & + & {
+    margin-top: 1rem;
+  }
+}
+
+.button--small {
+  @extend %button;
+
+  font-size: ms(-2);
+}
+
+.button--purple {
+  background-color: palette('purple');
+}
+
+.button--blue {
+  background-color: palette('blue', 'paradiso');
+}
+
+.button--icon {
+  @extend %button;
+
+  color: palette('purple');
+
+  background-color: palette('white');
+  border-color: palette('purple');
+  border-style: solid;
+  border-width: 2px;
+
+  &[disabled] {
+    color: palette('black', 'lighter');
+
+    background-color: palette('white');
+    border-color: palette('white');
+    box-shadow: 0;
+    opacity: 0.6;
+
+    &::before {
+      filter: grayscale(1);
+    }
+  }
+
+  &::before {
+    width: 1.25rem;
+    height: 1.25rem;
+    margin-top: auto;
+    margin-right: 0.5rem;
+    margin-bottom: auto;
+
+    content: '';
+
+    background-size: contain;
+  }
+}
+
+.button-download {
+  background-color: palette('purple');
+
+  &::before {
+    width: 0.95rem;
+    height: 0.95rem;
+
+    background-image: image('icons/arrow-down.svg');
+  }
+}
+
+.button-video {
+  font-size: 100%;
+
+  background-color: palette('blue', 'paradiso');
+  border-color: palette('blue', 'paradiso');
+
+  &::before {
+    width: 0.95rem;
+    height: 0.95rem;
+
+    background-image: image('icons/youtube.svg');
+  }
+}
+
+.button--health {
+  &::before {
+    // width: 1.25rem;
+    // height: 1.25rem;
+    background-image: image('icons/health--purple.svg');
+  }
+}
+
+.button--education {
+  &::before {
+    // width: 1.125rem;
+    // height: 1.312rem;
+    background-image: image('icons/education--purple.svg');
+  }
+}
+
+.button--social-care {
+  &::before {
+    // width: 1.4rem;
+    // height: 1rem;
+    background-image: image('icons/social-assistance--purple.svg');
+  }
+}
+
+.button--violence {
+  &::before {
+    background-image: image('icons/do_not_touch--purple.svg');
+  }
+}
+
+.button-icon--active {
+  color: palette('white');
+
+  background-color: palette('purple');
+  box-shadow: 0 2px 6px palette('shadow');
+
+  &::before {
+    filter: brightness(10);
+  }
+}
+
+.button--like-text {
+  padding: 0;
+
+  cursor: pointer;
+
+  background-color: transparent;
+  border: 0;
+}

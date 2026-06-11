@@ -1,0 +1,9 @@
+.chart {
+  width: calc(100% - 2rem);
+  margin: 1rem 0;
+
+  @media screen and (min-width: breakpoint('desktop')) {
+    // width: 50%;
+    min-height: 22.1rem;
+  }
+}

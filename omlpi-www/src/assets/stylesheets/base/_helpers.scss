@@ -1,0 +1,182 @@
+// -----------------------------------------------------------------------------
+// This file contains CSS helper classes.
+// -----------------------------------------------------------------------------
+
+/* CLASSES
+============================================================================ */
+%loading-bg {
+  background-repeat: no-repeat;
+  // background-image: image('loading.svg');
+  background-position: 50% 50%;
+}
+
+%loading-el {
+  overflow: hidden;
+
+  cursor: wait;
+
+  &::after {
+    position: absolute;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    left: 0;
+    z-index: layer('modal');
+
+    content: '';
+  }
+}
+
+/// Content which loads **after** the page does, should be informed to user.
+///
+/// `[aria-busy='true']` adds a loading background to any loading element
+/// which can't be a parent and a pseudo element over any element other than
+/// `html`.
+///
+/// Don't forget to customize it to your needs. Speacially the background
+/// color.
+///
+/// Already applied to `embed` and `img`, which can cause issues with
+/// transparent images.
+///
+/// @author Sobral
+/// @group helpers
+///
+/// @example html
+///
+/// <dialog open aria-busy="true">
+/// 	<form method="dialog">
+/// 		[...]
+/// 	</form>
+/// </dialog>
+///
+[aria-busy='true'] {
+  > body,
+  &:not(html) {
+    @extend %loading-bg;
+    @extend %loading-el;
+  }
+}
+
+[hidden] {
+  display: none;
+}
+
+img:not([src$='.png']):not([src$='.gif']):not([src$='.svg']),
+embed {
+  @extend %loading-bg;
+
+  background-size: auto;
+
+  &::after {
+    /*
+     *	Future proof reset
+     */
+    content: none;
+  }
+}
+
+input,
+output,
+keygen,
+textarea {
+  &[aria-busy='true'] {
+    @extend %loading-bg;
+
+    background-size: auto;
+  }
+}
+
+
+/// Load grid image background under the class `grid`
+///
+/// @author Sobral
+/// @group helpers
+///
+/// @example html
+/// <html class="grid">
+/// 	<body>
+/// 		[...]
+/// 	</body>
+/// </html>
+///
+.grid {
+  &::after,
+  &:root::before {
+    position: fixed;
+    top: 0;
+    // right: 0;
+    // bottom: 0;
+
+    z-index: layer('modal');
+
+    font-size: 1rem;
+
+    pointer-events: none;
+  }
+
+  &::after {
+    bottom: 0;
+    left: 0;
+
+    content: '';
+
+    background-image: grid-image(2);
+    background-position: center top;
+
+    @media screen and (min-width: breakpoint('phablet')) {
+      background-image: grid-image(3);
+    }
+
+    @media screen and (min-width: breakpoint('tablet')) {
+      background-image: grid-image(4);
+    }
+
+    @media screen and (min-width: breakpoint('desktop')) {
+      background-image: grid-image(5);
+    }
+
+    @media screen and (min-width: breakpoint('wide')) {
+      background-image: grid-image(6);
+      background-size: $max-width 100%;
+    }
+  }
+
+  &:root::before {
+    padding: 2rem;
+
+    background-color: palette('debug');
+
+    // opacity: 0.2;
+
+    @media screen and (min-width: breakpoint('phablet')) {
+      content: 'breakpoint: phablet';
+    }
+
+    @media screen and (min-width: breakpoint('tablet')) {
+      content: 'breakpoint: tablet';
+    }
+
+    @media screen and (min-width: breakpoint('desktop')) {
+      content: 'breakpoint: desktop';
+    }
+
+    @media screen and (min-width: breakpoint('wide')) {
+      content: 'breakpoint: wide';
+    }
+
+    @media screen and (min-width: breakpoint('extra-wide')) {
+      content: 'breakpoint: extra-wide';
+    }
+  }
+}
+
+.hide {
+  // stylelint-disable declaration-no-important
+  display: none !important;
+  // stylelint-enable declaration-no-important
+}
+
+.visually-hidden {
+  @include visually-hidden;
+}

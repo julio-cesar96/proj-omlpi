@@ -1,0 +1,264 @@
+{{ partial "head.html" . }}
+
+  <body>
+    {{ partial "header.html" . }}
+
+    <main>
+      <div id="app" class="bg-gray">
+        <div class="loading" v-if="loading">
+          Aguarde, carregando as informações...
+        </div>
+        <template v-else>
+          <header
+            class='map-area'
+            :style="`background-image: linear-gradient(to bottom, rgba(0, 0, 2, 0.8), rgba(4, 5, 54, 0.8) 31%, rgba(27, 15, 117, 0.8) 59%, rgba(206, 100, 245, 0.8)), url('https://maps.googleapis.com/maps/api/staticmap?key=AIzaSyCnb0w8bcw_RK0gAmch08BzC-nt7XRCVMg&center=${locale.latitude},${locale.longitude}&zoom=${mapZoomLevel}&format=png&maptype=roadmap&style=feature:administrative.land_parcel%7Cvisibility:off&style=feature:administrative.neighborhood%7Cvisibility:off&style=feature:poi%7Celement:labels.text%7Cvisibility:off&style=feature:road%7Celement:labels%7Cvisibility:off&style=feature:water%7Celement:labels.text%7Cvisibility:off&size=1200x600');`"
+          >
+            <div class="container">
+              <h1>{{ "{{ locale.name }}" }}</h1>
+              <section class="search-area search-area__intern">
+                <form action="">
+                  <label for="js-region-input">
+                    Pesquise por Brasil, região, estado ou município e selecione uma área de interesse
+                    para visualizar seus indicadores e seus desagregadores
+                  </label>
+                  <input
+                    type="text"
+                    disabled
+                    aria-busy="true"
+                    data-intern="true"
+                    id="js-region-input"
+                    data-listlabel="Brasil, região, estado ou município"
+                    placeholder="{{ i18n "exploreDataPlaceholder" }}"
+                  >
+                  <button class="magnifying-glass">{{ i18n "search" }}</button>
+                </form>
+                <section>
+                  <div class="buttons-group">
+                    <button
+                      :hidden="!isAreaPresent(1)"
+                      @click="selectedArea = 1"
+                      class="button--icon button--social-care"
+                      :class="selectedArea === 1 ? 'button-icon--active' : ''"
+                      >
+                      Assistência Social
+                    </button>
+                    <button
+                      :hidden="!isAreaPresent(2)"
+                      @click="selectedArea = 2"
+                      class="button--icon button--education"
+                      :class="selectedArea === 2 ? 'button-icon--active' : ''"
+                      >
+                      Educação
+                    </button>
+                    <button
+                      :hidden="!isAreaPresent(3)"
+                      @click="selectedArea = 3"
+                      class="button--icon button--health"
+                      :class="selectedArea === 3 ? 'button-icon--active' : ''"
+                      >
+                      Saúde
+                    </button>
+                    <button
+                      :hidden="!isAreaPresent(4)"
+                      @click="selectedArea = 4"
+                      class="button--icon button--violence"
+                      :class="selectedArea === 4 ? 'button-icon--active' : ''"
+                      >
+                      Violência
+                    </button>
+                  </div>
+                </section>
+              </section>
+            </div>
+          </header>
+          <section>
+            <div class="container">
+              <p v-if="!indicatorsCount">Não há dados para esse tema</p>
+            </div>
+            <div class="container">
+              <h1>Indicadores</h1>
+              <template v-for="(indicator, index) in locale.indicators">
+                <details
+                  v-show="indicator.area.id === selectedArea"
+                  class="js-details-with-chart"
+                >
+                  <summary @click="reflowCharts">
+                    {{ "{{ indicator.description }}" }}:
+                    <strong
+                      v-if="formatIndicatorValue(indicator.values, indicator.is_percentage)"
+                    >
+                      {{ "{{ formatIndicatorValue(indicator.values, indicator.is_percentage) }}" }}
+                    </strong>
+                    <template v-else>
+                      Não disponível
+                    </template>
+                  </summary>
+                  <div class="indicator-header">
+                    <a
+                      class="indicator-header__link"
+                      :href="`${apiUrl}data/download_indicator?locale_id=${
+                      locale.id}&indicator_id=${indicator.id}&year=${indicator.values.year}`"
+                      target="_blank"
+                    >
+                      Baixar dados do indicador
+                    </a>
+                    <div class="indicator-header__number">
+                      <h3 v-if="indicator.values.value_relative === null && indicator.values.value_absolute === null">
+                        {{ "{{ formatIndicatorHeaderValue(indicator.values, indicator.is_percentage) }}" }}
+                      </h3>
+                      <h2 v-else>
+                        {{ "{{ formatIndicatorHeaderValue(indicator.values, indicator.is_percentage) }}" }}
+                      </h2>
+                    </div>
+                    <div
+                      v-if="indicator.concept"
+                      class="indicator-header__description"
+                    >
+                      {{ "{{ indicator.concept }}" }}
+                    </div>
+                    <div class="indicartor__ods" v-if="indicator.ods && indicator.ods.length > 0">
+                      <template v-for="odsItem in indicator.ods">
+                        <img :src="`/assets/images/${odsItem.filename}`" :alt="odsItem.name">
+                      </template>
+                    </div>
+                    <div class="indicator-header__info">
+                      {{ "{{ indicator.base }}" }}
+                      -
+                      <time
+                        class="infobox__year"
+                        :datetime="indicator.values.year"
+                      >
+                        {{ "{{ indicator.values.year }}" }}
+                      </time>
+                    </div>
+                  </div>
+                  <div v-if="indicator.subindicators.length === 0" >
+                    <p>Não há desagregadores para esse indicador</p>
+                  </div>
+                  <div
+                    v-else
+                    v-for="(subindicator, subIndicatorIndex) in indicator.subindicators">
+                    <div
+                      v-if="subindicator.showAs === 'bigNumber'"
+                      :id="slugify(`subindicator-${subindicator.classification}-${indicator.id}-${subindicator.id}`)"
+                      class="big-number">
+                      <h2 class="title">{{ "{{ subindicator.classification }}" }}</h2>
+                      <div class="infobox" :class="subindicator.data.length === 1 ? 'infobox--single' : ''">
+                        <h3 class="infobox__general-title">
+                          {{ "{{ subindicator.classification }}" }}
+                          <small>
+                            {{ "{{ indicator.description }}" }}
+                          </small>
+                        </h3>
+                        <div class="infobox__item" v-for="(subindicatorData, index) in subindicator.data">
+                          <strong class="infobox__title">
+                            {{ "{{ formatIndicatorValue(subindicatorData.values, subindicatorData.is_percentage) }}" }}
+                          </strong>
+                          <h3>{{ "{{ subindicatorData.description }}" }}</h3>
+                          <div
+                            v-if="subindicatorData.values.value_relative"
+                            class="infobox__icons"
+                            style="clip-path: url(#svgPath);"
+                            :style="`background-image: linear-gradient(90deg, #40a19d ${Math.round(subindicatorData.values.value_relative)}%, #a3a3a3 0);`"
+                            >
+                          </div>
+                            <strong
+                              v-if="subindicatorData.values.value_relative && subindicatorData.values.value_absolute"
+                              class="infobox__percentage"
+                              >
+                              {{ "{{ Number(subindicatorData.values.value_absolute).toLocaleString('pt-br') }}" }}
+                            </strong>
+                              <time
+                                class="infobox__year"
+                                :datetime="subindicatorData.values.year"
+                                >
+                                {{ "{{ subindicatorData.values.year }}" }}
+                              </time>
+                        </div>
+                        <a
+                          @click.prevent="print(
+                            slugify(`subindicator-${subindicator.classification}-${indicator.id}-${subindicator.id}`),
+                            indicator.id,
+                            subindicator.classification
+                          )"
+                          title="Download"
+                          class="infobox__download"
+                        >
+                          Download
+                        </a>
+                      </div>
+                    </div>
+                    <div
+                      v-else-if="subindicator.showAs === 'horizontalBarChart'"
+                      class="big-number">
+                      <div class="info-chart">
+                        <h2 class="title">{{ "{{ subindicator.classification }}" }}</h2>
+                        <div class="infobox">
+                          <div :id="`bar-chart-horizontal-${indicator.id}-${subindicator.id}`" class="chart"></div>
+                        </div>
+                      </div>
+                    </div>
+                    <div
+                      v-else-if="subindicator.showAs === 'barsChart'"
+                      class="big-number">
+                      <div class="info-chart">
+                        <h2 class="title">{{ "{{ subindicator.classification }}" }}</h2>
+                        <div class="infobox">
+                          <div :id="`bar-chart-${indicator.id}-${subindicator.id}`" class="chart"></div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </details>
+              </template>
+          </section>
+          <div class="container">
+            <section class="card-links">
+              <a
+                class="card-links__history"
+                :href="`/historico?location_id=${localeId}&area=${this.selectedArea}`"
+              >
+                <i aria-hidden="true"></i>Série Histórica
+              </a>
+              <a
+                class="card-links__comparison"
+                :href="`/comparacao?location_id=${localeId}&area=${this.selectedArea}`"
+              >
+                  <i aria-hidden="true"></i>Comparação
+              </a>
+              <a
+                class="card-links__data"
+                target="_blank"
+                :href="`${apiUrl}data/resume/?locale_id=${localeId}`"
+              >
+                  <i aria-hidden="true"></i>Relatório personalizado
+              </a>
+            </section>
+          </div>
+          {{ partial "open-data.html" . }}
+        </template>
+      </div>
+      <svg height="0" width="0">
+        <defs>
+        clip-path: circle(50% at 50% 50%);
+        <clipPath id="svgPath">
+          <path d="M0,7a7,7 0 1,0 14,0a7,7 0 1,0 -14,0" />
+          <path d="M18,7a7,7 0 1,0 14,0a7,7 0 1,0 -14,0" />
+          <path d="M36,7a7,7 0 1,0 14,0a7,7 0 1,0 -14,0" />
+          <path d="M54,7a7,7 0 1,0 14,0a7,7 0 1,0 -14,0" />
+          <path d="M72,7a7,7 0 1,0 14,0a7,7 0 1,0 -14,0" />
+          <path d="M90,7a7,7 0 1,0 14,0a7,7 0 1,0 -14,0" />
+          <path d="M108,7a7,7 0 1,0 14,0a7,7 0 1,0 -14,0" />
+          <path d="M126,7a7,7 0 1,0 14,0a7,7 0 1,0 -14,0" />
+          <path d="M144,7a7,7 0 1,0 14,0a7,7 0 1,0 -14,0" />
+          <path d="M162,7a7,7 0 1,0 14,0a7,7 0 1,0 -14,0" />
+        </clipPath>
+        </defs>
+      </svg>
+    </main>
+
+      {{ partial "footer.html" . }}
+
+      {{ partial "scripts.html" . }}
+  </body>
+</html>

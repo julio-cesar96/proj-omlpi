@@ -1,0 +1,18 @@
+    {{ partial "head.html" . }}
+
+    <body>
+      {{ partial "header.html" . }}
+
+      <article role="main" id="page-template" aria-busy="true" hidden>
+        <div class="container" :aria-busy="pending">
+          <h1>{{"{{ title }}"}}</h1>
+
+          <div v-html="marked(content)"></div>
+        </div>
+      </article>
+
+      {{ partial "footer.html" . }}
+
+      {{ partial "scripts.html" . }}
+    </body>
+</html>

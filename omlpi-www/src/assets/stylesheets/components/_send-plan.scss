@@ -1,0 +1,151 @@
+.send-plan {
+  padding-bottom: 3rem;
+
+  @media screen and (min-width: breakpoint('tablet')) {
+    display: flex;
+  }
+
+  @media screen and (min-width: breakpoint('desktop')) {
+    margin-top: -3rem;
+  }
+
+}
+
+.send-plan-bg {
+  background-image: image('plans-ornament.png');
+  background-position: left bottom;
+  background-size: 45%;
+}
+
+.send-plan__text {
+  @media screen and (min-width: breakpoint('tablet')) {
+    max-width: 50%;
+    padding-right: 3rem;
+    margin-top: -3rem;
+  }
+
+  @media screen and (min-width: breakpoint('desktop')) {
+    margin-top: -5rem;
+  }
+}
+
+.send-plan__text h2 {
+  margin-top: 0;
+
+  font-size: ms(6);
+  font-weight: font-weight('text');
+  line-height: 1.3;
+  color: palette('purple');
+  text-transform: uppercase;
+}
+
+.send-plan__text p {
+  font-size: ms(1);
+}
+
+.send-plan__fields {
+  display: flex;
+
+  flex-direction: column;
+  flex-grow: 1;
+
+  @media screen and (min-width: breakpoint('tablet')) {
+    flex-direction: row;
+    flex-wrap: wrap;
+
+    justify-content: space-between;
+
+    max-width: 50%;
+  }
+}
+
+.send-plan__fields label {
+  width: 100%;
+
+  font-size: ms(-1);
+  text-transform: uppercase;
+}
+
+.send-plan__fields label[for='plan'] {
+  width: 100%;
+  max-width: 100%;
+}
+
+.send-plan__fields input,
+.send-plan__fields .plan__custom-upload {
+  width: 100%;
+  padding: 0.8rem;
+  margin-top: 0.3rem;
+  margin-bottom: 1rem;
+
+  background-color: palette('white');
+  border: 1.3px solid palette('purple');
+  border-radius: 9px;
+}
+
+.send-plan__fields button {
+  justify-content: center;
+
+  margin: 0 auto;
+
+  font-size: 1em;
+
+  @media screen and (min-width: breakpoint('phablet')) {
+    margin-right: 0;
+  }
+}
+
+.send-plan__fields input[type='file'] {
+  display: none;
+}
+
+.send-plan__fields .plan__custom-upload {
+  display: inline-flex;
+
+  align-items: center;
+
+  height: 2.95rem;
+
+  white-space: nowrap;
+}
+
+.plan__custom-upload-text {
+  width: 70%;
+  overflow: hidden;
+
+  white-space: nowrap;
+}
+
+.plan__custom-upload-button {
+  display: inline-flex;
+
+  align-items: center;
+  justify-content: center;
+
+  width: 5.9rem;
+  height: 2.8rem;
+  margin-top: -8px;
+  margin-right: -15px;
+  margin-bottom: -8px;
+  margin-left: auto;
+
+  font-size: 0.8em;
+  color: palette('white');
+  text-transform: uppercase;
+
+  background: palette('purple');
+  border-radius: 0 9px 9px 0;
+
+  &::before {
+    display: block;
+
+    width: 0.862rem;
+    height: 0.862rem;
+    margin-right: 5px;
+
+    content: '';
+
+    background-image: image('icons/upload.svg');
+    background-size: contain;
+  }
+}

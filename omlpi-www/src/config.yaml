@@ -1,0 +1,134 @@
+baseURL: "/"
+defaultContentLanguage: "pt"
+enableGitInfo: true
+enableMissingTranslationPlaceholders: true
+enableRobotsTXT: true
+disableHugoGeneratorInject: true
+buildFuture: true
+blackfriday:
+  plainIDAnchors: false
+disableKinds:
+  - "section"
+  - "taxonomy"
+  - "taxonomyTerm"
+  - "RSS"
+  - "sitemap"
+googleAnalytics: ""
+languageCode: "pt-br"
+
+module:
+  mounts:
+    -
+      source: "node_modules/cookies-eu-banner/dist/"
+      target: "assets/vendor/"
+    -
+      source: "node_modules/highcharts/"
+      target: "assets/vendor/highcharts/"
+    -
+      source: "node_modules/@highcharts/"
+      target: "assets/vendor/@highcharts/"
+    -
+      source: "node_modules/vue/dist/"
+      target: "assets/vendor/"
+    -
+      source: "node_modules/wowjs/dist/"
+      target: "assets/vendor/"
+    -
+      source: "node_modules/animate.css/"
+      target: "assets/vendor/"
+    -
+      source: "assets/"
+      target: "assets/"
+
+menu:
+  header:
+  - identifier: "Início"
+    name: "Início"
+    url: "/"
+    weight: 1
+  - identifier: "Indicadores"
+    name: "Indicadores"
+    url: "/indicadores"
+    weight: 2
+  - identifier: "planos pela primeira infância"
+    name: "planos pela primeira infância"
+    url: "/planos-pela-primeira-infancia"
+    weight: 3
+  - identifier: "biblioteca"
+    name: "biblioteca"
+    url: "/biblioteca"
+    weight: 4
+  - identifier: "tracking"
+    name: "Rastreio"
+    url: "/rastreio"
+    weight: 100
+    Params:
+      endpoint: "privacy-policy"
+  about:
+  - identifier: "Sobre a Andi"
+    name: "Sobre a Andi"
+    url: "/sobre-a-andi"
+    weight: 1
+  - identifier: "História"
+    name: "História"
+    url: "/historia"
+    weight: 2
+  - identifier: "Missão e Valores"
+    name: "Missão e Valores"
+    url: "missao-e-valores"
+    weight: 3
+  - identifier: "Equipe"
+    name: "Equipe"
+    url: "/equipe"
+    weight: 4
+  - identifier: "Conselho"
+    name: "Conselho"
+    url: "/conselho"
+    weight: 5
+  footer:
+  - identifier: "Infância e Juventude"
+    name: "Infância e Juventude"
+    url: "/infancia-e-juventude"
+    weight: 1
+  - identifier: "Inclusão e Sustentabilidade"
+    name: "Inclusão e Sustentabilidade"
+    url: "/inclusao-e-sustentabilidade"
+    weight: 2
+  - identifier: "Políticas de Comunicação"
+    name: "Políticas de Comunicação"
+    url: "/politicas-de-comunicacao"
+    weight: 3
+metaDataFormat: "yaml"
+title: "Observatório do marco legal da primeira infancia"
+params:
+  developedBy: "RNPI Observa"
+  developedByLink: "https://rnpiobserva.org.br/"
+  siteDescription: "Observatório do marco legal da primeira infancia"
+  tagline: ""
+  shareImages:
+    default: "assets/images/default.jpg"
+    twitter: "assets/images/twitter.jpg"
+    facebook: "assets/images/facebook.jpg"
+  socialNetworksLinks:
+    twitter: "https://twitter.com/observatorio"
+    facebook: "https://www.facebook.com/observatorio"
+taxonomies:
+  role: "role"
+security:
+  exec:
+    allow:
+      - '^dart-sass-embedded$'
+      - '^go$'
+      - '^npx$'
+      - '^postcss$'
+      - 'babel'
+    osEnv:
+      - '(?i)^(PATH|PATHEXT|APPDATA|TMP|TEMP|TERM)$'
+  funcs:
+    getenv:
+      - "NODE_ENV"
+    http:
+      methods:
+        - '(?i)GET|POST'
+      urls:
+        - '.*'

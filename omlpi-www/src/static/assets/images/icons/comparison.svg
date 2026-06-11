@@ -1,0 +1,44 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="97" height="94" viewBox="0 0 97 94">
+    <g fill="none" fill-rule="evenodd">
+        <path fill="#E3E3E3" d="M10.43 87.481c.1.402.152.823.152 1.255C10.582 91.643 8.213 94 5.29 94S0 91.643 0 88.736c0-.432.052-.853.151-1.255z"/>
+        <path fill="#F9F9F9" d="M5.039 94c2.922 0 5.29-2.357 5.29-5.264V31.835a5.774 5.774 0 015.766-5.515h21.697V5.765A5.765 5.765 0 0143.558 0h42.608v61.95c0 7.179-5.82 13-13 13H58.704V76c0 9.941-8.059 18-18 18H5.039z"/>
+        <path fill="#E3E3E3" d="M91.235 0A5.765 5.765 0 0197 5.765H48.626l-.26-.35c.006-.091.008-.184.008-.276 0-2.41-1.668-4.433-3.918-4.988L44.343 0z"/>
+        <g stroke="#979797" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M.025.125L7.281.125M.025 2.381L7.281 2.381" transform="translate(18.392 63.67)"/>
+        </g>
+        <g stroke="#979797" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M.025.125L7.281.125M.025 2.381L7.281 2.381M.025 4.637L7.281 4.637" transform="translate(18.392 53.643)"/>
+        </g>
+        <g stroke="#979797" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M.025.125L7.281.125M.025 2.381L7.281 2.381M.025 4.637L7.281 4.637" transform="translate(18.392 44.619)"/>
+        </g>
+        <g stroke="#979797" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M.025.125L7.281.125M.025 2.381L7.281 2.381M.025 4.637L7.281 4.637" transform="translate(18.392 34.592)"/>
+        </g>
+        <path fill="#E3E3E3" d="M24.439 33.249a6.931 6.931 0 00-5.291-6.734v-.195h18.644v41.451a6.677 6.677 0 11-13.353 0V33.25z"/>
+        <path stroke="#979797" stroke-linecap="round" stroke-linejoin="round" d="M44.021 48L49.979 48M44.021 50L49.979 50"/>
+        <path stroke="#979797" stroke-linecap="round" d="M44.125 44L79.875 44"/>
+        <g>
+            <path fill="#40a19d" d="M3.27 21.183H9.307V28.748H3.27zM12.074 17.148H18.111V28.747999999999998H12.074zM20.877 12.861H26.913999999999998V28.748H20.877zM29.681 9.33H35.718V28.747H29.681z" transform="translate(43 11)"/>
+            <path fill="#D8D8D8" stroke="#1F1F1F" stroke-linecap="round" stroke-linejoin="round" stroke-width=".5" d="M.252.204v28.592m40.573-.048H.175" transform="translate(43 11)"/>
+        </g>
+        <path stroke="#979797" stroke-linecap="round" stroke-linejoin="round" d="M18.125 86L53.875 86M18.127 88.75L48 88.5"/>
+        <g stroke="#979797" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M.125.132L35.875.132M.125 2.5L35.875 2.5M.125 4.868L35.875 4.868" transform="translate(44 57)"/>
+        </g>
+        <path fill="#463581" d="M18 77H28V84H18z"/>
+        <path fill="#E3E3E3" d="M30 77H40V84H30zM43 77H53V84H43z"/>
+        <path fill="#654EAA" d="M30 80H40V84H30z"/>
+        <g stroke="#2E6B72" stroke-dasharray="1" stroke-linecap="square" stroke-width=".5">
+            <path d="M.127 11.875L3.939 6.625M3.939 6.625L12.832 9.125M12.832 9.125L21.5 3.5M21.5 3.5L30.873.125" transform="translate(45 22)"/>
+        </g>
+        <g fill="#205058" transform="translate(44 21)">
+            <ellipse cx="4.864" cy="7.75" rx="1.024" ry="1"/>
+            <circle cx="1" cy="13" r="1"/>
+            <circle cx="14" cy="10" r="1"/>
+            <circle cx="31.976" cy="1" r="1"/>
+            <circle cx="23" cy="4" r="1"/>
+        </g>
+        <path fill="#9F93DD" d="M43 82H53V84H43z"/>
+    </g>
+</svg>

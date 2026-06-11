@@ -1,0 +1,169 @@
+.list-box__wrapper {
+  display: block;
+
+  overflow: visible;
+
+  border: 0;
+}
+
+.list-box__label {
+  font-weight: inherit;
+  color: palette('purple');
+  white-space: nowrap;
+}
+
+.list-box {
+  @include input;
+
+  position: relative;
+
+  max-width: 100%;
+  min-height: 3.125rem;
+  overflow: hidden;
+
+  cursor: pointer;
+
+  background-color: palette('white');
+
+  &:hover,
+  &:focus,
+  &:focus-within {
+    overflow: visible;
+  }
+}
+
+.list-box__container {
+  position: absolute;
+  top: 100%;
+  left: 0;
+  z-index: layer('dropdown');
+
+  width: auto;
+  max-width: calc(100vw - #{$gap * 4});
+  max-height: $gutter * 4.5;
+  padding: $gutter * 0.25;
+  overflow: auto;
+  overflow-x: clip;
+  overflow-y: auto;
+
+  color: palette('text', 'dark');
+
+
+  background-color: palette('white');
+  border-radius: 6px;
+  box-shadow: 0 2px 6px palette('shadow');
+
+  transition-timing-function: ease-out;
+
+  /// @see https://easings.net/#easeOutBack
+  transition-timing-function: cubic-bezier(0.34, 1.56, 0.64, 1);
+  transition-duration: 0.3s;
+  transition-property: max-height, margin-top, margin-bottom, padding;
+
+  will-change: max-height, margin-top, margin-bottom, padding;
+
+  &[title] {
+    &::before {
+      display: block;
+
+      padding: 0 0 $gutter * 0.25 0;
+      margin-bottom: $gutter * 0.25;
+
+      font-weight: bold;
+      text-transform: uppercase;
+
+      content: attr(title);
+
+      border-bottom: 1px solid;
+    }
+  }
+
+  @media screen and (min-width: breakpoint('desktop')) {
+  }
+
+  @media screen and (min-width: breakpoint('wide')) {
+  }
+
+  &:hover {
+    z-index: #{layer('dropdown') + 1};
+  }
+
+
+  &.list-box--empty,
+  &:empty {
+    pointer-events: none;
+  }
+
+  .list-box__option {
+    display: flex;
+
+    align-items: center;
+
+    line-height: 2;
+    list-style-type: none;
+
+    &::after {
+      content: none;
+    }
+  }
+
+  .list-box__input {
+    display: block;
+
+
+    flex-shrink: 0;
+
+    float: left;
+    width: auto;
+    margin-top: auto;
+    margin-right: 0.25em;
+    margin-bottom: auto;
+    margin-left: 0;
+  }
+
+  .list-box__input--empty {
+    border-radius: 100%;
+  }
+
+  .list-box__option-label {
+    all: unset;
+
+    flex-grow: 1;
+
+    min-height: $leading * 1em;
+    padding: 0;
+    overflow: hidden;
+
+    text-align: left;
+    text-overflow: ellipsis;
+    text-transform: inherit;
+    white-space: nowrap;
+
+    cursor: pointer;
+  }
+
+  :checked + .list-box__option-label {
+    display: block;
+
+
+    margin-right: 0.35em;
+
+    font-size: ms(0);
+    font-weight: inherit;
+    color: inherit;
+  }
+
+  .list-box__option-helper {
+    font-size: ms(-2);
+
+    opacity: 0.65;
+
+    &::before {
+      content: '(';
+    }
+
+    &::after {
+      content: ')';
+    }
+  }
+}

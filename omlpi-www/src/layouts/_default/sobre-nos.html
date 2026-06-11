@@ -1,0 +1,14 @@
+    {{ partial "head.html" . }}
+
+    <body>
+      {{ partial "header.html" . }}
+
+      <main>
+        {{ $content_parts := split .Content "<!-- more -->" }}
+      </main>
+
+      {{ partial "footer.html" . }}
+
+      {{ partial "scripts.html" . }}
+    </body>
+</html>

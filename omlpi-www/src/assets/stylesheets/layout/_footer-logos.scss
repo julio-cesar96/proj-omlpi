@@ -1,0 +1,200 @@
+.footer-logos {
+  display: flex;
+
+  flex-direction: column;
+  flex-wrap: wrap;
+
+  max-width: 39.5rem;
+  margin-left: 0;
+
+  @media screen and (min-width: breakpoint('desktop')) {
+    flex-direction: row;
+
+    max-width: 53.438rem;
+    margin: 2.188rem auto 0;
+  }
+}
+
+.footer-logos__first-row {
+  display: flex;
+
+  flex-wrap: wrap;
+
+  max-width: 38.188rem;
+  margin-right: auto;
+  margin-bottom: 2rem;
+  margin-left: auto;
+}
+
+
+.footer-logos__second-row {
+  display: flex;
+
+  flex-wrap: wrap;
+
+  width: 100%;
+  margin-bottom: 2rem;
+}
+
+.footer-logos h2 {
+  margin-top: 0;
+  margin-bottom: 0;
+
+  font-size: ms(0);
+  color: palette('white');
+}
+
+.footer-logos__primeira-infancia {
+  position: relative;
+
+  display: flex;
+
+  margin-right: 1.375rem;
+
+  @media screen and (min-width: breakpoint('desktop')) {
+    margin-right: 0;
+
+    &::after {
+      position: absolute;
+      right: -72px;
+      bottom: 0;
+
+      display: block;
+
+      width: 0.125em;
+      height: 8.188rem;
+
+      content: '';
+
+      background-color: palette('blue-footer-border');
+    }
+  }
+}
+
+.footer-logos__rnpi-andi {
+  display: flex;
+
+  flex-wrap: wrap;
+
+  margin-top: 1rem;
+  margin-bottom: 1.5rem;
+  margin-left: 0;
+
+  @media screen and (min-width: breakpoint('desktop')) {
+    align-self: flex-end;
+
+    width: 20.75rem;
+    margin-top: auto;
+    margin-bottom: 0;
+    margin-left: 8.225rem;
+  }
+}
+
+.footer-logos__rnpi-andi h2 {
+  width: 100%;
+  margin-right: 1.31rem;
+  margin-bottom: 0.5rem;
+
+  @media screen and (min-width: breakpoint('desktop')) {
+    margin-bottom: 1rem;
+  }
+}
+
+.footer-logos__primeira-infancia img {
+  width: 9.188rem;
+}
+
+.footer-logos__rnpi {
+  width: 6.062rem;
+  margin-right: 1.6rem;
+  margin-bottom: 1rem;
+
+  @media screen and (min-width: breakpoint('desktop')) {
+    margin-bottom: 0;
+  }
+}
+
+.footer-logos__andi {
+  align-self: flex-end;
+
+  width: 13.062rem;
+  margin-right: 2rem;
+
+  @media screen and (min-width: breakpoint('desktop')) {
+    margin-right: 0;
+  }
+}
+
+.footer-logos__bvl {
+  display: flex;
+
+  flex-wrap: wrap;
+
+  width: 10rem;
+
+  @media screen and (min-width: breakpoint('desktop')) {
+    margin-right: 6.75rem;
+  }
+}
+
+.footer-logos__bvl h2 {
+  width: 100%;
+  margin-bottom: 1rem;
+
+  @media screen and (min-width: breakpoint('desktop')) {
+    margin-bottom: 1.562rem;
+  }
+}
+
+.footer-logos__bvl img {
+  align-self: flex-end;
+
+  width: 9.938rem;
+  margin-bottom: -0.45rem;
+}
+
+.footer-logos__petrobras-gov-fed {
+  display: flex;
+
+  flex-wrap: wrap;
+
+  align-items: flex-end;
+
+  margin-top: 2.875rem;
+  margin-right: auto;
+
+  @media screen and (min-width: breakpoint('desktop')) {
+    justify-content: flex-start;
+
+    width: calc(100% - 16.875rem);
+    margin-top: 0;
+    margin-right: 0;
+    margin-left: 0;
+  }
+}
+
+.footer-logos__petrobras-gov-fed h2 {
+  width: 100%;
+  margin-bottom: 0.5rem;
+
+  @media screen and (min-width: breakpoint('desktop')) {
+    margin-bottom: 1.375rem;
+  }
+}
+
+.footer-logos__petrobras-gov-fed img {
+  margin-bottom: 1rem;
+
+  @media screen and (min-width: breakpoint('desktop')) {
+    margin-bottom: initial;
+  }
+}
+
+.footer-logos__petrobras {
+  width: 16.812rem;
+  margin-right: 2.562rem;
+}
+
+.footer-logos__governo-federal {
+  width: 16.812rem;
+}

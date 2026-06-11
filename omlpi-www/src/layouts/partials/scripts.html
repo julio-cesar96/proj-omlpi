@@ -1,0 +1,20 @@
+{{ $highCharts := .Scratch.Get "highCharts" }}
+<script src="{{ $highCharts.RelPermalink }}" integrity="{{ $highCharts.Data.Integrity }}"></script>
+
+{{ $exporting := .Scratch.Get "exporting" }}
+<script src="{{ $exporting.RelPermalink }}" integrity="{{ $exporting.Data.Integrity }}"></script>
+
+{{ $map := .Scratch.Get "map" }}
+<script src="{{ $map.RelPermalink }}" integrity="{{ $map.Data.Integrity }}"></script>
+
+{{ $br := .Scratch.Get "br" }}
+<script src="{{ $br.RelPermalink }}" integrity="{{ $br.Data.Integrity }}"></script>
+
+{{ $drillDown := .Scratch.Get "drillDown" }}
+<script src="{{ $drillDown.RelPermalink }}" integrity="{{ $drillDown.Data.Integrity }}"></script>
+
+{{ $vue := .Scratch.Get "vue" }}
+<script src="{{ $vue.RelPermalink }}" integrity="{{ $vue.Data.Integrity }}"></script>
+
+{{ $secureJS := .Scratch.Get "secureJS" }}
+<script type="text/javascript" src="{{ $secureJS.RelPermalink }}" integrity="{{ $secureJS.Data.Integrity }}"></script>
