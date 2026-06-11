@@ -1,0 +1,5 @@
+{
+    "editor.wordWrap": "on",
+    "markdown.extension.completion.enabled": false,
+    "markdown.extension.tableFormatter.enabled": false
+}
