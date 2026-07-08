@@ -1,0 +1,151 @@
+@import "tailwindcss";
+
+/*
+ * ─────────────────────────────────────────────────────────────────────────────
+ * TOKENS DE DESIGN — Observa
+ * Extraídos manualmente de design-reference/src/styles/theme.css.
+ * Este arquivo NÃO importa nenhum arquivo de design-reference/ em runtime.
+ * ─────────────────────────────────────────────────────────────────────────────
+ */
+
+:root {
+  /* Tipografia */
+  --font-size-base: 16px;
+  --font-weight-medium: 600;
+  --font-weight-normal: 400;
+
+  /* Cores — paleta principal */
+  --background: #fffff0;
+  --foreground: #444525;
+  --card: #ffffff;
+  --card-foreground: #444525;
+  --popover: #ffffff;
+  --popover-foreground: #444525;
+  --primary: #f25d27;
+  --primary-foreground: #ffffff;
+  --secondary: #17a649;
+  --secondary-foreground: #ffffff;
+  --muted: #f5f5e8;
+  --muted-foreground: #a49a87;
+  --accent: #e8f5ee;
+  --accent-foreground: #444525;
+  --destructive: #d4183d;
+  --destructive-foreground: #ffffff;
+  --border: rgba(164, 154, 135, 0.2);
+  --input: transparent;
+  --input-background: #fafaf5;
+  --switch-background: #cbced4;
+  --ring: #f25d27;
+
+  /* Cores — gráficos */
+  --chart-1: #f25d27;
+  --chart-2: #17a649;
+  --chart-3: #444525;
+  --chart-4: #a49a87;
+  --chart-5: #e8a87c;
+
+  /* Raio de borda */
+  --radius: 1rem;
+  --radius-sm: calc(1rem - 4px);
+  --radius-md: calc(1rem - 2px);
+  --radius-lg: 1rem;
+  --radius-xl: calc(1rem + 4px);
+}
+
+/*
+ * Mapeamento Tailwind v4: expõe os tokens acima como utilitários
+ * (bg-primary, text-foreground, rounded-lg, etc.)
+ */
+@theme inline {
+  /* Fontes */
+  --font-heading: var(--font-nunito), "Nunito", sans-serif;
+  --font-body: var(--font-plus-jakarta-sans), "Plus Jakarta Sans", sans-serif;
+  --font-sans: var(--font-body);
+
+  /* Cores */
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --color-card: var(--card);
+  --color-card-foreground: var(--card-foreground);
+  --color-popover: var(--popover);
+  --color-popover-foreground: var(--popover-foreground);
+  --color-primary: var(--primary);
+  --color-primary-foreground: var(--primary-foreground);
+  --color-secondary: var(--secondary);
+  --color-secondary-foreground: var(--secondary-foreground);
+  --color-muted: var(--muted);
+  --color-muted-foreground: var(--muted-foreground);
+  --color-accent: var(--accent);
+  --color-accent-foreground: var(--accent-foreground);
+  --color-destructive: var(--destructive);
+  --color-destructive-foreground: var(--destructive-foreground);
+  --color-border: var(--border);
+  --color-input: var(--input);
+  --color-input-background: var(--input-background);
+  --color-switch-background: var(--switch-background);
+  --color-ring: var(--ring);
+  --color-chart-1: var(--chart-1);
+  --color-chart-2: var(--chart-2);
+  --color-chart-3: var(--chart-3);
+  --color-chart-4: var(--chart-4);
+  --color-chart-5: var(--chart-5);
+
+  /* Raio */
+  --radius-sm: var(--radius-sm);
+  --radius-md: var(--radius-md);
+  --radius-lg: var(--radius-lg);
+  --radius-xl: var(--radius-xl);
+}
+
+/* ─── Base ─────────────────────────────────────────────────────────────────── */
+@layer base {
+  html {
+    font-size: var(--font-size-base);
+    scroll-behavior: smooth;
+  }
+
+  body {
+    background-color: var(--background);
+    color: var(--foreground);
+    font-family: var(--font-body);
+    min-height: 100dvh;
+    display: flex;
+    flex-direction: column;
+  }
+
+  h1,
+  h2,
+  h3,
+  h4,
+  h5,
+  h6 {
+    font-family: var(--font-heading);
+    font-weight: var(--font-weight-medium);
+    line-height: 1.3;
+  }
+
+  h1 { font-size: 2rem; }
+  h2 { font-size: 1.5rem; }
+  h3 { font-size: 1.25rem; }
+  h4 { font-size: 1rem; }
+
+  p, label, input, button {
+    font-family: var(--font-body);
+    font-size: 1rem;
+    line-height: 1.6;
+  }
+
+  button {
+    font-weight: var(--font-weight-medium);
+  }
+
+  * {
+    box-sizing: border-box;
+    border-color: var(--border);
+  }
+
+  :focus-visible {
+    outline: 2px solid var(--ring);
+    outline-offset: 2px;
+  }
+}
