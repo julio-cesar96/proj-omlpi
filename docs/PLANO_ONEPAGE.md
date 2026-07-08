@@ -55,26 +55,29 @@ app/
 | `/city?location_id=X&area=Y` | `/?tab=municipais&location_id=X&area=Y#consulta-publica` | 1:1 em conteúdo, N:1 em rota |
 | `/comparacao?location_id=X&area=Y` | `/?tab=nacional&mode=comparacao&location_id=X&area=Y#consulta-publica` | A confirmar com design se comparação é aba própria ou um modo dentro de outra aba |
 | `/historico?location_id=X&area=Y` | `/?tab=nacional&mode=historico&location_id=X&area=Y#consulta-publica` | Mesma observação acima |
-| `/rastreio` | `/#contato` ou remover | Era a página de privacidade fetchada via `singleForVue`; confirmar se isso vira política de privacidade linkada no footer, não uma seção do menu |
+| `/rastreio` | `/` | **CONFIRMADO (Fase 1):** não vira seção do menu. Conteúdo migra para `<PrivacyPolicyModal />`, aberto por um link no Footer, usando `getPrivacyPolicy()` do Strapi |
 | `/pt/*` | `/*` | Redirect 301 permanece igual (já existe em `netlify.toml`, precisa virar regra no `next.config.js`/Vercel) |
 
 **Pendência a validar com quem desenhou o Figma**: a Midiateca do mockup (grade de PDFs por categoria: Legislação, Plano Nacional, Guia, Relatório) parece ser mais próxima do `open-data.html` atual do que do `biblioteca.html` (que tem busca, tags, paginação e vídeo). Preciso saber se a Midiateca **substitui** a biblioteca de artigos ou se as duas convivem em abas diferentes — isso muda de qual endpoint do Strapi ela deve ler (`artigos` vs. os links fixos de `open-data`).
 
 ## Contato — endpoint
 
-Duas rotas possíveis, dependendo da confirmação com o time de backend:
+**Decisão (definida no início da Fase 2): formulário envia via WhatsApp (link `wa.me`), sem backend próprio por enquanto.**
 
-**Se o endpoint já existir no backend Perl/Strapi**: só criar `lib/contact.ts` apontando pra ele via Route Handler (`app/api/contato/route.ts`) como proxy, mantendo a chave/URL fora do client.
+O formulário mantém os campos do design (Nome, Estado, E-mail, Assunto, Mensagem), mas em vez de POST para uma API, monta a mensagem e redireciona para:
 
-**Se não existir, alternativas gratuitas sem precisar subir infra nova:**
+```
+https://wa.me/<numero-com-DDI>?text=<mensagem-codificada-com-encodeURIComponent>
+```
 
-| Opção | Custo | Onde fica o dado | Esforço |
-|---|---|---|---|
-| **Resend + Route Handler próprio** | Grátis até 3.000 e-mails/mês | Você controla, e-mail cai direto na caixa da RNPI | Baixo-médio (precisa verificar domínio) |
-| **Web3Forms** | Grátis, sem limite divulgado de envios | Terceiro processa, mas não hospeda os dados | Muito baixo — só um `access_key` e um POST do client |
-| **Formspree** | Grátis até 50 envios/mês | Terceiro | Muito baixo |
+**Status: `lib/contact.ts` já foi criado na Fase 1** com `buildWhatsAppUrl()`, isolado para que trocar por um endpoint real no futuro (Resend, Route Handler, ou o backend confirmar um endpoint próprio) seja só substituir essa função, sem mexer no componente do formulário. A Fase 2 apenas conecta o componente `Contato.tsx` a essa função já existente — não recria o helper.
 
-Minha recomendação: **Resend + Route Handler**, porque é praticamente zero custo, mantém o dado dentro da infraestrutura de vocês (bom para um projeto de órgão/rede que lida com dados públicos), e não impõe limite baixo de envios como o Formspree free. Só exige verificar um domínio de envio, que é uma tarefa de 10 minutos.
+Pendências antes de implementar:
+
+- **Bloqueante para a Fase 2**: `WHATSAPP_NUMBER` está vazio em `lib/contact.ts`. Precisa ser preenchido antes de conectar o formulário, senão o link gerado fica quebrado.
+- Confirmar se o campo E-mail do formulário deve continuar existindo mesmo não sendo usado para envio (pode servir só de referência de contato de retorno).
+
+**Alternativas descartadas por enquanto** (registradas caso o WhatsApp deixe de ser suficiente): Resend + Route Handler próprio (grátis até 3.000 e-mails/mês, mantém o dado na infraestrutura de vocês), Web3Forms (grátis, zero infra), Formspree (grátis até 50 envios/mês).
 
 ## Fases revisadas
 

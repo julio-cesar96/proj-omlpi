@@ -13,13 +13,13 @@ Collections consumidas hoje:
 | `banners` | Home banner | Hero (Início) |
 | `eixos` | Blocos de eixo temático | Seção "Axis" (Início) |
 | `noticias` | Lista de notícias | News strip (Início) |
-| `sobres` | Texto institucional | Sobre (Quem somos / Resultados / Histórico — confirmar se são 3 registros ou 1 registro com campos distintos) |
-| `textoindicadors` | Texto da página de indicadores | Seção Indicadores (a mapear dentro do one-page) |
+| `sobres` | Texto institucional | **CONFIRMADO (Fase 1):** N registros, um por aba (Quem somos / Resultados do levantamento / Histórico). Consultar com `getSobres({ _sort: "order:asc" })` — o campo `order` define a ordem das abas. |
+| `textoindicadors` | Texto da página de indicadores | Seção Indicadores — **ainda sem seção destino mapeada no one-page.** Não supor onde entra; sinalizar como pendência na Fase 2. |
 | `guias` | Guias/documentos de referência | Midiateca / PNIPI (a confirmar) |
-| `tags` | Tags de artigos | Midiateca (se biblioteca de artigos for mantida) |
-| `artigos` | Artigos da biblioteca (busca, tags, paginação) | Midiateca (a confirmar se substitui ou convive com grade de documentos) |
+| `tags` | Tags de artigos | Midiateca |
+| `artigos` | Artigos da biblioteca (busca, tags, paginação) | **CONFIRMADO (Fase 1):** Midiateca usa esta collection. Paginação via `{ _limit: 15, _start: offset }`. |
 | `locales` | Lista de localidades (municípios/estados) | Consulta pública — busca e seleção |
-| `privacy-policy` | Conteúdo da política de privacidade | Rodapé / seção própria (ex-`/rastreio`) |
+| `privacy-policy` | Conteúdo da política de privacidade | **CONFIRMADO (Fase 1):** não tem seção própria no menu — abre como modal (`<PrivacyPolicyModal />`) a partir de um link no Footer. |
 
 ### Padrões de query já em uso (preservar exatamente)
 
