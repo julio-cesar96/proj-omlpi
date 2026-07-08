@@ -1,2 +1,4 @@
 .env
-data/
+data/design-reference/
+next/node_modules/
+next/.next/
