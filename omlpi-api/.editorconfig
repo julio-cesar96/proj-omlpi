@@ -1,0 +1,45 @@
+root = true
+
+[*.{pl,pm,t,PL}]
+max_line_length = off
+charset = utf-8
+end_of_line = lf
+indent_size = 4
+indent_style = space
+insert_final_newline = true
+trim_trailing_whitespace = true
+
+[*.mjml]
+max_line_length = off
+charset = utf-8
+end_of_line = lf
+indent_size = 2
+indent_style = space
+trim_trailing_whitespace = true
+
+[*.yaml]
+max_line_length = off
+charset = utf-8
+end_of_line = lf
+indent_size = 2
+indent_style = space
+trim_trailing_whitespace = true
+
+[*.sql]
+max_line_length = off
+charset = utf-8
+end_of_line = lf
+indent_size = 2
+indent_style = space
+trim_trailing_whitespace = true
+
+[*.{htm,html,css}]
+max_line_length = off
+charset = utf-8
+end_of_line = lf
+indent_size = 2
+indent_style = space
+trim_trailing_whitespace = true
+
+[Makefile]
+indent_style = tab

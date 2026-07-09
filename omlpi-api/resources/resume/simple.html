@@ -1,0 +1,1194 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+  <head>
+    <meta charset="UTF-8" />
+    <link rel="stylesheet" href="css/styles.css" media="all" />
+    <title>Relatório Observa</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <link
+      href="https://fonts.googleapis.com/css?family=Lato&display=swap"
+      rel="stylesheet"
+      media="all"
+    />
+  </head>
+  <body>
+    <div id="content">
+      <div id="container" class="container">
+        <div class="locale">
+          <h1><%= $locale_name %></h1>
+          <span>Relatório gerado em <%= $now->strftime('%d/%m/%Y') %></span>
+        </div>
+
+        <p>
+          A Constituição Federal assegura prioridade absoluta às crianças na
+          efetivação de seus direitos. O Marco Legal da Primeira Infância (Lei
+          nº 13.257/2016) oferece sustentação a esse preceito e estabelece
+          princípios e diretrizes para a formulação e a implementação de
+          políticas públicas, em atenção às especificidades e à relevância dos
+          primeiros anos de vida para o desenvolvimento infantil.
+        </p>
+        <p>
+          O diagnóstico apresentado neste relatório contribui na observação do
+          alcance das políticas direcionadas a esse público em/no <%=
+          $locale_name // 'N/A' %>, da mesma forma que permite identificar áreas
+          sensíveis para atuação nessa localidade.
+        </p>
+
+        <table class="second-td-center">
+          <caption>
+            Quadro síntese – Assistência Social
+          </caption>
+
+          <colgroup>
+            <col width="650" />
+            <col width="120" />
+          </colgroup>
+          <thead>
+            <tr>
+              <td>
+                <p dir="ltr">Indicador</p>
+              </td>
+              <td>
+                <p dir="ltr">N</p>
+              </td>
+            </tr>
+          </thead>
+
+          <tbody>
+            <tr>
+              <td>
+                <p dir="ltr">Estimativa de sub-registro de nascimento</p>
+              </td>
+              <td>
+                <p dir="ltr"><%= $data->{'101-D0_R'}->{value} // 'N/A' %></p>
+              </td>
+            </tr>
+            <tr>
+              <td>
+                <p dir="ltr">
+                  Taxa de realização de cuidados domésticos ou familiares com
+                  crianças de 0 a 5 anos
+                </p>
+              </td>
+              <td>
+                <p dir="ltr"><%= $data->{'102-D0_R'}->{value} // 'N/A' %></p>
+              </td>
+            </tr>
+            <tr>
+              <td>
+                <p dir="ltr">
+                  Proporção de crianças de 0 a 5 anos em situação domiciliar de
+                  pobreza
+                </p>
+              </td>
+              <td>
+                <p dir="ltr"><%= $data->{'103-D0_R'}->{value} // 'N/A' %></p>
+              </td>
+            </tr>
+            <tr>
+              <td>
+                <p dir="ltr">
+                  Proporção de crianças de 0 a 5 anos beneficiárias do Programa
+                  Bolsa Família
+                </p>
+              </td>
+              <td>
+                <p dir="ltr"><%= $data->{'104-D0_R'}->{value} // 'N/A' %></p>
+              </td>
+            </tr>
+            <tr>
+              <td>
+                <p dir="ltr">
+                  Proporção indivíduos visitados pelo Programa Crianças Feliz em
+                  relação à meta pactuada
+                </p>
+              </td>
+              <td>
+                <p dir="ltr"><%= $data->{'105-D0_R'}->{value} // 'N/A' %></p>
+              </td>
+            </tr>
+            <tr>
+              <td>
+                <p dir="ltr">Número de crianças em situação de acolhimento</p>
+              </td>
+              <td>
+                <p dir="ltr"><%= $data->{'108-D0_A'}->{value} // 'N/A' %></p>
+              </td>
+            </tr>
+            <tr>
+              <td>
+                <p dir="ltr">
+                  Cobertura dos Centros de Referência de Assistência Social
+                  (CRAS)
+                </p>
+              </td>
+              <td>
+                <p dir="ltr"><%= $data->{'109-D0_R'}->{value} // 'N/A' %></p>
+              </td>
+            </tr>
+          </tbody>
+
+          <tfoot>
+            <tr>
+              <td colspan="2">
+                <p>
+                  * Os indicadores com campos em branco no quadro síntese não
+                  estão disponíveis para os municípios.
+                </p>
+              </td>
+            </tr>
+          </tfoot>
+        </table>
+
+        <table class="second-td-center">
+          <caption>
+            Quadro síntese – Educação
+          </caption>
+
+          <colgroup>
+            <col width="650" />
+            <col width="120" />
+            <col width="120" />
+          </colgroup>
+          <thead>
+            <tr>
+              <td>
+                <p dir="ltr">Indicador</p>
+              </td>
+              <td>
+                <p dir="ltr">Creche</p>
+              </td>
+              <td>
+                <p dir="ltr">Pré-escola</p>
+              </td>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>
+                <p dir="ltr">Número de matrículas de educação infantil</p>
+              </td>
+              <td>
+                <p dir="ltr"><%= $data->{'201-D0_A'}->{value} // 'N/A' %></p>
+              </td>
+              <td>
+                <p dir="ltr"><%= $data->{'202-D0_A'}->{value} // 'N/A' %></p>
+              </td>
+            </tr>
+            <tr>
+              <td>
+                <p dir="ltr">
+                  Proporção de crianças de 0 a 5 anos que frequentam centros de
+                  educação infantil
+                </p>
+              </td>
+              <td>
+                <p dir="ltr"><%= $data->{'203-D0_R'}->{value} // 'N/A' %></p>
+              </td>
+              <td>
+                <p dir="ltr"><%= $data->{'204-D0_R'}->{value} // 'N/A' %></p>
+              </td>
+            </tr>
+            <tr>
+              <td>
+                <p dir="ltr">
+                  Proporção de crianças de 0 a 3 anos fora do sistema de ensino
+                </p>
+              </td>
+              <td>
+                <p dir="ltr"><%= $data->{'205-D0_R'}->{value} // 'N/A' %></p>
+              </td>
+              <td>
+                <p dir="ltr"><%= $data->{'206-D0_R'}->{value} // 'N/A' %></p>
+              </td>
+            </tr>
+            <tr>
+              <td>
+                <p dir="ltr">
+                  Proporção de matrículas em tempo integral na educação infantil
+                </p>
+              </td>
+              <td>
+                <p dir="ltr"><%= $data->{'207-D0_R'}->{value} // 'N/A' %></p>
+              </td>
+              <td>
+                <p dir="ltr"><%= $data->{'208-D0_R'}->{value} // 'N/A' %></p>
+              </td>
+            </tr>
+            <tr>
+              <td>
+                <p dir="ltr">
+                  Proporção de matrículas de crianças com deficiência,
+                  transtorno do espectro autista ou altas
+                  habilidades/superdotação em classes comuns na educação
+                  infantil
+                </p>
+              </td>
+              <td>
+                <p dir="ltr"><%= $data->{'209-D0_R'}->{value} // 'N/A' %></p>
+              </td>
+              <td>
+                <p dir="ltr"><%= $data->{'210-D0_R'}->{value} // 'N/A' %></p>
+              </td>
+            </tr>
+            <tr>
+              <td>
+                <p dir="ltr">
+                  Proporção de matrículas na educação infantil em centros de
+                  educação infantil sem recurso de acessibilidade
+                </p>
+              </td>
+              <td>
+                <p dir="ltr"><%= $data->{'211-D0_R'}->{value} // 'N/A' %></p>
+              </td>
+              <td>
+                <p dir="ltr"><%= $data->{'212-D0_R'}->{value} // 'N/A' %></p>
+              </td>
+            </tr>
+            <tr>
+              <td>
+                <p dir="ltr">
+                  Proporção de matrículas na educação infantil em centros de
+                  educação infantil com área externa, parque infantil ou
+                  brinquedos para educação infantil
+                </p>
+              </td>
+              <td>
+                <p dir="ltr"><%= $data->{'213-D0_R'}->{value} // 'N/A' %></p>
+              </td>
+              <td>
+                <p dir="ltr"><%= $data->{'214-D0_R'}->{value} // 'N/A' %></p>
+              </td>
+            </tr>
+            <tr>
+              <td>
+                <p dir="ltr">
+                  Proporção de centros de educação infantil com regulamentação
+                  no conselho ou órgão de educação
+                </p>
+              </td>
+              <td>
+                <p dir="ltr"><%= $data->{'215-D0_R'}->{value} // 'N/A' %></p>
+              </td>
+              <td>
+                <p dir="ltr"><%= $data->{'216-D0_R'}->{value} // 'N/A' %></p>
+              </td>
+            </tr>
+            <tr>
+              <td>
+                <p dir="ltr">
+                  Proporção de matrículas na educação infantil em centros de
+                  educação infantil com saneamento básico
+                </p>
+              </td>
+              <td>
+                <p dir="ltr"><%= $data->{'217-D0_R'}->{value} // 'N/A' %></p>
+              </td>
+              <td>
+                <p dir="ltr"><%= $data->{'218-D0_R'}->{value} // 'N/A' %></p>
+              </td>
+            </tr>
+            <tr>
+              <td>
+                <p dir="ltr">
+                  Adequação da formação docente na educação infantil
+                </p>
+              </td>
+              <td>
+                <p dir="ltr"><%= $data->{'219-D0_R'}->{value} // 'N/A' %></p>
+              </td>
+              <td>
+                <p dir="ltr"><%= $data->{'220-D0_R'}->{value} // 'N/A' %></p>
+              </td>
+            </tr>
+            <tr>
+              <td>
+                <p dir="ltr">
+                  Taxa de docentes da educação infantil com formação continuada
+                  específica para atuação nessa etapa de ensino
+                </p>
+              </td>
+              <td>
+                <p dir="ltr"><%= $data->{'221-D0_R'}->{value} // 'N/A' %></p>
+              </td>
+              <td>
+                <p dir="ltr"><%= $data->{'222-D0_R'}->{value} // 'N/A' %></p>
+              </td>
+            </tr>
+          </tbody>
+
+          <tfoot>
+            <tr>
+              <td colspan="3">
+                <p>
+                  * Os indicadores com campos em branco no quadro síntese não
+                  estão disponíveis para os municípios.
+                </p>
+              </td>
+            </tr>
+          </tfoot>
+        </table>
+
+        <table class="second-td-center">
+          <caption>
+            Quadro síntese – Saúde
+          </caption>
+
+          <colgroup>
+            <col width="650" />
+            <col width="120" />
+          </colgroup>
+          <thead>
+            <tr>
+              <td>
+                <p dir="ltr">Indicador</p>
+              </td>
+              <td>
+                <p dir="ltr">N</p>
+              </td>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>
+                <p dir="ltr">Proporção cobertura vacinal</p>
+              </td>
+              <td>
+                <p dir="ltr"><%= $data->{'301-D0_R'}->{value} // 'N/A' %></p>
+              </td>
+            </tr>
+            <tr>
+              <td>
+                <p dir="ltr">
+                  Taxa de detecção de aids em menores de cinco anos, para cada
+                  100 mil crianças
+                </p>
+              </td>
+              <td>
+                <p dir="ltr"><%= $data->{'303-D0_R'}->{value} // 'N/A' %></p>
+              </td>
+            </tr>
+            <tr>
+              <td>
+                <p dir="ltr">
+                  Taxa de incidência de sífilis congênita, para cada mil
+                  crianças
+                </p>
+              </td>
+              <td>
+                <p dir="ltr"><%= $data->{'304-D0_R'}->{value} // 'N/A' %></p>
+              </td>
+            </tr>
+            <tr>
+              <td>
+                <p dir="ltr">
+                  Prevalência de déficit de altura em menores de cinco anos
+                </p>
+              </td>
+              <td>
+                <p dir="ltr"><%= $data->{'306-D0_R'}->{value} // 'N/A' %></p>
+              </td>
+            </tr>
+            <tr>
+              <td>
+                <p dir="ltr">
+                  Prevalência de déficit de peso em menores de cinco anos
+                </p>
+              </td>
+              <td>
+                <p dir="ltr"><%= $data->{'307-D0_R'}->{value} // 'N/A' %></p>
+              </td>
+            </tr>
+            <tr>
+              <td>
+                <p dir="ltr">
+                  Prevalência de excesso de peso em crianças menores de cinco
+                  anos
+                </p>
+              </td>
+              <td>
+                <p dir="ltr"><%= $data->{'308-D0_R'}->{value} // 'N/A' %></p>
+              </td>
+            </tr>
+            <tr>
+              <td>
+                <p dir="ltr">
+                  Número de óbitos de crianças menores de cinco anos
+                </p>
+              </td>
+              <td>
+                <p dir="ltr"><%= $data->{'309-D0_A'}->{value} // 'N/A' %></p>
+              </td>
+            </tr>
+            <tr>
+              <td>
+                <p dir="ltr">
+                  Taxa de mortalidade na infância, para cada mil nascidos vivos
+                </p>
+              </td>
+              <td>
+                <p dir="ltr"><%= $data->{'310-D0_R'}->{value} // 'N/A' %></p>
+              </td>
+            </tr>
+            <tr>
+              <td>
+                <p dir="ltr">
+                  Proporção de nascidos vivos cujas mães realizaram pelo menos
+                  sete consultas pré-natal
+                </p>
+              </td>
+              <td>
+                <p dir="ltr"><%= $data->{'311-D0_R'}->{value} // 'N/A' %></p>
+              </td>
+            </tr>
+            <tr>
+              <td>
+                <p dir="ltr">Proporção de parto vaginal</p>
+              </td>
+              <td>
+                <p dir="ltr"><%= $data->{'312-D0_R'}->{value} // 'N/A' %></p>
+              </td>
+            </tr>
+            <tr>
+              <td>
+                <p dir="ltr">
+                  Número de óbitos de mulheres gestantes ou puerperais, por
+                  causas e condições consideradas de morte materna
+                </p>
+              </td>
+              <td>
+                <p dir="ltr"><%= $data->{'313-D0_A'}->{value} // 'N/A' %></p>
+              </td>
+            </tr>
+            <tr>
+              <td>
+                <p dir="ltr">
+                  Taxa de mortalidade materna, para cada 100 mil nascidos vivos
+                </p>
+              </td>
+              <td>
+                <p dir="ltr"><%= $data->{'314-D0_R'}->{value} // 'N/A' %></p>
+              </td>
+            </tr>
+            <tr>
+              <td>
+                <p dir="ltr">
+                  Proporção de hospitais com UTI neonatal que possuem serviço
+                  banco de leite humano
+                </p>
+              </td>
+              <td>
+                <p dir="ltr"><%= $data->{'315-D0_R'}->{value} // 'N/A' %></p>
+              </td>
+            </tr>
+            <tr>
+              <td>
+                <p dir="ltr">
+                  Cobertura populacional estimada na Atenção Primária
+                </p>
+              </td>
+              <td>
+                <p dir="ltr"><%= $data->{'316-D0_R'}->{value} // 'N/A' %></p>
+              </td>
+            </tr>
+            <tr>
+              <td>
+                <p dir="ltr">Cobertura de saúde bucal</p>
+              </td>
+              <td>
+                <p dir="ltr"><%= $data->{'317-D0_R'}->{value} // 'N/A' %></p>
+              </td>
+            </tr>
+            <tr>
+              <td>
+                <p dir="ltr">
+                  Proporção de crianças em domicílios com acesso a saneamento
+                  básico
+                </p>
+              </td>
+              <td>
+                <p dir="ltr"><%= $data->{'318-D0_R'}->{value} // 'N/A' %></p>
+              </td>
+            </tr>
+          </tbody>
+          <tfoot>
+            <tr>
+              <td colspan="2">
+                <p>
+                  * Os indicadores com campos em branco no quadro síntese não
+                  estão disponíveis para os municípios.
+                </p>
+              </td>
+            </tr>
+          </tfoot>
+        </table>
+
+        <table>
+          <caption>
+            Quadro síntese – Violência
+          </caption>
+
+          <colgroup>
+            <col width="650" />
+            <col width="120" />
+          </colgroup>
+          <thead>
+            <tr>
+              <td>
+                <p dir="ltr">Indicador</p>
+              </td>
+              <td>
+                <p dir="ltr">N</p>
+              </td>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td><p dir="ltr">Cobertura de Conselho Tutelar</p></td>
+              <td>
+                <p dir="ltr"><%= $data->{"419-D0_R"}->{value} // "N/A" %></p>
+              </td>
+            </tr>
+            <tr>
+              <td>
+                <p dir="ltr">
+                  Número de internações de crianças menores de 5 anos por
+                  acidentes de transporte terrestre
+                </p>
+              </td>
+              <td>
+                <p dir="ltr"><%= $data->{"406-D0_A"}->{value} // "N/A" %></p>
+              </td>
+            </tr>
+            <tr>
+              <td>
+                <p dir="ltr">
+                  Número de internações de crianças menores de 5 anos por causas
+                  acidentais
+                </p>
+              </td>
+              <td>
+                <p dir="ltr"><%= $data->{"404-D0_A"}->{value} // "N/A" %></p>
+              </td>
+            </tr>
+            <tr>
+              <td>
+                <p dir="ltr">
+                  Número de óbitos de crianças menores de 5 anos por acidentes
+                  de transporte terrestre
+                </p>
+              </td>
+              <td>
+                <p dir="ltr"><%= $data->{"412-D0_A"}->{value} // "N/A" %></p>
+              </td>
+            </tr>
+            <tr>
+              <td>
+                <p dir="ltr">
+                  Número de óbitos de crianças menores de 5 anos por agressão
+                </p>
+              </td>
+              <td>
+                <p dir="ltr"><%= $data->{"408-D0_A"}->{value} // "N/A" %></p>
+              </td>
+            </tr>
+            <tr>
+              <td>
+                <p dir="ltr">
+                  Número de óbitos de crianças menores de 5 anos por causas
+                  acidentais
+                </p>
+              </td>
+              <td>
+                <p dir="ltr"><%= $data->{"410-D0_A"}->{value} // "N/A" %></p>
+              </td>
+            </tr>
+            <tr>
+              <td>
+                <p dir="ltr">Número de óbitos de mulheres por agressão</p>
+              </td>
+              <td>
+                <p dir="ltr"><%= $data->{"417-D0_A"}->{value} // "N/A" %></p>
+              </td>
+            </tr>
+            <tr>
+              <td>
+                <p dir="ltr">
+                  Taxa de internações de crianças menores de 5 anos por
+                  acidentes de transporte terrestre , para cada dez mil crianças
+                </p>
+              </td>
+              <td>
+                <p dir="ltr"><%= $data->{"407-D0_A"}->{value} // "N/A" %></p>
+              </td>
+            </tr>
+            <tr>
+              <td>
+                <p dir="ltr">
+                  Taxa de internações de crianças menores de 5 por causas
+                  acidentais, para cada dez mil crianças
+                </p>
+              </td>
+              <td>
+                <p dir="ltr"><%= $data->{"405-D0_A"}->{value} // "N/A" %></p>
+              </td>
+            </tr>
+            <tr>
+              <td>
+                <p dir="ltr">
+                  Taxa de mortalidade de menores de 5 anos por acidentes de
+                  transporte terrestre, para cada 10 mil nascidos vivos
+                </p>
+              </td>
+              <td>
+                <p dir="ltr"><%= $data->{"413-D0_A"}->{value} // "N/A" %></p>
+              </td>
+            </tr>
+            <tr>
+              <td>
+                <p dir="ltr">
+                  Taxa de mortalidade de menores de 5 anos por agressão, para
+                  cada 10 mil nascidos vivos
+                </p>
+              </td>
+              <td>
+                <p dir="ltr"><%= $data->{"409-D0_A"}->{value} // "N/A" %></p>
+              </td>
+            </tr>
+            <tr>
+              <td>
+                <p dir="ltr">
+                  Taxa de mortalidade de menores de 5 anos por causas
+                  acidentais, para cada 10 mil nascidos vivos
+                </p>
+              </td>
+              <td>
+                <p dir="ltr"><%= $data->{"411-D0_A"}->{value} // "N/A" %></p>
+              </td>
+            </tr>
+            <tr>
+              <td>
+                <p dir="ltr">
+                  Taxa de mortalidade feminina por agressão, para cada 100 mil
+                  mulheres
+                </p>
+              </td>
+              <td>
+                <p dir="ltr"><%= $data->{"418-D0_A"}->{value} // "N/A" %></p>
+              </td>
+            </tr>
+          </tbody>
+          <tfoot>
+            <tr>
+              <td colspan="2">
+                <p>
+                  * Os indicadores com campos em branco no quadro síntese não
+                  estão disponíveis para os municípios.
+                </p>
+              </td>
+            </tr>
+          </tfoot>
+        </table>
+
+        <article>
+          <h1>ASSISTÊNCIA SOCIAL</h1>
+
+          <section>
+            <h2>Registro civil de nascimento</h2>
+            <p>
+              A garantia do Registro Civil é um direito de todas as crianças.
+              Por meio dele, definem sua identidade perante o Estado e a
+              sociedade, tornando-se aptas ao pleno exercício de sua cidadania.
+              A ausência desse registro cria, entre outras implicações, entraves
+              para que meninos e meninas na primeira infância possam ser
+              beneficiárias das políticas públicas.
+            </p>
+            <ul>
+              <li>
+                Em/No <%= $locale_name %>, a estimativa de sub-registro é de <%=
+                $data->{'101-D0_R'}->{value} // 'N/A' %>. Isso quer dizer que
+                <%= $data->{'101-D0_A'}->{value} // 'N/A' %> crianças, de até um
+                ano de idade, não possuem registro de nascimento.
+              </li>
+            </ul>
+          </section>
+
+          <section>
+            <h2>Políticas públicas de atenção à primeira infância</h2>
+            <p>
+              A universalização dos direitos das crianças na primeira infância
+              tem como condição primordial a superação da pobreza extrema e das
+              desigualdades sociais. O Estado brasileiro tem empenhado esforços
+              na implementação de políticas de transferência e garantia de renda
+              a famílias em situação de vulnerabilidade socioeconômica, com
+              impacto direto na vida da população entre zero e cinco anos.
+              Destacam-se, nesse sentido, os Programas Bolsa Família e Criança
+              Feliz e o Benefício de Prestação Continuada – BPC.
+            </p>
+            <ul>
+              <li>
+                Em/No <%= $locale_name %>, o Bolsa Família alcança <%=
+                $data->{'104-D0_R'}->{value} // 'N/A' %> das crianças de cinco
+                anos ou menos em situação de pobreza, oferecendo a suas famílias
+                a garantia de uma renda mínima.
+              </li>
+              <li>
+                O Criança Feliz amplia e fortalece a rede de cuidado integral
+                direcionada à primeira infância por meio de visitas
+                domiciliares. Em/No <%= $locale_name %>, a proporção de
+                indivíduos (crianças e gestantes) visitados pelo programa no
+                último ano, em relação à meta prevista, foi de <%=
+                $data->{'105-D0_R'}->{value} // 'N/A' %>.
+              </li>
+            </ul>
+          </section>
+
+          <section>
+            <h2>
+              Atenção à primeira infância no Sistema Único de Assistência Social
+            </h2>
+            <p>
+              Os Centros de Referência de Assistência Social – CRAS são as
+              portas de entrada da Política de Assistência Social. As ações
+              desenvolvidas nesses espaços têm como objetivo prevenir situações
+              de risco, utilizando-se de estratégias de fortalecimento de
+              vínculos familiares e comunitários. As normas técnicas do Sistema
+              Único de Assistência Social – SUAS recomendam um número máximo de
+              famílias referenciadas por unidade do CRAS, de acordo com o porte
+              do município.
+            </p>
+            <ul>
+              <li>
+                A Cobertura dos Centros de Referência de Assistência Social
+                (CRAS) para famílias inscritas no Cadastro Único em/no <%=
+                $locale_name %> é de <%= $data->{'109-D0_R'}->{value} // 'N/A'
+                %>
+              </li>
+            </ul>
+            <p>
+              O SUAS conta também com serviços especializados de acolhimento e
+              proteção a famílias e pessoas temporariamente afastadas do
+              convívio familiar, incluindo crianças na primeira infância. O
+              Estatuto da Criança e do Adolescente estabelece que o acolhimento
+              familiar deve ter prevalência em relação ao acolhimento
+              institucional. Ambos devem ter caráter temporário e excepcional,
+              sendo dever do Estado prezar pelo restabelecimento dos vínculos
+              familiares das crianças acolhidas.
+            </p>
+            <ul>
+              <li>
+                <%= $locale_name %> possui <%= $data->{'108-D0_A'}->{value} //
+                'N/A' %> crianças de zero a cinco anos em acolhimento, sendo <%=
+                $data->{'108-D181_R'}->{value} // 'N/A' %> delas em famílias
+                acolhedoras, o equivalente a <%= $data->{'108-D181_A'}->{value}
+                // 'N/A' %> do total.
+              </li>
+            </ul>
+          </section>
+        </article>
+
+        <article>
+          <h1>Educação</h1>
+
+          <section>
+            <h2>Dados gerais da educação infantil</h2>
+            <p>
+              A educação infantil é a primeira etapa da educação básica,
+              compreendendo a creche (crianças de zero a três anos) e a
+              pré-escola, etapa obrigatória (crianças de quatro e cinco anos).
+              <%= $locale_name %> possui <%= $data->{'201-D0_A'}->{value} //
+              'N/A' %> matrículas em creches, sendo <%=
+              $data->{'201-D34_A'}->{value} // 'N/A' %> delas em unidades
+              públicas. As matrículas em pré-escola totalizam <%=
+              $data->{'202-D0_A'}->{value} // 'N/A' %>, sendo <%=
+              $data->{'202-D34_A'}->{value} // 'N/A' %> delas em
+              estabelecimentos públicos.
+            </p>
+            <p>
+              A ampliação da jornada em centros de educação infantil se
+              constitui como uma política educativa, sendo consideradas jornadas
+              em tempo integral aquelas com pelo menos sete horas diárias de
+              atividades. Do total de matrículas em/no <%= $locale_name %>,
+              aquelas em tempo integral representam <%=
+              $data->{'207-D0_R'}->{value} // 'N/A' %> das realizadas em creches
+              e <%= $data->{'208-D0_R'}->{value} // 'N/A' %> das realizadas em
+              pré-escolas. Cabe notar também que:
+            </p>
+            <ul>
+              <li>
+                <%= $data->{'207-D34_R'}->{value} // 'N/A' %> das matrículas em
+                creches públicas são em tempo integral; e
+              </li>
+              <li>
+                <%= $data->{'208-D34_R'}->{value} // 'N/A' %> das matrículas em
+                pré-escolas públicas são em tempo integral.
+              </li>
+            </ul>
+            <p>
+              O Plano Nacional de Educação (PNE) 2014-2024 estabelece na sua
+              quarta meta a universalização do atendimento escolar aos
+              estudantes com deficiência, transtornos globais do desenvolvimento
+              e altas habilidades ou superdotação, preferencialmente na rede
+              regular de ensino. Em/No <%= $locale_name %>, a proporção de
+              matrículas dessas crianças em classes comuns é de <%=
+              $data->{'209-D0_R'}->{value} // 'N/A' %> no que se refere às
+              creches e de <%= $data->{'210-D0_R'}->{value} // 'N/A' %> na etapa
+              da pré-escola.
+            </p>
+          </section>
+
+          <section>
+            <h2>Estrutura da educação infantil</h2>
+            <p>
+              Os centros de educação infantil, além de contar com condições de
+              infraestrutura básica, devem ser espaços dinâmicos, brincáveis e
+              acessíveis. Em/No <%= $locale_name %>, a proporção de matrículas
+              em centros de educação infantil com área externa, parque infantil
+              ou brinquedos para educação infantil é de <%=
+              $data->{'213-D0_R'}->{value} // 'N/A' %> nas creches e de <%=
+              $data->{'214-D0_R'}->{value} // 'N/A' %> nas pré-escolas. Por sua
+              vez, <%= $data->{'211-D0_R'}->{value} // 'N/A' %> das matrículas
+              em creches e <%= $data->{'212-D0_R'}->{value} // 'N/A' %> das
+              matrículas em pré-escola acontecem em centros de educação infantil
+              sem recurso de acessibilidade.
+            </p>
+            <p>
+              O saneamento básico, outra infraestrutura importante, apresenta os
+              seguintes números em/no <%= $locale_name %>:
+            </p>
+            <ul>
+              <li>
+                As matrículas em centros de educação infantil com saneamento
+                básico respondem por <%= $data->{'217-D30_R'}->{value} // 'N/A'
+                %> das matrículas em creches da zona urbana e por <%=
+                $data->{'217-D31_R'}->{value} // 'N/A' %> daquelas em creches da
+                zona rural;
+              </li>
+              <li>
+                Já as matrículas em pré-escolas com saneamento básico
+                correspondem, por sua vez, a <%= $data->{'218-D30_R'}->{value}
+                // 'N/A' %> das matrículas em pré-escolas da zona urbana e a <%=
+                $data->{'218-D31_R'}->{value} // 'N/A' %> daquelas em
+                pré-escolas da zona rural.
+              </li>
+            </ul>
+            <p>
+              Outro aspecto relevante é a regulamentação dos estabelecimentos no
+              conselho ou órgão de educação, que alcança <%=
+              $data->{'215-D34_R'}->{value} // 'N/A' %> entre as creches
+              públicas e <%= $data->{'215-D36_R'}->{value} // 'N/A' %> entre as
+              privadas não conveniadas com o poder público. O índice é de <%=
+              $data->{'216-D34_R'}->{value} // 'N/A' %> para as pré-escolas
+              públicas e de <%= $data->{'216-D36_R'}->{value} // 'N/A' %> para
+              as privadas não conveniadas.
+            </p>
+          </section>
+
+          <section>
+            <h2>Docentes da educação infantil</h2>
+            <p>
+              Com base em diretrizes presentes em dispositivos legais e
+              normativos é possível hoje classificar os docentes em exercício
+              considerando sua formação acadêmica. No caso de <%= $locale_name
+              %>, temos o seguinte cenário:
+            </p>
+            <ul>
+              <li>
+                <%= $data->{'219-D74_R'}->{value} // 'N/A' %> dos docentes das
+                creches e <%= $data->{'220-D74_R'}->{value} // 'N/A' %> daqueles
+                da pré-escola estão no chamado Grupo 1, contando com formação
+                superior de licenciatura na mesma disciplina que lecionam, ou
+                bacharelado na mesma disciplina juntamente com curso de
+                complementação pedagógica concluído; e
+              </li>
+              <li>
+                <%= $data->{'219-D78_R'}->{value} // 'N/A' %> dos docentes das
+                creches e <%= $data->{'220-D78_R'}->{value} // 'N/A' %> daqueles
+                da pré-escola estão no chamado Grupo 5, não possuindo curso
+                superior completo.
+              </li>
+            </ul>
+            <p>
+              Já a taxa de docentes das creches com formação continuada
+              específica para atuação na educação infantil é de <%=
+              $data->{'221-D34_R'}->{value} // 'N/A' %> para as unidades da rede
+              pública e de <%= $data->{'221-D36_R'}->{value} // 'N/A' %> para as
+              da rede privada não conveniada. Nas pré-escolas, a taxa é de <%=
+              $data->{'222-D34_R'}->{value} // 'N/A' %> para os docentes da rede
+              pública e de <%= $data->{'222-D36_R'}->{value} // 'N/A' %> para
+              aqueles da rede privada não conveniada.
+            </p>
+          </section>
+        </article>
+
+        <article>
+          <h1>Saúde</h1>
+
+          <section>
+            <h2>Cobertura vacinal</h2>
+            <p>
+              A vacinação é a forma mais eficaz de proteger crianças de doenças
+              graves e pode ser considerada uma das maiores realizações da saúde
+              pública. O acompanhamento e verificação da situação vacinal da
+              população é essencial para a definição de estratégias de vacinação
+              e para avaliação operacional e de impacto dos programas de
+              imunização. Em/No <%= $locale_name %>, a cobertura vacinal para
+              primeira infância apresenta as seguintes características:
+            </p>
+            <ul>
+              <li><%= $data->{'301-D137_R'}->{value} // 'N/A' %> para BCG;</li>
+              <li>
+                <%= $data->{'301-D140_R'}->{value} // 'N/A' %> para Penta;
+              </li>
+              <li>
+                <%= $data->{'301-D141_R'}->{value} // 'N/A' %> para a primeira
+                dose da Tríplice; e
+              </li>
+              <li>
+                <%= $data->{'301-D138_R'}->{value} // 'N/A' %> para Hepatite B
+                em crianças de até 30 dias.
+              </li>
+            </ul>
+          </section>
+
+          <section>
+            <h2>Transmissão vertical: HIV/Aids e Sífilis</h2>
+            <p>
+              As ações de controle das doenças de transmissão vertical, que
+              demandam atenção durante o pré-natal e o parto, também integram o
+              conjunto de políticas de proteção à criança. Entre essas doenças
+              estão o HIV/Aids e a sífilis. As taxas de detecção de Aids em
+              menores de cinco anos e de incidência de sífilis congênita
+              permitem mapear a transmissão dessas infecções da mãe para o bebê,
+              além de indicar a efetividade das políticas de prevenção.
+            </p>
+            <ul>
+              <li>
+                Em/No <%= $locale_name %>, a taxa de detecção de Aids em menores
+                de cinco anos foi de <%= $data->{'303-D0_R'}->{value} // 'N/A'
+                %>, o que corresponde a <%= $data->{'303-D0_A'}->{value} //
+                'N/A' %> novos casos em relação ao ano anterior.
+              </li>
+              <li>
+                Já a taxa de incidência de sífilis congênita foi de <%=
+                $data->{'304-D0_R'}->{value} // 'N/A' %>, o que corresponde a
+                <%= $data->{'304-D0_A'}->{value} // 'N/A' %> novos casos em
+                relação ao ano anterior.
+              </li>
+            </ul>
+          </section>
+
+          <section>
+            <h2>Nutrição na primeira infância</h2>
+
+            <p>
+              A alimentação saudável é um direito de toda criança. É dever do
+              Estado garantir a implementação de políticas que confiram
+              prioridade a esse direito, a fim de reduzir os níveis de
+              desnutrição e de obesidade infantil, de viabilizar a oferta de
+              alimentos a populações em situação de maior vulnerabilidade e de
+              promover hábitos adequados de consumo alimentar.
+            </p>
+            <p>
+              Informações do Sistema de Vigilância Alimentar e Nutricional –
+              Sisvan têm apoiado a realização de diagnósticos relativos à
+              situação nutricional da população acolhida pela atenção primária
+              em saúde. De acordo com dados do sistema, observa-se que no/em <%=
+              $locale_name %>:
+            </p>
+            <ul>
+              <li>
+                <%= $data->{'306-D0_A'}->{value} // 'N/A' %> crianças com menos
+                de cinco anos apresentaram altura menor do que a esperada para a
+                idade, o que corresponde a <%= $data->{'306-D0_R'}->{value} //
+                'N/A' %> das crianças desta faixa etária acompanhadas pelo
+                Sisvan;
+              </li>
+              <li>
+                <%= $data->{'307-D0_A'}->{value} // 'N/A' %> crianças com menos
+                de cinco anos apresentaram peso menor do que o esperado para a
+                idade, o que corresponde a <%= $data->{'307-D0_R'}->{value} //
+                'N/A' %> das crianças desta faixa etária acompanhadas pelo
+                Sisvan;
+              </li>
+              <li>
+                <%= $data->{'308-D0_A'}->{value} // 'N/A' %> crianças com menos
+                de cinco anos apresentaram peso maior do que o esperado para a
+                idade, o que corresponde a <%= $data->{'308-D0_R'}->{value} //
+                'N/A' %> das crianças desta faixa etária acompanhadas pelo
+                Sisvan.
+              </li>
+            </ul>
+          </section>
+
+          <section>
+            <h2>Mortalidade materna e na infância</h2>
+            <p>
+              Características socioeconômicas e de infraestrutura socioambiental
+              estão entre os aspectos que impactam as condições de sobrevivência
+              das crianças em uma determinada localidade ou região. O
+              investimento adequado em políticas públicas de saúde, desde o
+              pré-natal, é um elemento fundamental para a redução dos óbitos na
+              infância, que em/no <%= $locale_name %> somaram <%=
+              $data->{'309-D0_A'}->{value} // 'N/A' %> casos em <%=
+              $data->{'309-D0_A'}->{year} %>.
+            </p>
+            <p>
+              Também é fundamental analisar os dados referentes à mortalidade
+              materna, aquela causada por qualquer fator associado à gravidez
+              (ou por ela agravado) ou por medidas tomadas com relação a ela.
+              Este indicador reflete a qualidade da assistência à saúde da
+              mulher, especialmente durante a gravidez ou parto. Em/no <%=
+              $locale_name %>, <%= $data->{'313-D0_A'}->{value} // 'N/A' %>
+              mulheres gestantes ou puerperais vieram a óbito por causas e
+              condições consideradas de morte materna em <%=
+              $data->{'313-D0_A'}->{year} %>.
+            </p>
+          </section>
+
+          <section>
+            <h2>Pré-natal e assistência ao parto</h2>
+            <p>
+              O pré-natal possui papel fundamental na prevenção ou detecção
+              precoce de doenças maternas e fetais, além de ser o primeiro passo
+              para um parto e nascimento humanizados. Por meio das consultas
+              pré-natais, que devem ser iniciadas nos primeiros três meses de
+              gestação, são partilhadas as orientações necessárias ao
+              acompanhamento da gestação, reduzindo os riscos para a gestante e
+              permitindo um desenvolvimento saudável do bebê.
+            </p>
+            <ul>
+              <li>
+                Em/no <%= $locale_name %>, a proporção de nascidos vivos cujas
+                mães realizaram pelo menos sete consultas pré-natal,
+                ultrapassando o mínimo de seis consultas estabelecido pelo
+                Ministério da Saúde, é de <%= $data->{'311-D0_R'}->{value} //
+                'N/A' %>.
+              </li>
+              <li>
+                O parto vaginal oferece menos riscos de infecção, hemorragia e
+                prematuridade do bebê, e por isso deve ser a primeira opção para
+                o nascimento. Em/no <%= $locale_name %>, os partos vaginais
+                corresponderam a <%= $data->{'312-D0_R'}->{value} // 'N/A' %> do
+                total de partos realizados.
+              </li>
+            </ul>
+          </section>
+
+          <section>
+            <h2>Estrutura do sistema de saúde</h2>
+            <p>
+              O sistema de saúde possui indicadores que ajudam a estimar a
+              parcela da população coberta pela atenção primária. Este primeiro
+              nível de atenção em saúde inclui a oferta de serviços de
+              prevenção, diagnóstico, tratamento e reabilitação. Os indicadores
+              são utilizados no monitoramento do acesso a esses serviços e
+              apresentam os seguintes resultados em/no <%= $locale_name %>:
+            </p>
+            <ul>
+              <li>
+                <%= $data->{'317-D0_R'}->{value} // 'N/A' %> de cobertura
+                populacional estimada pelas equipes básicas de Saúde Bucal.
+              </li>
+              <li>
+                <%= $data->{'316-D0_R'}->{value} // 'N/A' %> de cobertura
+                populacional estimada na Atenção Primária.
+              </li>
+            </ul>
+          </section>
+        </article>
+
+        <article>
+          <h1>Violências</h1>
+
+          <section>
+            <h2>A mortalidade por causa externa</h2>
+            <p>
+              De forma voluntária ou involuntária, as mortes de crianças por
+              causas externas revelam falhas nos sistemas de garantias
+              estabelecidos nas normativas brasileiras, que lhes asseguram o
+              direito inerente à vida e à salvaguarda perante toda e qualquer
+              forma de violência. Identificar as diversas dimensões das mortes
+              violentas e acidentais de crianças na primeira infância é condição
+              necessária para que políticas públicas e ações preventivas sejam
+              adotadas pelo Estado, pela sociedade e pela família.
+            </p>
+            <ul>
+              <li>
+                As agressões foram causa dos óbitos de <%=
+                $data->{'408-D0_A'}->{value} // 'N/A' %> crianças de até 5 anos
+                em/no <%= $locale_name %>. Esse número foi de <%=
+                $data->{'408-D4_A'}->{value} // 'N/A' %> entre as crianças
+                negras, comparado a <%= $data->{'408-D3_A'}->{value} // 'N/A' %>
+                óbitos de crianças brancas.
+              </li>
+              <li>
+                O número de óbitos por causas acidentais, por sua vez, foi de
+                <%= $data->{'410-D0_A'}->{value} // 'N/A' %>. Nesse total, <%=
+                $data->{'410-D195_R'}->{value} // 'N/A' %> crianças de até 5
+                anos foram vítimas de afogamento e <%=
+                $data->{'410-D196_R'}->{value} // 'N/A' %> de sufocação.
+                Mencionam-se ainda <%= $data->{'410-D197_R'}->{value} // 'N/A'
+                %> casos de óbito por intoxicação, <%=
+                $data->{'410-D198_R'}->{value} // 'N/A' %> por queimadura e <%=
+                $data->{'410-D199_R'}->{value} // 'N/A' %> por queda.
+              </li>
+              <li>
+                Já os óbitos de crianças menores de 5 anos por acidentes de
+                transporte terrestre somaram <%= $data->{'412-D0_A'}->{value} //
+                'N/A' %> casos em/no <%= $locale_name %>. Ao considerar o meio
+                de transporte, tem se que <%= $data->{'412-D201_R'}->{value} //
+                'N/A' %> óbitos foram de pedestres e <%=
+                $data->{'412-D202_R'}->{value} // 'N/A' %> de ciclistas. <%=
+                $data->{'412-D203_R'}->{value} // 'N/A' %> crianças foram
+                vítimas de acidentes de motocicletas, <%=
+                $data->{'412-D204_R'}->{value} // 'N/A' %> de automóvel e outras
+                <%= $data->{'412-D205_R'}->{value} // 'N/A' %> em ônibus.
+              </li>
+            </ul>
+          </section>
+
+          <section>
+            <h2>Mortalidade de mulheres por agressão</h2>
+            <p>
+              A agressão cometida contra a mulher tem impacto potencial sobre
+              seus filhos e filhas, principalmente quando eles se encontram
+              nessa etapa singular do desenvolvimento que é a primeira infância.
+              Quando a agressão resulta no óbito da mãe, os efeitos são ainda
+              mais danosos. Em/no <%= $locale_name %>, <%=
+              $data->{'417-D0_A'}->{value} // 'N/A' %> mulheres foram levadas a
+              óbito por agressão em <%= $data->{'417-D0_A'}->{year} %> - <%=
+              $data->{'417-D4_A'}->{value} // 'N/A' %> negras e <%=
+              $data->{'417-D3_A'}->{value} // 'N/A' %> brancas. Reforça-se que
+              as políticas públicas de prevenção à violência contra a mulher são
+              também estratégias de proteção à família e às crianças,
+              particularmente quando as agressões, e os óbitos delas
+              decorrentes, se dão no ambiente doméstico.
+            </p>
+          </section>
+
+          <section>
+            <h2>Conselhos Tutelares</h2>
+            <p>
+              Os Conselhos Tutelares devem atender a crianças e a adolescentes
+              sempre que houver risco de violação dos seus direitos, seja por
+              ação ou omissão do Estado, da sociedade ou dos pais e
+              responsáveis. De acordo com as diretrizes do Conselho Nacional dos
+              Direitos da Criança e do Adolescente – Conanda, cada município
+              deve ter um Conselho Tutelar para cada 100 mil habitantes.
+              Atribui-se, dessa forma, aos municípios mais populosos, a
+              responsabilidade pela instituição de um número maior de Conselhos.
+            </p>
+            <ul>
+              <li>
+                Considerando essa proporção, a cobertura de Conselho Tutelar
+                em/no <%= $locale_name %> é de <%= $data->{'419-D0_R'}->{value}
+                // 'N/A' %>.
+              </li>
+            </ul>
+          </section>
+        </article>
+      </div>
+    </div>
+  </body>
+</html>

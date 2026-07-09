@@ -1,0 +1,740 @@
+swagger: "2.0"
+info:
+  description: "The backend of the OMLPL project"
+  version: 1.4.3
+  title: OMLPL API
+  contact:
+    email: carlos@appcivico.com
+  license:
+    name: GPLv3
+    url: "https://www.gnu.org/licenses/gpl-3.0.en.html"
+
+host: dev-omlpi-api.appcivico.com
+basePath: /v2
+schemes:
+  - https
+produces:
+  - application/json
+
+tags:
+  - name: locales
+    description: A locale can be a city, a region, a state or a country
+  - name: data
+    description: Indicators and breakdown data from locales
+  - name: uploads
+    description: Contribute with us by sending data
+
+parameters:
+  yearParam:
+    in: query
+    name: year
+    required: false
+    type: integer
+    enum:
+      - 2017
+      - 2018
+      - 2019
+
+  localeParam:
+    name: locale_id
+    in: query
+    description: The id of the locale to retrieve data from
+    type: integer
+    required: true
+
+  areaParam:
+    name: area_id
+    in: query
+    description: Filter data by an area
+    required: false
+    type: integer
+
+paths:
+  /locales:
+    get:
+      x-mojo-to: "locales#list"
+      operationId: listLocales
+      tags:
+        - locales
+      summary: List all available locales
+      responses:
+        200:
+          description: List locales
+          schema:
+            type: object
+            properties:
+              locales:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    id:
+                      type: integer
+                      example: 3550308
+                    name:
+                      type: string
+                      example: São Paulo
+                    type:
+                      type: string
+                      example: city
+                      enum:
+                        - country
+                        - region
+                        - state
+                        - city
+                    latitude:
+                      type: number
+                      example: -23.5329
+                    longitude:
+                      type: number
+                      example: -46.6395
+
+  /states:
+    get:
+      x-mojo-to: "states#list"
+      operationId: listStates
+      tags:
+        - locales
+      summary: List of brazilian states in alphabetical order
+      responses:
+        200:
+          description: List of states
+          schema:
+            type: object
+            properties:
+              states:
+                type: array
+                items:
+                  $ref: "#/definitions/State"
+  /cities:
+    get:
+      x-mojo-to: "cities#list"
+      operationId: listCities
+      summary: List of cities in alphabetical order
+      tags:
+        - locales
+      parameters:
+        - name: state_id
+          description: The state id to filter the cities
+          in: query
+          type: integer
+          required: false
+      responses:
+        200:
+          description: List of cities
+          schema:
+            type: object
+            properties:
+              cities:
+                type: array
+                items:
+                  $ref: "#/definitions/City"
+
+  /areas:
+    get:
+      x-mojo-to: "areas#list"
+      operationId: listAreas
+      tags:
+        - data
+      summary: List all thematic axis
+      responses:
+        200:
+          description: List of areas
+          schema:
+            type: object
+            properties:
+              areas:
+                type: array
+                items:
+                  $ref: "#/definitions/Area"
+
+  /classifications:
+    get:
+      summary: Get a list of all data breakdown classifications
+      x-mojo-to: "classifications#get"
+      operationId: showClassifications
+      tags:
+        - data
+      responses:
+        200:
+          description: List of classifications
+          schema:
+            $ref: "#/definitions/Classifications"
+
+  /indicators:
+    get:
+      operationId: listIndicators
+      x-mojo-to: "indicators#list"
+      summary: List all indicators
+      tags:
+        - data
+      responses:
+        200:
+          description: List of indicators
+          schema:
+            type: object
+            properties:
+              indicators:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    id:
+                      type: integer
+                      example: 7
+                    description:
+                      type: string
+                      example: Número de matrículas de educação infantil - Creche
+                    base:
+                      type: string
+                      example: "INEP: Censo Escolar - Matrículas"
+                    area:
+                      $ref: "#/definitions/Area"
+
+  /data:
+    get:
+      operationId: showData
+      x-mojo-to: "data#get"
+      summary: Retrieve data from a specific locale
+      tags:
+        - data
+      parameters:
+        - $ref: "#/parameters/localeParam"
+        - $ref: "#/parameters/areaParam"
+        - $ref: "#/parameters/yearParam"
+      responses:
+        200:
+          description: Info for a specific locale
+          schema:
+            $ref: "#/definitions/Locale"
+
+  /data/compare:
+    get:
+      summary: Compare locales
+      x-mojo-to: "data-compare#get"
+      operationId: showDataCompare
+      tags:
+        - data
+      parameters:
+        - $ref: "#/parameters/localeParam"
+        - $ref: "#/parameters/yearParam"
+      responses:
+        200:
+          description: The comparison between all locales of the same scope
+          schema:
+            type: object
+            properties:
+              comparison:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    locales:
+                      type: array
+                      items:
+                        type: object
+                        properties:
+                          id:
+                            type: integer
+                            example: 3550308
+                          name:
+                            type: string
+                            example: São Paulo
+                          type:
+                            type: string
+                            example: city
+                            enum:
+                              - country
+                              - region
+                              - state
+                              - city
+                          indicators:
+                            type: array
+                            items:
+                              type: object
+                              properties:
+                                id:
+                                  type: integer
+                                  example: 5
+                                name:
+                                  type: string
+                                  example: "Número de matrículas de educação infantil - Creche"
+                                area:
+                                  $ref: "#/definitions/Area"
+                                base:
+                                  type: string
+                                  example: "INEP: Censo Escolar - Matrículas"
+                                values:
+                                  type: array
+                                  items:
+                                    type: object
+                                    properties:
+                                      year:
+                                        type: integer
+                                        enum:
+                                          - 2017
+                                          - 2018
+                                          - 2019
+                                        example: 2019
+                                      value_relative:
+                                        type: integer
+                                        example: 0.25
+                                      value_absolute:
+                                        type: integer
+                                        example: 630.3
+                                subindicators:
+                                  type: array
+                                  items:
+                                    properties:
+                                      classification:
+                                        type: string
+                                        example: Sexo
+                                      data:
+                                        type: array
+                                        items:
+                                          type: object
+                                          properties:
+                                            description:
+                                              type: string
+                                              example: Feminino
+                                            id:
+                                              type: integer
+                                              example: 28
+                                            values:
+                                              type: array
+                                              items:
+                                                properties:
+                                                  value_relative:
+                                                    type: integer
+                                                    example: 3.7
+                                                  value_absolute:
+                                                    type: integer
+                                                    example: 8909
+                                                  year:
+                                                    type: integer
+                                                    example: 2019
+
+  /data/historical:
+    get:
+      summary: Get historical data from a locale
+      x-mojo-to: "data-historical#get"
+      operationId: showDataHistorical
+      tags:
+        - data
+      parameters:
+        - $ref: "#/parameters/localeParam"
+        - $ref: "#/parameters/areaParam"
+      responses:
+        200:
+          description: The historical series of the specified locale
+          schema:
+            type: object
+            properties:
+              historical:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    locales:
+                      type: array
+                      items:
+                        type: object
+                        properties:
+                          id:
+                            type: integer
+                            example: 3550308
+                          name:
+                            type: string
+                            example: São Paulo
+                          type:
+                            type: string
+                            example: city
+                            enum:
+                              - country
+                              - region
+                              - state
+                              - city
+                          indicators:
+                            type: array
+                            items:
+                              type: object
+                              properties:
+                                id:
+                                  type: integer
+                                  example: 5
+                                name:
+                                  type: string
+                                  example: "Número de matrículas de educação infantil - Creche"
+                                area:
+                                  $ref: "#/definitions/Area"
+                                base:
+                                  type: string
+                                  example: "INEP: Censo Escolar - Matrículas"
+                                values:
+                                  type: array
+                                  items:
+                                    type: object
+                                    properties:
+                                      year:
+                                        type: integer
+                                        enum:
+                                          - 2017
+                                          - 2018
+                                          - 2019
+                                        example: 2019
+                                      value_relative:
+                                        type: integer
+                                        example: 0.25
+                                      value_absolute:
+                                        type: integer
+                                        example: 630.3
+                                subindicators:
+                                  type: array
+                                  items:
+                                    properties:
+                                      classification:
+                                        type: string
+                                        example: Sexo
+                                      data:
+                                        type: array
+                                        items:
+                                          type: object
+                                          properties:
+                                            description:
+                                              type: string
+                                              example: Feminino
+                                            id:
+                                              type: integer
+                                              example: 28
+                                            values:
+                                              type: array
+                                              items:
+                                                properties:
+                                                  value_relative:
+                                                    type: integer
+                                                    example: 3.7
+                                                  value_absolute:
+                                                    type: integer
+                                                    example: 8909
+                                                  year:
+                                                    type: integer
+                                                    example: 2019
+
+  /data/random_indicator:
+    get:
+      summary: Get random indicator
+      x-mojo-to: "Data::RandomIndicator#get"
+      operationId: showDataRandomIndicator
+      tags:
+        - data
+      parameters:
+        - name: locale_id_ne
+          description: The ids of the locales to exclude from results
+          in: query
+          type: integer
+          required: false
+      responses:
+        200:
+          description: Random indicator data
+          schema:
+            type: object
+            properties:
+              locales:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    id:
+                      type: integer
+                      example: 1
+                    latitude:
+                      type: integer
+                      example: -15.7795
+                    longitude:
+                      type: integer
+                      example: -47.9297
+                    name:
+                      type: string
+                      example: Brasil
+                    type:
+                      type: string
+                      example: country
+                    indicators:
+                      $ref: "#/definitions/Indicators"
+
+  /data/resume:
+    get:
+      summary: Download a PDF file containing data about a locale
+      x-mojo-to: "Data::Resume#get"
+      operationId: downloadResume
+      tags:
+        - data
+      parameters:
+        - $ref: "#/parameters/localeParam"
+        - $ref: "#/parameters/yearParam"
+      produces:
+        - application/pdf
+      responses:
+        200:
+          description: A PDF file
+          schema:
+            type: file
+  /data/download:
+    get:
+      summary: Download all data
+      x-mojo-to: "data-download#get"
+      operationId: downloadData
+      tags:
+        - data
+      produces:
+        - application/pdf
+      responses:
+        200:
+          description: Returns a spreadsheet with data about all locales
+          schema:
+            type: file
+  /data/download_indicator:
+    get:
+      summary: Download indicator data for a specific location
+      x-mojo-to: "Data::DownloadIndicator#get"
+      operationId: downloadIndicator
+      tags:
+        - data
+      parameters:
+        - $ref: "#/parameters/localeParam"
+        - name: indicator_id
+          description: The id of the indicator
+          in: query
+          type: integer
+          required: true
+      responses:
+        200:
+          description: A XLSX file
+          schema:
+            type: file
+
+  /upload_plan:
+    post:
+      summary: Submit a locale plan
+      x-mojo-to: "UploadPlan#post"
+      tags:
+        - uploads
+      consumes:
+        - multipart/form-data
+      parameters:
+        - name: file
+          in: formData
+          description: The PDF file
+          type: file
+          required: true
+        - name: name
+          in: formData
+          description: Your name
+          type: string
+          required: true
+        - name: message
+          in: formData
+          description: Write an message
+          type: string
+          required: true
+        - name: email
+          in: formData
+          description: Your email address
+          type: string
+          format: email
+          required: true
+      responses:
+        200:
+          description: File uploaded successfully
+          schema:
+            type: object
+            properties:
+              id:
+                type: integer
+                example: 335
+
+definitions:
+  Area:
+    type: object
+    properties:
+      id:
+        type: integer
+        example: 2
+      name:
+        type: string
+        example: Educação
+  Locale:
+    type: object
+    properties:
+      id:
+        type: integer
+        example: 3550308
+      name:
+        type: string
+        example: São Paulo
+      type:
+        type: string
+        enum:
+          - country
+          - region
+          - state
+          - city
+        example: city
+      latitude:
+        type: number
+        example: -23.5329
+      longitude:
+        type: number
+        example: -46.6395
+      indicators:
+        type: array
+        items:
+          $ref: "#/definitions/IndicatorWithSubindicator"
+
+  Indicators:
+    type: array
+    items:
+      type: object
+      properties:
+        id:
+          type: integer
+          example: 5
+        name:
+          type: string
+          example: "Número de matrículas de educação infantil - Creche"
+        area:
+          $ref: "#/definitions/Area"
+        base:
+          type: string
+          example: "INEP: Censo Escolar - Matrículas"
+        values:
+          type: object
+          properties:
+            year:
+              type: integer
+              enum:
+                - 2017
+                - 2018
+                - 2019
+              example: 2019
+            value_relative:
+              type: integer
+              example: 0.25
+            value_absolute:
+              type: integer
+              example: 630.3
+
+  IndicatorWithSubindicator:
+    type: object
+    properties:
+      id:
+        type: integer
+        example: 5
+      name:
+        type: string
+        example: "Número de matrículas de educação infantil - Creche"
+      area:
+        $ref: "#/definitions/Area"
+      base:
+        type: string
+        example: "INEP: Censo Escolar - Matrículas"
+      values:
+        type: object
+        properties:
+          year:
+            type: integer
+            enum:
+              - 2017
+              - 2018
+              - 2019
+            example: 2019
+          value_relative:
+            type: integer
+            example: 0.25
+          value_absolute:
+            type: integer
+            example: 630.3
+      subindicators:
+        type: array
+        items:
+          properties:
+            classification:
+              type: string
+              example: Sexo
+            data:
+              type: array
+              items:
+                type: object
+                properties:
+                  description:
+                    type: string
+                    example: Feminino
+                  id:
+                    type: integer
+                    example: 28
+                  values:
+                    type: object
+                    properties:
+                      value_relative:
+                        type: integer
+                        example: 3.7
+                      value_absolute:
+                        type: integer
+                        example: 8909
+                      year:
+                        type: integer
+                        example: 2019
+
+  Classifications:
+    type: object
+    properties:
+      classifications:
+        type: array
+        items:
+          type: string
+          example: Sexo
+  State:
+    type: object
+    properties:
+      id:
+        type: integer
+        example: 41
+      name:
+        type: string
+        example: Paraná
+      latitude:
+        type: number
+        example: -25.4195
+      longitude:
+        type: number
+        example: -49.2646
+  City:
+    type: object
+    properties:
+      id:
+        type: integer
+        example: 4115200
+      name:
+        type: string
+        example: Maringá
+      latitude:
+        type: number
+        example: -23.4273
+      longitude:
+        type: number
+        example: -51.9375
+  Error:
+    type: object
+    required:
+      - error
+      - message
+    properties:
+      error:
+        type: string
+        enum:
+          - internal_server_error
+          - page_not_found
+          - permission_denied
+          - method_not_allowed
+      message:
+        type: string

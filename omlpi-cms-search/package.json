@@ -1,0 +1,29 @@
+{
+  "name": "omlpi-cms-search",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "start": "node ./src/index.js",
+    "dev": "nodemon ./src/index.js",
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "lint": "eslint . --ext .js",
+    "migrate": "node-pg-migrate -m ./src/migrations"
+  },
+  "author": "",
+  "license": "ISC",
+  "devDependencies": {
+    "eslint": "^6.8.0",
+    "eslint-config-airbnb-base": "^14.0.0",
+    "eslint-plugin-import": "^2.20.1",
+    "nodemon": "^2.0.4"
+  },
+  "dependencies": {
+    "morgan": "^1.9.1",
+    "node-pg-migrate": "^4.2.2",
+    "pg": "^7.18.1",
+    "pg-promise": "^10.6.2",
+    "restify": "^8.5.1",
+    "restify-errors": "^8.0.2"
+  }
+}

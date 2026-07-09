@@ -1,0 +1,40 @@
+{
+  "name": "omlpi-cms",
+  "private": true,
+  "version": "0.1.0",
+  "description": "A Strapi application",
+  "scripts": {
+    "develop": "strapi develop",
+    "start": "strapi start",
+    "build": "strapi build",
+    "strapi": "strapi"
+  },
+  "devDependencies": {},
+  "dependencies": {
+    "knex": "latest",
+    "pg": "^7.14.0",
+    "sqlite3": "latest",
+    "strapi": "3.0.0-beta.17.5",
+    "strapi-admin": "3.0.0-beta.17.5",
+    "strapi-hook-bookshelf": "3.0.0-beta.17.5",
+    "strapi-hook-knex": "3.0.0-beta.17.5",
+    "strapi-plugin-content-manager": "3.0.0-beta.17.5",
+    "strapi-plugin-content-type-builder": "3.0.0-beta.17.5",
+    "strapi-plugin-email": "3.0.0-beta.17.5",
+    "strapi-plugin-graphql": "3.0.0-beta.17.5",
+    "strapi-plugin-upload": "3.0.0-beta.17.5",
+    "strapi-plugin-users-permissions": "3.0.0-beta.17.5",
+    "strapi-utils": "3.0.0-beta.17.5"
+  },
+  "author": {
+    "name": "A Strapi developer"
+  },
+  "strapi": {
+    "uuid": "e375a7d3-54c3-44fa-9360-89d9d480ca98"
+  },
+  "engines": {
+    "node": ">=10.0.0",
+    "npm": ">=6.0.0"
+  },
+  "license": "MIT"
+}

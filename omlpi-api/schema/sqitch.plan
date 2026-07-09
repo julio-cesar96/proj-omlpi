@@ -1,0 +1,22 @@
+%syntax-version=1.0.0
+%project=omlpi
+
+0000-locales 2019-11-05T14:51:28Z Junior Moraes <juniorfvox@gmail.com> # Init sqitch
+0001-data [0000-locales] 2019-11-06T18:47:40Z junior,,, <junior@fvox> # ta
+0002-locale-latlong [0001-data] 2019-12-12T13:31:24Z junior,,, <junior@fvox> # cale-latlong
+0003-plan-upload [0002-locale-latlong] 2020-01-10T18:39:01Z junior,,, <junior@fvox> # an-upload
+0004-state-country [0003-plan-upload] 2020-01-17T18:59:13Z junior,,, <junior@fvox> # ate-country
+0005-array-intersect [0004-state-country] 2020-01-30T17:26:04Z Junior Moraes <juniorfvox@gmail.com> # iarray-intersect
+0006-change-plan-upload-fields [0005-array-intersect] 2020-02-14T12:06:38Z Junior Moraes <juniorfvox@gmail.com> # ichange-plan-upload-fields
+0007-add-config [0006-change-plan-upload-fields] 2020-04-17T19:35:53Z junior,,, <junior@fvox> # d-config
+0008-add-ods [0007-add-config] 2020-04-20T16:02:26Z junior,,, <junior@fvox> # d-ods
+0009-indicator-concept [0008-add-ods] 2020-04-20T20:43:45Z junior,,, <junior@fvox> # dicator-name-description
+0010-dataset-v8 [0009-indicator-concept] 2020-08-27T17:48:33Z Junior,,, <junior@fvox-notebook> # taset-v8
+0011-add-indexes [0010-dataset-v8] 2020-10-08T14:58:55Z junior,,, <junior@junior-notebook> # id-indexes
+0012-random-indicator-cache [0011-add-indexes] 2020-10-13T14:25:06Z junior,,, <junior@junior-notebook> # indom-indicator-cache
+0013-indicator-subindicator-percent [0012-random-indicator-cache] 2020-10-20T12:24:01Z junior,,, <junior@junior-notebook> # idicator-subindicator-percent
+0014-fix-random-indicator-null-values [0013-indicator-subindicator-percent] 2020-10-21T19:10:31Z junior,,, <junior@junior-notebook> # ix-random-indicator-null-values
+0015-random-indicator-allow-null-values [0014-fix-random-indicator-null-values] 2020-12-22T13:21:02Z junior,,, <junior@junior-notebook> # indom-indicator-allow-null-values
+0016-change-locale-names [0015-random-indicator-allow-null-values] 2021-01-04T14:44:04Z junior,,, <junior@junior-notebook> # iange-locale-names
+0017-random-indicator-year [0016-change-locale-names] 2021-01-19T17:10:21Z junior,,, <junior@junior-notebook> # indom-indicator-year
+0018-fix-random-indicator [0017-random-indicator-year] 2021-01-20T20:15:32Z junior,,, <junior@junior-notebook> # ix-random-indicator
