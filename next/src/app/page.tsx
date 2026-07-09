@@ -1,45 +1,52 @@
 /**
- * Página raiz — placeholder Fase 1.
+ * Página raiz — Fase 2: Seções Institucionais
  *
- * Fase 2 em diante: substituir pelo conjunto de seções institucionais
- * (Hero, Sobre, PNIPI, Midiateca, Contato) e pelo bloco ConsultaPublica.
+ * Seções implementadas nesta fase:
+ *   #inicio       → <Hero />      (server — banners, eixos, stats)
+ *   #sobre        → <Sobre />     (server + SobreClient)
+ *   #pnipi        → <Pnipi />     (server + PnipiClient)
+ *   #midiateca    → <Midiateca /> (server + MidiatecaClient)
+ *   #contato      → <Contato />   (client)
  *
- * Os ids de âncora já estão reservados aqui para que os links do Header
- * funcionem assim que as seções forem adicionadas.
+ * Fase 3 (não implementada aqui):
+ *   #consulta-publica → <ConsultaPublica /> (mapa + dashboards + searchParams)
+ *
+ * Pendências abertas antes da Fase 3:
+ *   - textoindicadors: seção destino ainda não definida (não encaixada aqui)
+ *   - Consulta pública: mapa com geojson real + abas com estado em URL
  */
+
+import { Hero } from "@/components/sections/Hero";
+import { Sobre } from "@/components/sections/Sobre";
+import { Pnipi } from "@/components/sections/Pnipi";
+import { Midiateca } from "@/components/sections/Midiateca";
+import { Contato } from "@/components/sections/Contato";
+
 export default function Home() {
   return (
     <>
-      {/* Âncoras reservadas — substituídas pelas seções reais na Fase 2/3 */}
-      <section id="inicio" aria-label="Início" className="min-h-screen flex items-center justify-center">
-        <div className="mx-auto max-w-2xl px-4 text-center">
-          <h1 className="font-heading text-4xl font-bold text-foreground">
-            Observa
-          </h1>
-          <p className="mt-4 text-lg text-muted-foreground">
-            Plataforma de monitoramento dos Planos Municipais pela Primeira
-            Infância no Brasil.
-          </p>
-          <p className="mt-8 inline-block rounded-md bg-muted px-4 py-2 text-sm text-muted-foreground">
-            🚧 Em construção — Fase 1 (fundação) concluída.
-          </p>
+      <Hero />
+      <Sobre />
+      <Pnipi />
+      <Midiateca />
+
+      {/*
+       * Fase 3: <ConsultaPublica />
+       * Placeholder para âncora do Header funcionar enquanto a seção não existe.
+       */}
+      <section
+        id="consulta-publica"
+        aria-label="Consulta pública"
+        className="py-20 lg:py-28 bg-muted"
+      >
+        <div className="max-w-7xl mx-auto px-5 lg:px-10 text-center">
+          <span className="inline-block rounded-md bg-muted-foreground/10 px-5 py-3 text-sm text-muted-foreground">
+            🚧 Consulta pública — Fase 3 (mapa + dashboards)
+          </span>
         </div>
       </section>
 
-      {/* Fase 2: <Sobre /> */}
-      <section id="sobre" aria-label="Sobre" />
-
-      {/* Fase 2: <Pnipi /> */}
-      <section id="pnipi" aria-label="PNIPI" />
-
-      {/* Fase 2: <Midiateca /> */}
-      <section id="midiateca" aria-label="Midiateca" />
-
-      {/* Fase 3: <ConsultaPublica /> */}
-      <section id="consulta-publica" aria-label="Consulta pública" />
-
-      {/* Fase 2: <Contato /> */}
-      <section id="contato" aria-label="Contato" />
+      <Contato />
     </>
   );
 }

@@ -16,6 +16,8 @@
 
 export interface ContactFormData {
   name: string;
+  /** Sigla do estado (ex.: "SP", "RJ") */
+  state?: string;
   email: string;
   subject?: string;
   message: string;
@@ -27,7 +29,9 @@ export interface ContactFormData {
  * TODO: substituir pelo número real quando confirmado.
  * Formato: código do país + DDD + número, sem símbolos (ex.: "5511999999999").
  */
-const WHATSAPP_NUMBER = ""; // TODO: preencher antes da Fase 2
+// Número confirmado pelo cliente em 2026-07-09.
+// Formato: código do país + DDD + número, sem símbolos.
+const WHATSAPP_NUMBER = "5521982581194";
 
 /**
  * Gera a URL de abertura do WhatsApp com a mensagem pré-preenchida.
@@ -41,6 +45,7 @@ export function buildWhatsAppUrl(data: ContactFormData): string {
     `*Contato via Observa*`,
     ``,
     `*Nome:* ${data.name}`,
+    data.state ? `*Estado:* ${data.state}` : null,
     `*E-mail:* ${data.email}`,
     data.subject ? `*Assunto:* ${data.subject}` : null,
     ``,
