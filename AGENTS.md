@@ -3,6 +3,8 @@
 ## Estrutura do repositório
 
 - `omlpi-www/` — site ATUAL em produção (Hugo + Vue2). **Não modificar sob nenhuma circunstância** durante a migração.
+
+- `omlpi-api/`, `omlpi-cms/`, `omlpi-cms-search/` — código-fonte do backend (API Perl, Strapi, serviço de busca full-text). **Somente leitura/referência.** Use para confirmar contratos reais de endpoint (ex: ler `omlpi-api/public/openapi.yaml` para parâmetros exatos) — nunca para editar, a menos que uma tarefa explicitamente peça uma mudança de backend.
 - `next/` — site NOVO em construção (Next.js, App Router). Todo o trabalho desta migração acontece aqui. Todo comando (instalação, dev server, build) deve rodar a partir de `next/`, nunca da raiz do repo.
 - `design-reference/` — clone local do repo `julio-cesar96/observa` (export do Figma Make aprovado pelo cliente). Não versionado neste repo (está no `.gitignore`). **Nunca rodar, buildar ou importar código dele.** Serve apenas para: (1) extrair tokens de design — cores, tipografia, espaçamento — de `design-reference/src/app/styles/`; (2) consultar a composição visual de cada seção em `design-reference/src/app/components/` e `App.tsx`.
 - `docs/PLANO_ONEPAGE.md` — fonte da verdade ATUAL de arquitetura, decisões e fases. Seguir esse documento para toda decisão estrutural.
