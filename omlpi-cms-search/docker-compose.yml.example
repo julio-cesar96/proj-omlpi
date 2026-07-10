@@ -1,0 +1,14 @@
+version: "3"
+services:
+  app:
+    build: .
+    restart: unless-stopped
+    environment:
+      DATABASE_URL: postgres://postgres:trustme@172.17.0.1:5432/omlpi_dev
+    ports:
+      - "3000:1337"
+    volumes:
+      - .:/home/node/app
+      - /home/node/app/node_modules
+    network_mode: "bridge"
+

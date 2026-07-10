@@ -1,0 +1,60 @@
+{
+  "routes": [
+    {
+      "method": "GET",
+      "path": "/artigos/tagged/:tag",
+      "handler": "artigo.byTag",
+      "config": {
+        "policies": []
+      }
+    },
+    {
+      "method": "GET",
+      "path": "/artigos",
+      "handler": "Artigo.find",
+      "config": {
+        "policies": []
+      }
+    },
+    {
+      "method": "GET",
+      "path": "/artigos/count",
+      "handler": "Artigo.count",
+      "config": {
+        "policies": []
+      }
+    },
+    {
+      "method": "GET",
+      "path": "/artigos/:id",
+      "handler": "Artigo.findOne",
+      "config": {
+        "policies": []
+      }
+    },
+    {
+      "method": "POST",
+      "path": "/artigos",
+      "handler": "Artigo.create",
+      "config": {
+        "policies": []
+      }
+    },
+    {
+      "method": "PUT",
+      "path": "/artigos/:id",
+      "handler": "Artigo.update",
+      "config": {
+        "policies": []
+      }
+    },
+    {
+      "method": "DELETE",
+      "path": "/artigos/:id",
+      "handler": "Artigo.delete",
+      "config": {
+        "policies": []
+      }
+    }
+  ]
+}
