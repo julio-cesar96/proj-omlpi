@@ -254,12 +254,14 @@ export function getTags(params?: StrapiQueryParams): Promise<StrapiTag[]> {
 }
 
 /**
- * Artigos da Midiateca (busca, tags, paginação).
+ * Artigos da collection `artigos` do Strapi.
  *
- * Confirmado: Midiateca usa esta collection.
- * Padrão de paginação (espelhando o site atual):
- *   getArtigos({ _limit: 15, _start: 0 })
- * Combinar com _q para busca textual e _where para filtro por tag.
+ * ⚠️  NÃO usar para o fluxo de busca/filtro/paginação da Midiateca.
+ *     O Strapi não tem full-text search nativo. A Midiateca usa
+ *     `searchArtigos()` de `lib/cms-search.ts` (omlpi-cms-search).
+ *     Ver docs/API_CONTRACTS.md §3.
+ *
+ * Mantida aqui para eventuais usos futuros que não dependam de busca textual.
  */
 export function getArtigos(params?: StrapiQueryParams): Promise<StrapiArtigo[]> {
   return strapiGet<StrapiArtigo[]>("artigos", params);

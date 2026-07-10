@@ -5,17 +5,22 @@
  *   1. Documentos — grade de StrapiGuia por categoria (dados passados como prop)
  *   2. Artigos    — busca, filtro por tag e paginação via /api/artigos (Route Handler proxy)
  *
+ * Artigos: fonte é o omlpi-cms-search (busca full-text real).
+ *   O Route Handler /api/artigos traduz _where[tags_in][] → _where[tags][]
+ *   transparentemente, então este componente usa o padrão Strapi na query string.
+ *
  * Lógica de paginação portada de omlpi-www/src/assets/scripts/articles.js:
  *   - offset incremental no "Carregar mais"
  *   - reset do offset em nova busca/filtro
- *   - hasMore = response.hasMore ?? results.length === LIMIT
- *   - selectedTags: array de IDs de tags (filtro _where[tags]=...)
+ *   - hasMore = response.hasMore (flag nativa do omlpi-cms-search)
+ *   - selectedTags: array de IDs de tags (filtro _where[tags_in][]=id)
  */
 
 "use client";
 
 import { useState, useCallback } from "react";
-import { StrapiGuia, StrapiArtigo, StrapiTag } from "@/lib/strapi";
+import { StrapiGuia, StrapiTag } from "@/lib/strapi";
+import type { CmsSearchArtigo } from "@/lib/cms-search";
 
 const LIMIT = 15;
 
@@ -195,7 +200,7 @@ function DocumentosTab({ guias }: { guias: StrapiGuia[] }) {
 
 // ─── Artigos (busca, tags, paginação) ────────────────────────────────────────
 
-function ArtigoCard({ artigo }: { artigo: StrapiArtigo }) {
+function ArtigoCard({ artigo }: { artigo: CmsSearchArtigo }) {
   return (
     <div className="bg-background rounded-2xl p-5 border border-border hover:shadow-md transition-shadow flex flex-col">
       {artigo.image?.url && (
@@ -224,9 +229,10 @@ function ArtigoCard({ artigo }: { artigo: StrapiArtigo }) {
       >
         {artigo.title}
       </div>
-      {artigo.summary && (
+      {/* omlpi-cms-search usa `description` como campo de resumo (≠ `summary` do Strapi) */}
+      {artigo.description && (
         <div className="text-xs text-muted-foreground leading-[1.6] mb-4 line-clamp-3">
-          {artigo.summary}
+          {artigo.description}
         </div>
       )}
       <div className="mt-auto flex gap-2">
@@ -240,14 +246,15 @@ function ArtigoCard({ artigo }: { artigo: StrapiArtigo }) {
             <DownloadIcon /> PDF
           </a>
         )}
-        {(artigo as { link?: string }).link && (
+        {/* TODO: exibir player/link de YouTube quando artigo.youtube estiver presente */}
+        {artigo.youtube && (
           <a
-            href={(artigo as { link?: string }).link}
+            href={artigo.youtube}
             target="_blank"
             rel="noopener noreferrer"
             className="flex items-center gap-1.5 text-xs text-secondary font-semibold hover:underline"
           >
-            <ExternalLinkIcon /> Acessar
+            <ExternalLinkIcon /> Assistir
           </a>
         )}
       </div>
@@ -259,10 +266,10 @@ function ArtigosTab({
   initialArtigos,
   tags,
 }: {
-  initialArtigos: StrapiArtigo[];
+  initialArtigos: CmsSearchArtigo[];
   tags: StrapiTag[];
 }) {
-  const [artigos, setArtigos] = useState<StrapiArtigo[]>(initialArtigos);
+  const [artigos, setArtigos] = useState<CmsSearchArtigo[]>(initialArtigos);
   const [searchQuery, setSearchQuery] = useState("");
   const [selectedTagIds, setSelectedTagIds] = useState<number[]>([]);
   const [offset, setOffset] = useState(initialArtigos.length);
@@ -288,12 +295,11 @@ function ArtigosTab({
         if (!res.ok) throw new Error("Erro ao buscar artigos");
         const data = await res.json();
 
-        const results: StrapiArtigo[] = Array.isArray(data?.results)
+        // omlpi-cms-search retorna { hasMore, limit, offset, results[] } — sempre
+        const results: CmsSearchArtigo[] = Array.isArray(data?.results)
           ? data.results
-          : Array.isArray(data)
-            ? data
-            : [];
-        const more = data?.hasMore ?? results.length === LIMIT;
+          : [];
+        const more: boolean = data?.hasMore ?? false;
 
         if (loadMore) {
           setArtigos((prev) => [...prev, ...results]);
@@ -333,13 +339,12 @@ function ArtigosTab({
     fetch(`/api/artigos?${params}`)
       .then((r) => r.json())
       .then((data) => {
-        const results: StrapiArtigo[] = Array.isArray(data?.results)
+        // omlpi-cms-search retorna { hasMore, limit, offset, results[] } — sempre
+        const results: CmsSearchArtigo[] = Array.isArray(data?.results)
           ? data.results
-          : Array.isArray(data)
-            ? data
-            : [];
+          : [];
         setArtigos(results);
-        setHasMore(data?.hasMore ?? results.length === LIMIT);
+        setHasMore(data?.hasMore ?? false);
         setOffset(results.length);
       })
       .catch(console.error)
@@ -444,7 +449,8 @@ function ArtigosTab({
 
 interface Props {
   guias: StrapiGuia[];
-  artigos: StrapiArtigo[];
+  /** Artigos carregados via omlpi-cms-search no SSR (não via Strapi). */
+  artigos: CmsSearchArtigo[];
   tags: StrapiTag[];
 }
 

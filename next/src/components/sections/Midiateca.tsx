@@ -2,17 +2,24 @@
  * Midiateca — Server Component (seção Midiateca)
  *
  * Busca em paralelo:
- *   - getGuias()                            → aba "Documentos" (grade por categoria)
- *   - getArtigos({ _limit: 15, _start: 0 }) → aba "Artigos" (busca, tags, paginação)
- *   - getTags({ _limit: -1 })               → filtro de tags na aba Artigos
+ *   - getGuias()                              → aba "Documentos" (grade por categoria)
+ *   - searchArtigos({ _limit: 15, _start: 0 }) → aba "Artigos" (busca, tags, paginação)
+ *   - getTags({ _limit: -1 })                 → filtro de tags na aba Artigos
+ *
+ * Artigos: fonte é o omlpi-cms-search (busca full-text + filtro por tags).
+ *   NÃO usar getArtigos() de lib/strapi.ts para este fluxo — o Strapi não
+ *   tem full-text search nativo. Ver docs/API_CONTRACTS.md §3.
+ *
+ * Guias e Tags: fonte continua sendo o Strapi (metadados que ele serve corretamente).
  *
  * A paginação client-side de artigos usa /api/artigos (Route Handler proxy)
- * para não expor STRAPI_API_URL no browser.
+ * para não expor CMS_SEARCH_API_URL no browser.
  *
- * Referência: docs/API_CONTRACTS.md §1 — collections `guias`, `artigos`, `tags`
+ * Referência: docs/API_CONTRACTS.md §3 — omlpi-cms-search
  */
 
-import { getGuias, getArtigos, getTags, StrapiGuia, StrapiArtigo, StrapiTag } from "@/lib/strapi";
+import { getGuias, getTags, StrapiGuia, StrapiTag } from "@/lib/strapi";
+import { searchArtigos, CmsSearchArtigo } from "@/lib/cms-search";
 import { MidiatecaClient } from "./MidiatecaClient";
 
 function SectionLabel({ children }: { children: React.ReactNode }) {
@@ -28,13 +35,13 @@ function SectionLabel({ children }: { children: React.ReactNode }) {
 
 export async function Midiateca() {
   let guias: StrapiGuia[] = [];
-  let artigos: StrapiArtigo[] = [];
+  let artigos: CmsSearchArtigo[] = [];
   let tags: StrapiTag[] = [];
 
   try {
-    [guias, artigos, tags] = await Promise.all([
+    [guias, { results: artigos }, tags] = await Promise.all([
       getGuias({ _sort: "published_at:desc" }),
-      getArtigos({ _limit: 15, _start: 0 }),
+      searchArtigos({ _limit: 15, _start: 0 }),
       getTags({ _limit: -1 } as Parameters<typeof getTags>[0]),
     ]);
   } catch {
