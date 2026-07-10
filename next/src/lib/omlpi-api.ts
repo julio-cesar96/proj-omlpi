@@ -2,14 +2,11 @@
  * lib/omlpi-api.ts — Cliente tipado para a API custom (Perl/Mojolicious)
  *
  * Base: variável de ambiente OMLPI_API_URL (server-only, nunca expor no client).
- * Todos os endpoints seguem os contratos documentados em API_CONTRACTS.md §2.
- * Não inventar parâmetros além dos documentados — itens marcados "a confirmar"
- * ficam como TODO comentado.
- *
- * Referência: docs/API_CONTRACTS.md §2 — API custom (Perl/Mojolicious)
+ * Todos os endpoints seguem os contratos documentados em API_CONTRACTS.md §2
+ * e confirmados em omlpi-api/public/openapi.yaml (somente leitura).
  */
 
-// ─── Helpers ─────────────────────────────────────────────────────────────────
+// ─── Helpers ──────────────────────────────────────────────────────────────────
 
 function getOmlpiUrl(): string {
   const url = process.env.OMLPI_API_URL;
@@ -19,7 +16,7 @@ function getOmlpiUrl(): string {
         "Configure a variável de ambiente no .env.local."
     );
   }
-  return url.replace(/\/$/, ""); // remove trailing slash
+  return url.replace(/\/$/, "");
 }
 
 async function omlpiGet<T>(
@@ -36,10 +33,7 @@ async function omlpiGet<T>(
       ).toString()
     : "";
   const url = `${base}/${path}${qs ? `?${qs}` : ""}`;
-  const res = await fetch(url, {
-    cache: "no-store",
-    ...fetchOptions,
-  });
+  const res = await fetch(url, { cache: "no-store", ...fetchOptions });
   if (!res.ok) {
     throw new Error(
       `[omlpi-api] GET /${path} falhou: ${res.status} ${res.statusText}`
@@ -69,152 +63,208 @@ async function omlpiPost<T>(
   return res.json() as Promise<T>;
 }
 
-// ─── Tipos (shapes conservadores baseados em API_CONTRACTS.md §2) ────────────
+// ─── Tipos (confirmados via omlpi-api/public/openapi.yaml) ────────────────────
 
-/** Localidade retornada pela API Perl */
-export interface OmlpiLocale {
-  id: number | string;
-  name?: string;
-  state?: string;
-  ibge_code?: string;
-  [key: string]: unknown;
+/** Eixo temático — ex: Educação, Saúde */
+export interface OmlpiArea {
+  id: number;
+  name: string;
+}
+
+/** Estado brasileiro */
+export interface OmlpiState {
+  id: number;
+  name: string;
+  latitude: number;
+  longitude: number;
+}
+
+/** Município */
+export interface OmlpiCity {
+  id: number;
+  name: string;
+  latitude: number;
+  longitude: number;
+}
+
+/** Valor de um indicador para um ano específico */
+export interface OmlpiIndicatorValue {
+  year: 2017 | 2018 | 2019;
+  value_relative: number;
+  value_absolute: number;
+}
+
+/** Item de subindicador (ex: "Feminino" dentro de "Sexo") */
+export interface OmlpiSubindicatorItem {
+  description: string;
+  id: number;
+  values: OmlpiIndicatorValue | OmlpiIndicatorValue[];
+}
+
+/** Desagregação de um indicador por classificação (Sexo, Raça/Cor…) */
+export interface OmlpiSubindicator {
+  classification: string;
+  data: OmlpiSubindicatorItem[];
 }
 
 /**
- * Dados do dashboard de uma localidade (ex-/city).
- * Shape detalhado a mapear na Fase 3 a partir de populateData.js.
+ * Indicador com subindicadores — shape $ref: IndicatorWithSubindicator do OpenAPI.
+ * Em GET /data, `values` é objeto (não array). Em compare/historical é array.
+ */
+export interface OmlpiIndicatorWithSubindicator {
+  id: number;
+  name: string;
+  area: OmlpiArea;
+  base: string;
+  values: OmlpiIndicatorValue | OmlpiIndicatorValue[];
+  subindicators: OmlpiSubindicator[];
+}
+
+/**
+ * Response de GET /data — shape $ref: Locale do OpenAPI.
+ * `{ id, name, type, latitude, longitude, indicators[] }`
  */
 export interface OmlpiLocaleData {
-  locale_id?: string | number;
-  [key: string]: unknown;
+  id: number;
+  name: string;
+  type: "country" | "region" | "state" | "city";
+  latitude: number;
+  longitude: number;
+  indicators: OmlpiIndicatorWithSubindicator[];
 }
 
 /**
- * Parâmetros de comparação entre localidades.
+ * Localidade retornada pelo GET /locales (lista completa para mapa e busca).
  *
- * TODO (antes da Fase 3): confirmar parâmetros exatos de data/compare com quem
- * mantém a API Perl. Não inferir apenas do front antigo (compare.js). Os
- * parâmetros podem diferir do que está no JS do cliente atual.
+ * IMPORTANTE: o campo `plan.url` deve ser usado DIRETAMENTE para link de PDF —
+ * NÃO concatenar com base URL (bug conhecido: barra dupla → erro 400 "Malicious Path").
  */
-export interface OmlpiCompareParams {
-  [key: string]: unknown; // substituir pelos params reais quando confirmados
-}
-
-/** Dados retornados por data/compare */
-export interface OmlpiCompareData {
+export interface OmlpiLocale {
+  id: number;
+  name: string;
+  type: "country" | "region" | "state" | "city";
+  latitude?: number;
+  longitude?: number;
+  /** Sigla do estado, ex: "SP" — usado para matching com hc-key do Highcharts */
+  state?: string;
+  /** Sigla da região, ex: "SE" */
+  region?: string;
+  /** Código IBGE — matching com mapData[].name = "mun_XXXXXXX" */
+  cod_ibge?: number;
+  is_capital?: boolean;
+  /** true = plano é na forma de lei (exibe "Baixar Lei" no tooltip) */
+  is_law?: boolean;
+  /** true = plano existe mas não deve ser exibido publicamente */
+  hide_plan?: boolean;
+  /** Usar plan.url DIRETAMENTE — ver nota sobre bug de URL acima */
+  plan?: { url: string } | null;
   [key: string]: unknown;
 }
 
-/**
- * Parâmetros de dados históricos de uma localidade.
- *
- * TODO (antes da Fase 3): confirmar parâmetros exatos de data/historical com
- * quem mantém a API Perl. Não inferir apenas do front antigo (history.js).
- */
-export interface OmlpiHistoricalParams {
-  [key: string]: unknown; // substituir pelos params reais quando confirmados
+/** Resposta de POST /upload_plan */
+export interface OmlpiUploadPlanResponse {
+  id: number;
 }
 
-/** Dados retornados por data/historical */
-export interface OmlpiHistoricalData {
-  [key: string]: unknown;
-}
-
-/** Indicador aleatório (usado no rotator da home) */
+/** Resposta de GET /data/random_indicator */
 export interface OmlpiRandomIndicator {
-  id?: string | number;
-  title?: string;
-  value?: string | number;
-  [key: string]: unknown;
+  locales?: Array<{
+    id: number;
+    name: string;
+    type: string;
+    latitude: number;
+    longitude: number;
+    indicators: OmlpiIndicatorWithSubindicator[];
+  }>;
 }
 
+// ─── Funções públicas ──────────────────────────────────────────────────────────
+
 /**
- * Resumo/sumário de uma localidade.
- *
- * TODO (antes da Fase 2 — seção Hero): confirmar se este endpoint é a fonte
- * dos números exibidos no Hero (ex.: 5.570 municípios, 2.022 com plano, etc.).
- * Se não for, identificar qual endpoint fornece esses dados.
+ * Lista de localidades para busca/autocomplete e mapa.
+ * ATENÇÃO: a API retorna `{ locales: [...] }` — NÃO array plano.
+ * Esta função normaliza os dois formatos por segurança.
  */
-export interface OmlpiLocaleResume {
-  locale_id?: string | number;
-  [key: string]: unknown;
+export async function getLocales(): Promise<OmlpiLocale[]> {
+  const res = await omlpiGet<{ locales: OmlpiLocale[] } | OmlpiLocale[]>(
+    "locales"
+  );
+  if (Array.isArray(res)) return res;
+  return (res as { locales: OmlpiLocale[] }).locales ?? [];
 }
 
 /**
- * Parâmetros para download de indicador específico.
- *
- * TODO (antes da Fase 3 — Midiateca/Open Data): confirmar parâmetros exatos
- * de data/download_indicator com quem mantém a API Perl.
+ * Lista de estados brasileiros em ordem alfabética.
+ * CONFIRMADO openapi.yaml: retorna `{ states: State[] }`.
  */
-export interface OmlpiDownloadIndicatorParams {
-  [key: string]: unknown; // substituir pelos params reais quando confirmados
+export async function getStates(): Promise<OmlpiState[]> {
+  const res = await omlpiGet<{ states: OmlpiState[] }>("states");
+  return res.states ?? [];
 }
 
-// ─── Funções públicas ─────────────────────────────────────────────────────────
-
 /**
- * Lista de localidades (municípios/estados) para busca/autocomplete.
- * Consulta pública — busca e seleção.
+ * Lista de municípios, opcionalmente filtrados por estado.
+ * CONFIRMADO openapi.yaml: retorna `{ cities: City[] }`, state_id opcional.
  */
-export function getLocales(): Promise<OmlpiLocale[]> {
-  return omlpiGet<OmlpiLocale[]>("locales");
+export async function getCities(stateId?: number): Promise<OmlpiCity[]> {
+  const res = await omlpiGet<{ cities: OmlpiCity[] }>(
+    "cities",
+    stateId !== undefined ? { state_id: stateId } : undefined
+  );
+  return res.cities ?? [];
 }
 
 /**
- * Dados do dashboard de uma localidade (Painel Municipal — ex-/city).
- * @param localeId — identificador da localidade (locale_id)
+ * Lista de eixos temáticos (taxonomia de dado).
+ * Distinto do conteúdo de marketing da collection `eixos` do Strapi.
  */
-export function getLocaleData(localeId: string | number): Promise<OmlpiLocaleData> {
-  return omlpiGet<OmlpiLocaleData>("data", { locale_id: localeId });
+export async function getAreas(): Promise<OmlpiArea[]> {
+  const res = await omlpiGet<{ areas: OmlpiArea[] }>("areas");
+  return res.areas ?? [];
 }
 
 /**
- * Dados de comparação entre localidades (Painel Nacional — ex-/comparacao).
- *
- * TODO (Fase 3): substituir `params: OmlpiCompareParams` pelos tipos reais
- * assim que os parâmetros forem confirmados com o backend.
+ * Dados do dashboard de uma localidade.
+ * CONFIRMADO openapi.yaml: locale_id obrigatório, area_id e year opcionais.
  */
-export function compareLocales(
-  params: OmlpiCompareParams
-): Promise<OmlpiCompareData> {
-  // TODO: montar a query string corretamente quando os params forem confirmados
-  return omlpiGet<OmlpiCompareData>("data/compare", params as Record<string, string | number>);
+export function getLocaleData(
+  localeId: number,
+  params?: { area_id?: number; year?: 2017 | 2018 | 2019 }
+): Promise<OmlpiLocaleData> {
+  return omlpiGet<OmlpiLocaleData>("data", {
+    locale_id: localeId,
+    area_id: params?.area_id,
+    year: params?.year,
+  });
 }
 
 /**
- * Dados históricos de uma localidade (Painel Nacional — ex-/historico).
- *
- * TODO (Fase 3): substituir `params: OmlpiHistoricalParams` pelos tipos reais
- * assim que os parâmetros forem confirmados com o backend.
- */
-export function getHistoricalData(
-  params: OmlpiHistoricalParams
-): Promise<OmlpiHistoricalData> {
-  // TODO: montar a query string corretamente quando os params forem confirmados
-  return omlpiGet<OmlpiHistoricalData>("data/historical", params as Record<string, string | number>);
-}
-
-/**
- * Indicador aleatório — usado no rotator da seção Hero (Início).
+ * Indicador aleatório — rotator da seção Hero.
  */
 export function getRandomIndicator(): Promise<OmlpiRandomIndicator> {
   return omlpiGet<OmlpiRandomIndicator>("data/random_indicator");
 }
 
 /**
- * Resumo/sumário de uma localidade.
- *
- * TODO (antes da Fase 2): confirmar se é a fonte dos números do Hero.
- * @param localeId — identificador da localidade
+ * Download de relatório PDF de uma localidade. Retorna Response (stream).
  */
-export function getLocaleResume(localeId: string | number): Promise<OmlpiLocaleResume> {
-  return omlpiGet<OmlpiLocaleResume>("data/resume/", { locale_id: localeId });
+export async function getLocaleResume(
+  localeId: number,
+  year?: 2017 | 2018 | 2019
+): Promise<Response> {
+  const base = getOmlpiUrl();
+  const qs = new URLSearchParams({ locale_id: String(localeId) });
+  if (year) qs.set("year", String(year));
+  const res = await fetch(`${base}/data/resume?${qs}`, { cache: "no-store" });
+  if (!res.ok) {
+    throw new Error(
+      `[omlpi-api] GET /data/resume falhou: ${res.status} ${res.statusText}`
+    );
+  }
+  return res;
 }
 
-/**
- * Download de dados abertos (Open Data / Midiateca).
- * Retorna o Response diretamente pois pode ser um stream de arquivo.
- */
+/** Download de dados abertos (Open Data / Midiateca). Retorna Response (stream). */
 export async function downloadData(): Promise<Response> {
   const base = getOmlpiUrl();
   const res = await fetch(`${base}/data/download`, { cache: "no-store" });
@@ -227,21 +277,19 @@ export async function downloadData(): Promise<Response> {
 }
 
 /**
- * Download de indicador específico (Open Data / Midiateca).
- *
- * TODO (antes da Fase 3): confirmar parâmetros exatos com o backend antes de
- * usar. Ver OmlpiDownloadIndicatorParams.
+ * Download de indicador específico (XLSX).
+ * CONFIRMADO openapi.yaml: locale_id e indicator_id obrigatórios.
  */
 export async function downloadIndicator(
-  params?: OmlpiDownloadIndicatorParams
+  localeId: number,
+  indicatorId: number
 ): Promise<Response> {
   const base = getOmlpiUrl();
-  const qs =
-    params && Object.keys(params).length > 0
-      ? // TODO: substituir pela serialização correta quando params forem confirmados
-        `?${new URLSearchParams(params as Record<string, string>).toString()}`
-      : "";
-  const res = await fetch(`${base}/data/download_indicator${qs}`, {
+  const qs = new URLSearchParams({
+    locale_id: String(localeId),
+    indicator_id: String(indicatorId),
+  });
+  const res = await fetch(`${base}/data/download_indicator?${qs}`, {
     cache: "no-store",
   });
   if (!res.ok) {
@@ -253,9 +301,11 @@ export async function downloadIndicator(
 }
 
 /**
- * Upload de plano municipal (POST multipart) — Consulta pública.
- * @param formData — FormData contendo o arquivo do plano
+ * Upload de plano municipal (POST multipart).
+ * Campos obrigatórios: file (PDF), name, message, email.
  */
-export function uploadPlan(formData: FormData): Promise<unknown> {
-  return omlpiPost<unknown>("upload_plan", formData);
+export function uploadPlan(
+  formData: FormData
+): Promise<OmlpiUploadPlanResponse> {
+  return omlpiPost<OmlpiUploadPlanResponse>("upload_plan", formData);
 }
