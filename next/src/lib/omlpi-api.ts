@@ -178,6 +178,80 @@ export interface OmlpiRandomIndicator {
   }>;
 }
 
+/** Tipos de Comparação (GET /data/compare) */
+export interface OmlpiCompareSubindicatorItem {
+  id: number;
+  description: string;
+  is_percentage?: boolean;
+  values: OmlpiIndicatorValue[];
+}
+
+export interface OmlpiCompareSubindicator {
+  classification: string;
+  data: OmlpiCompareSubindicatorItem[];
+}
+
+export interface OmlpiCompareIndicator {
+  id: number;
+  name?: string;
+  description?: string;
+  area: OmlpiArea;
+  base: string;
+  concept?: string;
+  is_percentage?: boolean;
+  values: OmlpiIndicatorValue[];
+  subindicators: OmlpiCompareSubindicator[];
+}
+
+export interface OmlpiCompareLocale {
+  id: number;
+  name: string;
+  type: "country" | "region" | "state" | "city";
+  indicators: OmlpiCompareIndicator[];
+}
+
+export interface OmlpiCompareResponse {
+  comparison: OmlpiCompareLocale[];
+}
+
+/** Tipos de Série Histórica (GET /data/historical) */
+export interface OmlpiHistoricalSubindicatorItem {
+  id: number;
+  description: string;
+  is_percentage?: boolean;
+  values: OmlpiIndicatorValue[];
+}
+
+export interface OmlpiHistoricalSubindicator {
+  classification: string;
+  data: OmlpiHistoricalSubindicatorItem[];
+}
+
+export interface OmlpiHistoricalIndicator {
+  id: number;
+  name?: string;
+  description?: string;
+  area: OmlpiArea;
+  base: string;
+  concept?: string;
+  is_percentage?: boolean;
+  values: OmlpiIndicatorValue[];
+  subindicators: OmlpiHistoricalSubindicator[];
+}
+
+export interface OmlpiHistoricalLocale {
+  id: number;
+  name: string;
+  type: "country" | "region" | "state" | "city";
+  latitude?: number;
+  longitude?: number;
+  indicators: OmlpiHistoricalIndicator[];
+}
+
+export interface OmlpiHistoricalResponse {
+  historical: OmlpiHistoricalLocale[];
+}
+
 // ─── Funções públicas ──────────────────────────────────────────────────────────
 
 /**
@@ -309,3 +383,30 @@ export function uploadPlan(
 ): Promise<OmlpiUploadPlanResponse> {
   return omlpiPost<OmlpiUploadPlanResponse>("upload_plan", formData);
 }
+
+/**
+ * Dados de comparação (Nacional)
+ */
+export function getCompareData(
+  localeId: number,
+  year?: 2017 | 2018 | 2019
+): Promise<OmlpiCompareResponse> {
+  return omlpiGet<OmlpiCompareResponse>("data/compare", {
+    locale_id: localeId,
+    year,
+  });
+}
+
+/**
+ * Dados de série histórica (Nacional)
+ */
+export function getHistoricalData(
+  localeId: number,
+  areaId?: number
+): Promise<OmlpiHistoricalResponse> {
+  return omlpiGet<OmlpiHistoricalResponse>("data/historical", {
+    locale_id: localeId,
+    area_id: areaId,
+  });
+}
+
