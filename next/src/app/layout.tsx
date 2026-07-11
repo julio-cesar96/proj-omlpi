@@ -3,6 +3,8 @@ import { Nunito, Plus_Jakarta_Sans } from "next/font/google";
 import "./globals.css";
 import { Header } from "@/components/layout/Header";
 import { Footer } from "@/components/layout/Footer";
+import { CookieBanner } from "@/components/layout/CookieBanner";
+import { AnalyticsScripts } from "@/components/layout/AnalyticsScripts";
 
 // ─── Fontes ──────────────────────────────────────────────────────────────────
 // Nunito: títulos (headings)
@@ -22,20 +24,73 @@ const plusJakartaSans = Plus_Jakarta_Sans({
 });
 
 // ─── Metadata base ────────────────────────────────────────────────────────────
-// Fase 4: substituir pelos valores reais (OG, Twitter, robots, sitemap)
 export const metadata: Metadata = {
   title: {
     default: "Observa — Monitoramento de Planos pela Primeira Infância no Brasil",
     template: "%s | Observa",
   },
   description:
-    "Plataforma nacional de monitoramento e transparência de Planos Municipais pela Primeira Infância (PNIPI).",
-  metadataBase: new URL("https://observa.rnpi.org.br"), // TODO Fase 4: confirmar domínio final
+    "Plataforma nacional de monitoramento e transparência de Planos Municipais pela Primeira Infância (PNIPI). Acompanhe o status dos planos em todos os municípios e estados do Brasil.",
+  metadataBase: new URL("https://observa.rnpi.org.br"), // placeholder de fase anterior
+  alternates: {
+    canonical: "/",
+  },
+  keywords: [
+    "primeira infância",
+    "PNIPI",
+    "planos municipais",
+    "monitoramento",
+    "transparência",
+    "RNPI",
+    "Observa",
+  ],
   openGraph: {
     type: "website",
     locale: "pt_BR",
     siteName: "Observa",
-    // TODO Fase 4: adicionar imagem OG, título e descrição finais
+    title: "Observa — Monitoramento de Planos pela Primeira Infância no Brasil",
+    description:
+      "Plataforma nacional de monitoramento e transparência de Planos Municipais pela Primeira Infância (PNIPI). Acompanhe o status dos planos em todos os municípios e estados do Brasil.",
+    url: "/",
+    images: [
+      {
+        url: "/facebook.jpg", // Imagem do FB copiada do omlpi-www
+        width: 1200,
+        height: 630,
+        alt: "Observa — Plataforma nacional de monitoramento de PNIPI",
+        type: "image/jpeg",
+      },
+    ],
+  },
+  twitter: {
+    card: "summary_large_image",
+    site: "@rnpiobserva",
+    creator: "@rnpiobserva",
+    title: "Observa — Monitoramento de Planos pela Primeira Infância no Brasil",
+    description:
+      "Plataforma nacional de monitoramento e transparência de Planos Municipais pela Primeira Infância (PNIPI). Acompanhe o status dos planos em todos os municípios e estados do Brasil.",
+    images: ["/twitter.jpg"],
+  },
+  icons: {
+    icon: [
+      { url: "/favicon/favicon-32x32.png", sizes: "32x32", type: "image/png" },
+      { url: "/favicon/favicon-16x16.png", sizes: "16x16", type: "image/png" },
+    ],
+    apple: [{ url: "/favicon/apple-touch-icon.png", sizes: "180x180" }],
+    shortcut: "/favicon/favicon.ico",
+    other: [
+      { rel: "mask-icon", url: "/favicon/safari-pinned-tab.svg" },
+      { rel: "manifest", url: "/favicon/site.webmanifest" },
+    ],
+  },
+  other: {
+    "msapplication-TileColor": "#00aba9",
+    "msapplication-config": "/favicon/browserconfig.xml",
+    "theme-color": "#ffffff",
+  },
+  robots: {
+    index: true,
+    follow: true,
   },
 };
 
@@ -54,7 +109,10 @@ export default function RootLayout({
         <Header />
         <main className="flex-1">{children}</main>
         <Footer />
+        <CookieBanner />
+        <AnalyticsScripts />
       </body>
     </html>
   );
 }
+
