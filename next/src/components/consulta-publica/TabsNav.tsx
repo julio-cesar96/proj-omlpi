@@ -55,7 +55,7 @@ export function TabsNav({ currentTab }: TabsNavProps) {
                 .join(" ")}
             >
               {tab.label}
-              {(tab.id === "nacional" || tab.id === "monitoramento") && (
+              {tab.id === "monitoramento" && (
                 <span className="ml-1.5 text-xs bg-muted text-muted-foreground rounded px-1 py-0.5">
                   em breve
                 </span>

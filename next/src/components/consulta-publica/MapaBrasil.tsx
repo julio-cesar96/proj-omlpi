@@ -169,7 +169,6 @@ export function MapaBrasil({ locales }: MapaBrasilProps) {
           drillup() {
             isDrilldownRef.current = false;
             setIsDrilldown(false);
-            // eslint-disable-next-line @typescript-eslint/no-explicit-any
             (this as unknown as { setTitle: (t: null, s: unknown) => void })
               .setTitle(null, { text: "" });
           },

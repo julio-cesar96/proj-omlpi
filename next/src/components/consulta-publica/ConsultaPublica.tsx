@@ -7,6 +7,8 @@ import { TabsNav } from "./TabsNav";
 import { MapaBrasil } from "./MapaBrasil";
 import { PainelMunicipal } from "./PainelMunicipal";
 import { PainelEstadual } from "./PainelEstadual";
+import { PainelNacional } from "./PainelNacional";
+import { PainelMonitoramento } from "./PainelMonitoramento";
 import { LocalidadeBusca } from "./LocalidadeBusca";
 import { UploadPlano } from "./UploadPlano";
 
@@ -43,20 +45,11 @@ function parseId(raw: string | string[] | undefined): number | undefined {
   return value && !isNaN(n) && n > 0 ? n : undefined;
 }
 
-// Placeholders para abas da Fase 3b
-function PhaseNextPlaceholder({ label }: { label: string }) {
-  return (
-    <div className="py-20 text-center space-y-3">
-      <div className="w-14 h-14 bg-muted rounded-full flex items-center justify-center mx-auto text-2xl">
-        🚧
-      </div>
-      <h4 className="font-semibold text-foreground">{label}</h4>
-      <p className="text-sm text-muted-foreground max-w-sm mx-auto">
-        Esta seção está em desenvolvimento e será disponibilizada na próxima fase.
-      </p>
-    </div>
-  );
+function parseMode(raw: string | string[] | undefined): "comparacao" | "historico" {
+  const value = Array.isArray(raw) ? raw[0] : raw;
+  return value === "historico" ? "historico" : "comparacao";
 }
+
 
 export async function ConsultaPublica({ searchParams }: ConsultaPublicaProps) {
   const tab = parseTab(searchParams["tab"]);
@@ -209,11 +202,22 @@ export async function ConsultaPublica({ searchParams }: ConsultaPublicaProps) {
           )}
 
           {tab === "nacional" && (
-            <PhaseNextPlaceholder label="Painel Nacional — Fase 3b" />
+            <Suspense
+              fallback={
+                <div className="h-96 bg-muted/30 rounded-xl animate-pulse" />
+              }
+            >
+              <PainelNacional
+                locationId={locationId}
+                areaId={areaId}
+                mode={parseMode(searchParams["mode"])}
+                locales={locales}
+              />
+            </Suspense>
           )}
 
           {tab === "monitoramento" && (
-            <PhaseNextPlaceholder label="Monitoramento — Fase 3b" />
+            <PainelMonitoramento />
           )}
         </div>
       </div>
