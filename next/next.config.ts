@@ -1,11 +1,11 @@
 import type { NextConfig } from "next";
+import { withSentryConfig } from "@sentry/nextjs";
 
-const nextConfig: NextConfig = {
+const nextConfig: NextConfig & { sentry?: Record<string, unknown> } = {
   /**
    * Redirects 301 — rotas do site atual → nova estrutura one-page.
-   * Referência: docs/PLANO_ONEPAGE.md §"Mapeamento de rotas antigas → nova estrutura"
-   *
-   * Fase 4: revisar tabela completa, validar todos os destinos e remover TODOs.
+   * /city, /comparacao e /historico foram removidos daqui e movidos para o middleware.ts
+   * para preservar corretamente os query params.
    */
   async redirects() {
     return [
@@ -23,38 +23,7 @@ const nextConfig: NextConfig = {
         permanent: true,
       },
 
-      // ── /city → Painel Municipal ──────────────────────────────────────────
-      // Preserva location_id e area como query params no destino.
-      {
-        source: "/city",
-        destination: "/?tab=municipais#consulta-publica",
-        permanent: true,
-        // TODO Fase 4: testar se o Next preserva automaticamente os query params
-        // do source (?location_id=X&area=Y) quando não há :param no source.
-        // Se não preservar, usar has: [{ type: "query", key: "location_id" }]
-        // e compor o destination dinamicamente.
-      },
-
-      // ── /comparacao → Painel Nacional (modo comparação) ───────────────────
-      {
-        source: "/comparacao",
-        destination: "/?tab=nacional&mode=comparacao#consulta-publica",
-        permanent: true,
-        // TODO Fase 4: confirmar com design se comparação é aba própria ou
-        // modo dentro de outra aba (PLANO_ONEPAGE.md linha 56).
-      },
-
-      // ── /historico → Painel Nacional (modo histórico) ─────────────────────
-      {
-        source: "/historico",
-        destination: "/?tab=nacional&mode=historico#consulta-publica",
-        permanent: true,
-        // TODO Fase 4: mesma pendência de /comparacao acima.
-      },
-
       // ── /indicadores → a confirmar ────────────────────────────────────────
-      // TODO Fase 4: confirmar destino de /indicadores no one-page.
-      // Possível: /#midiateca ou /#consulta-publica (PLANO_ONEPAGE.md linha 53).
       {
         source: "/indicadores",
         destination: "/#midiateca",
@@ -62,8 +31,6 @@ const nextConfig: NextConfig = {
       },
 
       // ── /biblioteca → a confirmar ─────────────────────────────────────────
-      // TODO Fase 4: confirmar destino de /biblioteca — depende da decisão sobre
-      // Midiateca substituir ou conviver com a biblioteca de artigos.
       {
         source: "/biblioteca",
         destination: "/#midiateca",
@@ -71,10 +38,6 @@ const nextConfig: NextConfig = {
       },
 
       // ── /rastreio → modal de política de privacidade no footer ────────────────
-      // Confirmado: a política de privacidade vai virar um modal acionado por
-      // link no footer, não uma seção própria. O conteúdo vem de `privacy-policy`
-      // no Strapi (getPrivacyPolicy()). Implementar o modal na Fase 2 junto com Footer.
-      // TODO Fase 4: validar que o redirect para `/` não perde o contexto do usuário.
       {
         source: "/rastreio",
         destination: "/",
@@ -82,6 +45,19 @@ const nextConfig: NextConfig = {
       },
     ];
   },
+
+  // Sentry SDK options
+  sentry: {
+    widenClientFileUpload: true,
+    hideSourceMaps: true,
+    disableLogger: true,
+  },
 };
 
-export default nextConfig;
+export default withSentryConfig(nextConfig, {
+  // For all available options, see:
+  // https://github.com/getsentry/sentry-webpack-plugin#options
+  silent: true,
+  org: process.env.SENTRY_ORG || "observa-rnpi",
+  project: process.env.SENTRY_PROJECT || "observa-nextjs",
+});
