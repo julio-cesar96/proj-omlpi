@@ -1,4 +1,4 @@
-import type { OmlpiLocale } from "@/lib/omlpi-api";
+import type { StrapiLocale } from "@/lib/strapi";
 import { LocalidadeBusca } from "./LocalidadeBusca";
 import { PainelMunicipal } from "./PainelMunicipal";
 
@@ -13,7 +13,7 @@ import { PainelMunicipal } from "./PainelMunicipal";
 interface PainelEstadualProps {
   locationId?: number;
   areaId?: number;
-  allLocales: OmlpiLocale[];
+  allLocales: StrapiLocale[];
 }
 
 // Cores de status alinhadas com tokens do design
@@ -35,7 +35,7 @@ const STATUS_STYLES = {
   },
 } as const;
 
-function getStatus(locale: OmlpiLocale) {
+function getStatus(locale: StrapiLocale) {
   if (!locale.plan || locale.hide_plan) return "none" as const;
   return locale.is_law ? "inProgress" as const : "approved" as const;
 }

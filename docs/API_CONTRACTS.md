@@ -18,7 +18,7 @@ Collections consumidas hoje:
 | `guias` | Guias/documentos de referência | Midiateca / PNIPI (a confirmar) — **INVESTIGADO E RESOLVIDO:** não existe content-type "FAQ" ou "Planos de ação" hoje. `blog` (content-type existente, não usado por nenhuma página do front atual — confirmado via busca em `omlpi-www/`) está livre, mas **decisão de modelagem adiada intencionalmente**: o CMS terá uma fase própria de redesign (fora do escopo desta migração de front). "Dúvidas frequentes" e "Planos de ação" permanecem como placeholder estático no front (já implementado na Fase 2) até essa fase futura, quando a estrutura de conteúdo definitiva será decidida junto com o resto do redesign do painel administrativo. Não é pendência bloqueante desta migração. |
 | `tags` | Tags de artigos | Midiateca |
 | `artigos` | Artigos da biblioteca (busca, tags, paginação) | **CONFIRMADO (Fase 1):** Midiateca usa esta collection para metadados. Paginação via `{ _limit: 15, _start: offset }`. **A busca/filtro em si vem do `omlpi-cms-search` (ver §3), não daqui — ver correção aplicada na Fase 2.** |
-| `locales` | Lista de localidades (municípios/estados) | Consulta pública — busca e seleção |
+| `locales` | Lista de localidades (municípios/estados). **CONFIRMADO (Fase 3d):** Esta é a única fonte oficial para dados completos (incluindo `cod_ibge`, `is_law`, `hide_plan` e o arquivo do plano `plan`). Deve ser usado para popular o MapaBrasil e os Painéis. | Consulta pública — mapa e painéis |
 | `privacy-policy` | Conteúdo da política de privacidade | **CONFIRMADO (Fase 1):** não tem seção própria no menu — abre como modal (`<PrivacyPolicyModal />`) a partir de um link no Footer. |
 
 ### Padrões de query já em uso (preservar exatamente)
@@ -44,7 +44,7 @@ Base: definir `OMLPI_API_URL` como variável de ambiente. Fonte da verdade: `oml
 
 | Endpoint | Parâmetros | Uso atual | Página/seção nova correspondente |
 |---|---|---|---|
-| `locales` | — | Lista de localidades para busca/autocomplete. **CONFIRMADO (Fase 3a):** resposta vem envelopada como `{ locales: [...] }`, não array plano — tratar defensivamente. | Consulta pública (busca) |
+| `locales` | — | Lista de localidades. **CORRIGIDO (Fase 3d):** Fornece APENAS `{id, name, type, latitude, longitude}`. NÃO contém `cod_ibge` nem informações do plano. NÃO deve ser usado para popular o mapa ou painéis (usar Strapi `locales` para isso). Resposta vem envelopada como `{ locales: [...] }`. | Uso legado (geocoding/autocomplete básico) |
 | `states` | — | **CONFIRMADO (openapi.yaml):** sem parâmetros. Retorna `{ states: State[] }` onde `State = { id, name, latitude, longitude }`. Ordem alfabética. | Consulta pública, aba "Estaduais/Distrital" |
 | `cities` | `state_id` (opcional) | **CONFIRMADO (openapi.yaml):** filtra cidades por estado. Retorna `{ cities: City[] }` onde `City = { id, name, latitude, longitude }`. Ordem alfabética. | Consulta pública, aba "Municipais" |
 | `areas` | — | **CONFIRMADO (openapi.yaml):** retorna `{ areas: Area[] }` onde `Area = { id, name }`. Taxonomia de dado — distinto da collection `eixos` do Strapi (conteúdo de marketing). | Filtros da Consulta pública |

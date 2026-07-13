@@ -3,7 +3,8 @@
 import React, { useCallback } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import { LocalidadeBusca } from "./LocalidadeBusca";
-import type { OmlpiLocale, OmlpiArea } from "@/lib/omlpi-api";
+import type { OmlpiArea } from "@/lib/omlpi-api";
+import type { StrapiLocale } from "@/lib/strapi";
 
 interface NacionalControlsProps {
   locationId: number;
@@ -12,7 +13,7 @@ interface NacionalControlsProps {
   currentMode: "comparacao" | "historico";
   currentAreaId: number;
   areas: OmlpiArea[];
-  locales: OmlpiLocale[];
+  locales: StrapiLocale[];
 }
 
 export function NacionalControls({

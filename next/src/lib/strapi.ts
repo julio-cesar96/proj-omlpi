@@ -187,20 +187,32 @@ export interface StrapiArtigo {
   [key: string]: unknown;
 }
 
-/** Localidade (município ou estado) */
-export interface StrapiLocale {
-  id: number;
-  name?: string;
-  state?: string;
-  ibge_code?: string;
-  [key: string]: unknown;
-}
 
 /** Política de privacidade */
 export interface StrapiPrivacyPolicy {
   id: number;
   content?: string; // markdown
   updated_at?: string;
+  [key: string]: unknown;
+}
+
+/**
+ * Localidade (Estado ou Município)
+ *
+ * Confirmado: a collection `locales` do Strapi é a fonte oficial de dados
+ * para o Mapa e Painéis, contendo `cod_ibge` e os arquivos do plano (`plan`).
+ */
+export interface StrapiLocale {
+  id: number;
+  name: string;
+  state?: string;
+  region?: string;
+  type: "country" | "region" | "state" | "city";
+  is_capital?: boolean | null;
+  cod_ibge?: number | string | null;
+  is_law?: boolean | null;
+  hide_plan?: boolean | null;
+  plan?: StrapiFile | null;
   [key: string]: unknown;
 }
 
@@ -267,14 +279,13 @@ export function getArtigos(params?: StrapiQueryParams): Promise<StrapiArtigo[]> 
   return strapiGet<StrapiArtigo[]>("artigos", params);
 }
 
-/** Lista de localidades via Strapi (Consulta pública — busca e seleção) */
-export function getStrapiLocales(
-  params?: StrapiQueryParams
-): Promise<StrapiLocale[]> {
-  return strapiGet<StrapiLocale[]>("locales", params);
-}
 
 /** Conteúdo da política de privacidade (rodapé / ex-/rastreio) */
 export function getPrivacyPolicy(): Promise<StrapiPrivacyPolicy> {
   return strapiGet<StrapiPrivacyPolicy>("privacy-policy");
+}
+
+/** Localidades com dados de planos, cod_ibge, etc. */
+export function getStrapiLocales(params?: StrapiQueryParams): Promise<StrapiLocale[]> {
+  return strapiGet<StrapiLocale[]>("locales", params);
 }

@@ -1,5 +1,6 @@
 import { getLocaleData, getAreas } from "@/lib/omlpi-api";
-import type { OmlpiLocale, OmlpiIndicatorWithSubindicator } from "@/lib/omlpi-api";
+import type { OmlpiIndicatorWithSubindicator } from "@/lib/omlpi-api";
+import type { StrapiLocale } from "@/lib/strapi";
 import { LocalidadeBusca } from "./LocalidadeBusca";
 
 /**
@@ -15,7 +16,7 @@ import { LocalidadeBusca } from "./LocalidadeBusca";
 interface PainelMunicipalProps {
   locationId: number;
   areaId?: number;
-  locales: OmlpiLocale[];
+  locales: StrapiLocale[];
 }
 
 function formatValue(v: number | null | undefined) {

@@ -2,7 +2,7 @@
 
 import { useRouter, useSearchParams } from "next/navigation";
 import { useCallback, useEffect, useRef, useState } from "react";
-import type { OmlpiLocale } from "@/lib/omlpi-api";
+import type { StrapiLocale } from "@/lib/strapi";
 
 /**
  * LocalidadeBusca — Client Component
@@ -25,7 +25,7 @@ function normalize(s: string) {
 }
 
 interface LocalidadeBuscaProps {
-  locales: OmlpiLocale[];
+  locales: StrapiLocale[];
   placeholder?: string;
   selectedId?: number;
 }
@@ -44,7 +44,7 @@ export function LocalidadeBusca({
     : "";
 
   const [query, setQuery] = useState(initialName);
-  const [results, setResults] = useState<OmlpiLocale[]>([]);
+  const [results, setResults] = useState<StrapiLocale[]>([]);
   const [isOpen, setIsOpen] = useState(false);
   const [activeIndex, setActiveIndex] = useState(-1);
   const [selectedName, setSelectedName] = useState(initialName);
@@ -84,7 +84,7 @@ export function LocalidadeBusca({
     debounceRef.current = setTimeout(() => runSearch(val), DEBOUNCE_MS);
   };
 
-  const handleSelect = (locale: OmlpiLocale) => {
+  const handleSelect = (locale: StrapiLocale) => {
     setQuery(locale.name ?? "");
     setSelectedName(locale.name ?? "");
     setIsOpen(false);

@@ -1,6 +1,5 @@
 import { Suspense } from "react";
 import { getStrapiLocales } from "@/lib/strapi";
-import type { OmlpiLocale } from "@/lib/omlpi-api";
 import { TABS, type TabId } from "./tabs-config";
 import { TabsNav } from "./TabsNav";
 
@@ -56,12 +55,33 @@ export async function ConsultaPublica({ searchParams }: ConsultaPublicaProps) {
   const locationId = parseId(searchParams["location_id"]);
   const areaId = parseId(searchParams["area"]);
 
-  // Locales carregados uma vez para todo o componente (mapa + busca + painel) via Strapi CMS
-  let locales = (await getStrapiLocales({ _limit: -1 }).catch(() => [])) as unknown as OmlpiLocale[];
+  // Locales carregados uma vez para todo o componente (mapa + busca + painel) via API Strapi
+  let locales = await getStrapiLocales({ _limit: -1 }).catch((err) => {
+    console.error("[ConsultaPublica] Erro ao buscar locales do Strapi:", err);
+    return [];
+  });
+  console.log('[DEBUG locales]', {
+    total: locales?.length,
+    primeiro: locales?.[0],
+    comPlano: locales?.filter((l: any) => l.plan)?.length,
+  });
+
   // Filtra apenas municípios e estados (excluindo regiões e país)
   locales = locales.filter(
     (l) => l.type === "city" || l.type === "state"
   );
+  console.log('[DEBUG locales] DEPOIS', {
+    total: locales?.length,
+    primeiro: locales?.[0],
+    comPlano: locales?.filter((l: any) => l.plan)?.length,
+  });
+
+  console.log('[DEBUG estados]', JSON.stringify(
+    locales.filter((l: any) => l.type === 'state').map((l: any) => ({
+      name: l.name, state: l.state, plan: !!l.plan, is_law: l.is_law,
+    })),
+    null, 2
+  ));
 
   return (
     <section

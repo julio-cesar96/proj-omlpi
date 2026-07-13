@@ -1,6 +1,6 @@
 import React, { Suspense } from "react";
 import { getCompareData, getHistoricalData, getAreas } from "@/lib/omlpi-api";
-import type { OmlpiLocale } from "@/lib/omlpi-api";
+import type { StrapiLocale } from "@/lib/strapi";
 import { NacionalControls } from "./NacionalControls";
 import { GraficoComparacao } from "./GraficoComparacao";
 import { GraficoHistorico } from "./GraficoHistorico";
@@ -10,7 +10,7 @@ interface PainelNacionalProps {
   locationId: number | undefined;
   areaId: number | undefined;
   mode: "comparacao" | "historico";
-  locales: OmlpiLocale[];
+  locales: StrapiLocale[];
 }
 
 export async function PainelNacional({

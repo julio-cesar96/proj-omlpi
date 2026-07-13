@@ -3,7 +3,7 @@
 import Script from "next/script";
 import { useRouter } from "next/navigation";
 import { useCallback, useEffect, useRef, useState } from "react";
-import type { OmlpiLocale } from "@/lib/omlpi-api";
+import type { StrapiLocale } from "@/lib/strapi";
 
 /**
  * MapaBrasil — Client Component
@@ -39,7 +39,7 @@ declare global {
 }
 
 interface MapaBrasilProps {
-  locales: OmlpiLocale[];
+  locales: StrapiLocale[];
 }
 
 // Mapa de abreviação de estado → hc-key do Highcharts
@@ -52,12 +52,17 @@ const STATE_TO_HCKEY: Record<string, string> = {
   SP: "br-sp", TO: "br-to",
 };
 
-function getLocaleStatus(locale: OmlpiLocale | undefined): "approved" | "inProgress" | "none" {
+function getLocaleStatus(locale: StrapiLocale | undefined): "approved" | "inProgress" | "none" {
   if (!locale?.plan || locale.hide_plan) return "none";
   return locale.is_law ? "inProgress" : "approved";
 }
 
 export function MapaBrasil({ locales }: MapaBrasilProps) {
+  console.log('[DEBUG MapaBrasil client]', {
+    total: locales.length,
+    comPlano: locales.filter(l => l.plan).length,
+    estadosComTipoState: locales.filter(l => l.type === 'state').length,
+  });
   const router = useRouter();
   const containerRef = useRef<HTMLDivElement>(null);
   const chartRef = useRef<unknown>(null);
@@ -66,7 +71,7 @@ export function MapaBrasil({ locales }: MapaBrasilProps) {
 
   // Indexa locales por estado para lookup rápido
   const stateLocales = locales.filter((l) => l.type === "state");
-  const cityLocalesByState = locales.reduce<Record<string, OmlpiLocale[]>>(
+  const cityLocalesByState = locales.reduce<Record<string, StrapiLocale[]>>(
     (acc, l) => {
       if (l.type === "city" && l.state) {
         (acc[l.state] ??= []).push(l);

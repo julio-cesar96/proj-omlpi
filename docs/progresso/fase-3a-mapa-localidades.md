@@ -107,10 +107,12 @@ Estados de feedback gerenciados com `useState`: `idle` → `loading` → `succes
 
 ---
 
-## 4. Shape do `GET /locales` — campos relevantes para o mapa
+## 4. Shape do `GET /locales` (Strapi) — campos relevantes para o mapa
+
+**CORREÇÃO (Fase 3d):** Estes campos vêm exclusivamente do CMS (Strapi), endpoint `/locales`. A API em Perl não possui `cod_ibge` nem os detalhes do `plan`.
 
 ```ts
-OmlpiLocale {
+StrapiLocale {
   id: number
   name: string
   type: "country" | "region" | "state" | "city"
