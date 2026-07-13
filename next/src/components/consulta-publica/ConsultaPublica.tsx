@@ -60,28 +60,11 @@ export async function ConsultaPublica({ searchParams }: ConsultaPublicaProps) {
     console.error("[ConsultaPublica] Erro ao buscar locales do Strapi:", err);
     return [];
   });
-  console.log('[DEBUG locales]', {
-    total: locales?.length,
-    primeiro: locales?.[0],
-    comPlano: locales?.filter((l: any) => l.plan)?.length,
-  });
 
   // Filtra apenas municípios e estados (excluindo regiões e país)
   locales = locales.filter(
     (l) => l.type === "city" || l.type === "state"
   );
-  console.log('[DEBUG locales] DEPOIS', {
-    total: locales?.length,
-    primeiro: locales?.[0],
-    comPlano: locales?.filter((l: any) => l.plan)?.length,
-  });
-
-  console.log('[DEBUG estados]', JSON.stringify(
-    locales.filter((l: any) => l.type === 'state').map((l: any) => ({
-      name: l.name, state: l.state, plan: !!l.plan, is_law: l.is_law,
-    })),
-    null, 2
-  ));
 
   return (
     <section

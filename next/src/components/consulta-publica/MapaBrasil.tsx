@@ -52,17 +52,15 @@ const STATE_TO_HCKEY: Record<string, string> = {
   SP: "br-sp", TO: "br-to",
 };
 
-function getLocaleStatus(locale: StrapiLocale | undefined): "approved" | "inProgress" | "none" {
-  if (!locale?.plan || locale.hide_plan) return "none";
-  return locale.is_law ? "inProgress" : "approved";
+function getLocaleStatus(locale: StrapiLocale | undefined, plansCount: number = 0): "approved" | "inProgress" | "none" {
+  if (locale?.plan && !locale.hide_plan) {
+    return locale.is_law ? "inProgress" : "approved";
+  }
+  if (plansCount > 0) return "inProgress";
+  return "none";
 }
 
 export function MapaBrasil({ locales }: MapaBrasilProps) {
-  console.log('[DEBUG MapaBrasil client]', {
-    total: locales.length,
-    comPlano: locales.filter(l => l.plan).length,
-    estadosComTipoState: locales.filter(l => l.type === 'state').length,
-  });
   const router = useRouter();
   const containerRef = useRef<HTMLDivElement>(null);
   const chartRef = useRef<unknown>(null);
@@ -88,15 +86,15 @@ export function MapaBrasil({ locales }: MapaBrasilProps) {
 
     // Enriquece cada estado com dados de plano
     mapData.forEach((item: Record<string, unknown>) => {
-      const hcKey = item["hc-key"] as string | undefined;
-      const stateAbbr = Object.entries(STATE_TO_HCKEY).find(
-        ([, v]) => v === hcKey
-      )?.[0];
+      const properties = (item["properties"] as Record<string, unknown>) || {};
+      const hcKey = properties["hc-key"] as string | undefined;
+      const stateAbbr = properties["hc-a2"] as string | undefined;
 
       const statePlan = stateLocales.find((l) => l.state === stateAbbr);
       const cities = stateAbbr ? (cityLocalesByState[stateAbbr] ?? []) : [];
       const plansCount = cities.filter((c) => c.plan && !c.hide_plan).length;
-      const status = getLocaleStatus(statePlan);
+
+      const status = getLocaleStatus(statePlan, plansCount);
 
       item["planStatus"] = status;
       item["planUrl"] = statePlan?.plan?.url ?? null;
