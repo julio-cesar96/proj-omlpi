@@ -1,0 +1,1140 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800;900&family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg:#FFFFF0; --card:#FFFFFF; --text:#444525; --primary:#F25D27; --secondary:#17A649;
+    --accent:#E8F5EE; --muted:#F5F5E8; --destructive:#D4183D; --border:rgba(164,154,135,.2);
+    --radius:16px; --text-soft:#7a7663; --shadow:0 1px 2px rgba(68,69,37,.04),0 8px 24px rgba(68,69,37,.05);
+    --shadow-lg:0 12px 40px rgba(68,69,37,.14);
+  }
+  *{box-sizing:border-box}
+  html,body{margin:0;padding:0}
+  body{background:var(--bg);color:var(--text);font-family:'Plus Jakarta Sans',system-ui,sans-serif;-webkit-font-smoothing:antialiased;line-height:1.45}
+  h1,h2,h3,h4,h5{font-family:'Nunito',sans-serif;margin:0}
+  button{font-family:inherit;cursor:pointer;border:none;background:none;color:inherit}
+  input,textarea,select{font-family:inherit;color:inherit}
+  a{color:var(--primary);text-decoration:none}
+  a:hover{color:#d94e1c}
+  ::-webkit-scrollbar{width:10px;height:10px}
+  ::-webkit-scrollbar-thumb{background:rgba(164,154,135,.3);border-radius:8px;border:3px solid transparent;background-clip:content-box}
+  ::-webkit-scrollbar-track{background:transparent}
+  @keyframes spin{to{transform:rotate(360deg)}}
+  @keyframes slideIn{from{transform:translateY(12px);opacity:0}to{transform:translateY(0);opacity:1}}
+  @keyframes fadeIn{from{opacity:0}to{opacity:1}}
+  @keyframes drawerIn{from{transform:translateX(100%)}to{transform:translateX(0)}}
+  @keyframes barGrow{from{width:0}}
+</style>
+</helmet>
+<div style="display:flex;height:100vh;overflow:hidden;background:var(--bg)">
+
+  <!-- SIDEBAR -->
+  <aside style="width:264px;flex-shrink:0;background:var(--card);border-right:1px solid var(--border);display:flex;flex-direction:column;height:100vh">
+    <div style="padding:22px 22px 16px;display:flex;align-items:center;gap:11px">
+      <div style="width:40px;height:40px;border-radius:12px;background:var(--primary);display:flex;align-items:center;justify-content:center;flex-shrink:0;box-shadow:0 4px 12px rgba(242,93,39,.28)">
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2.4" stroke-linecap="round"><circle cx="12" cy="12" r="3.2"></circle><path d="M2 12s3.5-7 10-7 10 7 10 7-3.5 7-10 7-10-7-10-7z"></path></svg>
+      </div>
+      <div style="line-height:1.1">
+        <div style="font-family:'Nunito';font-weight:900;font-size:16px;letter-spacing:-.3px">Observa RNPI</div>
+        <div style="font-size:11px;color:var(--text-soft);font-weight:600;letter-spacing:.4px">PAINEL DE CONTEÚDO</div>
+      </div>
+    </div>
+
+    <div style="padding:6px 14px 4px;font-size:10.5px;font-weight:700;letter-spacing:.9px;color:var(--text-soft)">PRINCIPAL</div>
+    <nav style="display:flex;flex-direction:column;gap:2px;padding:2px 12px">
+      <button onClick="{{ go.dashboard }}" style="display:flex;align-items:center;gap:12px;padding:10px 12px;border-radius:11px;font-size:14px;font-weight:600;text-align:left;background:{{ nav.dashboard.bg }};color:{{ nav.dashboard.color }}" style-hover="background:var(--muted)">
+        <svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="9" rx="1.5"></rect><rect x="14" y="3" width="7" height="5" rx="1.5"></rect><rect x="14" y="12" width="7" height="9" rx="1.5"></rect><rect x="3" y="16" width="7" height="5" rx="1.5"></rect></svg>
+        Dashboard
+      </button>
+      <button onClick="{{ go.planos }}" style="display:flex;align-items:center;gap:12px;padding:10px 12px;border-radius:11px;font-size:14px;font-weight:600;text-align:left;background:{{ nav.planos.bg }};color:{{ nav.planos.color }}" style-hover="background:var(--muted)">
+        <svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 4h11l5 5v11a1 1 0 0 1-1 1H4a1 1 0 0 1-1-1V5a1 1 0 0 1 1-1z"></path><path d="M14 4v6h6"></path><path d="M8 13h6M8 17h4"></path></svg>
+        Planos
+        <span style="margin-left:auto;font-size:11px;font-weight:700;background:var(--muted);color:var(--text-soft);padding:1px 8px;border-radius:20px">128</span>
+      </button>
+      <button onClick="{{ go.midiateca }}" style="display:flex;align-items:center;gap:12px;padding:10px 12px;border-radius:11px;font-size:14px;font-weight:600;text-align:left;background:{{ nav.midiateca.bg }};color:{{ nav.midiateca.color }}" style-hover="background:var(--muted)">
+        <svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 7a2 2 0 0 1 2-2h4l2 2.5h6a2 2 0 0 1 2 2V17a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path></svg>
+        Midiateca
+      </button>
+      <button onClick="{{ go.faqs }}" style="display:flex;align-items:center;gap:12px;padding:10px 12px;border-radius:11px;font-size:14px;font-weight:600;text-align:left;background:{{ nav.faqs.bg }};color:{{ nav.faqs.color }}" style-hover="background:var(--muted)">
+        <svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"></circle><path d="M9.2 9.3a2.8 2.8 0 0 1 5.4 1c0 1.9-2.8 2.5-2.8 2.5"></path><line x1="12" y1="17" x2="12" y2="17.01"></line></svg>
+        FAQs
+      </button>
+      <button onClick="{{ go.textos }}" style="display:flex;align-items:center;gap:12px;padding:10px 12px;border-radius:11px;font-size:14px;font-weight:600;text-align:left;background:{{ nav.textos.bg }};color:{{ nav.textos.color }}" style-hover="background:var(--muted)">
+        <svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 5h16M4 10h16M4 15h10M4 20h7"></path></svg>
+        Textos Institucionais
+      </button>
+    </nav>
+
+    <div style="padding:14px 14px 4px;font-size:10.5px;font-weight:700;letter-spacing:.9px;color:var(--text-soft)">ADMINISTRAÇÃO</div>
+    <nav style="display:flex;flex-direction:column;gap:2px;padding:2px 12px">
+      <button onClick="{{ go.usuarios }}" style="display:flex;align-items:center;gap:12px;padding:10px 12px;border-radius:11px;font-size:14px;font-weight:600;text-align:left;background:{{ nav.usuarios.bg }};color:{{ nav.usuarios.color }}" style-hover="background:var(--muted)">
+        <svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="9" cy="8" r="3.2"></circle><path d="M3.5 19a5.5 5.5 0 0 1 11 0"></path><path d="M16 6.5a3 3 0 0 1 0 5.8M17.5 19a5.5 5.5 0 0 0-3-4.9"></path></svg>
+        Usuários
+      </button>
+      <button onClick="{{ go.config }}" style="display:flex;align-items:center;gap:12px;padding:10px 12px;border-radius:11px;font-size:14px;font-weight:600;text-align:left;background:{{ nav.config.bg }};color:{{ nav.config.color }}" style-hover="background:var(--muted)">
+        <svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"></circle><path d="M19.4 15a1.6 1.6 0 0 0 .3 1.8l.1.1a2 2 0 1 1-2.8 2.8l-.1-.1a1.6 1.6 0 0 0-2.7 1.1v.2a2 2 0 0 1-4 0v-.1a1.6 1.6 0 0 0-2.7-1.2l-.1.1a2 2 0 1 1-2.8-2.8l.1-.1a1.6 1.6 0 0 0-1.1-2.7H3a2 2 0 0 1 0-4h.1a1.6 1.6 0 0 0 1.2-2.7l-.1-.1a2 2 0 1 1 2.8-2.8l.1.1a1.6 1.6 0 0 0 2.7-1.1V3a2 2 0 0 1 4 0v.1a1.6 1.6 0 0 0 2.7 1.2l.1-.1a2 2 0 1 1 2.8 2.8l-.1.1a1.6 1.6 0 0 0 1.1 2.7h.2a2 2 0 0 1 0 4h-.1a1.6 1.6 0 0 0-1.2.9z"></path></svg>
+        Configurações
+      </button>
+    </nav>
+
+    <div style="margin-top:auto;padding:16px">
+      <div style="background:var(--muted);border-radius:14px;padding:14px">
+        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px">
+          <span style="font-size:12px;font-weight:700">Armazenamento</span>
+          <span style="font-size:12px;color:var(--text-soft);font-weight:600">6,4 / 20 GB</span>
+        </div>
+        <div style="height:7px;background:rgba(164,154,135,.25);border-radius:20px;overflow:hidden">
+          <div style="height:100%;width:32%;background:var(--primary);border-radius:20px"></div>
+        </div>
+      </div>
+    </div>
+  </aside>
+
+  <!-- MAIN -->
+  <div style="flex:1;display:flex;flex-direction:column;min-width:0;height:100vh">
+    <header style="height:66px;flex-shrink:0;background:rgba(255,255,240,.85);backdrop-filter:blur(8px);border-bottom:1px solid var(--border);display:flex;align-items:center;gap:16px;padding:0 28px;position:sticky;top:0;z-index:20">
+      <div style="position:relative;flex:1;max-width:440px">
+        <svg style="position:absolute;left:14px;top:50%;transform:translateY(-50%)" width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="#7a7663" stroke-width="2" stroke-linecap="round"><circle cx="11" cy="11" r="7"></circle><path d="m20 20-3-3"></path></svg>
+        <input value="{{ globalSearch }}" onInput="{{ onGlobalSearch }}" placeholder="Buscar em todo o conteúdo…  ⌘K" style="width:100%;height:40px;padding:0 14px 0 40px;border-radius:11px;border:1px solid var(--border);background:var(--card);font-size:13.5px;outline:none" style-focus="border-color:var(--primary)">
+      </div>
+      <div style="margin-left:auto;display:flex;align-items:center;gap:8px">
+        <button onClick="{{ openImport }}" style="display:flex;align-items:center;gap:7px;height:38px;padding:0 14px;border-radius:10px;border:1px solid var(--border);background:var(--card);font-size:13px;font-weight:600" style-hover="background:var(--muted)">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3v12M8 11l4 4 4-4"></path><path d="M4 17v2a1 1 0 0 0 1 1h14a1 1 0 0 0 1-1v-2"></path></svg>
+          Importar
+        </button>
+        <button onClick="{{ createPrimary }}" style="display:flex;align-items:center;gap:7px;height:38px;padding:0 16px;border-radius:10px;background:var(--primary);color:#fff;font-size:13px;font-weight:700;box-shadow:0 4px 12px rgba(242,93,39,.28)" style-hover="background:#e0521f">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><path d="M12 5v14M5 12h14"></path></svg>
+          Criar
+        </button>
+        <div style="width:1px;height:26px;background:var(--border);margin:0 4px"></div>
+        <button style="width:38px;height:38px;border-radius:10px;display:flex;align-items:center;justify-content:center;position:relative" style-hover="background:var(--muted)">
+          <svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 8a6 6 0 1 0-12 0c0 7-3 9-3 9h18s-3-2-3-9"></path><path d="M13.7 21a2 2 0 0 1-3.4 0"></path></svg>
+          <span style="position:absolute;top:7px;right:8px;width:7px;height:7px;border-radius:50%;background:var(--primary);border:1.5px solid var(--card)"></span>
+        </button>
+        <div style="display:flex;align-items:center;gap:9px;padding:4px 6px 4px 4px;border-radius:24px" style-hover="background:var(--muted)">
+          <div style="width:34px;height:34px;border-radius:50%;background:var(--secondary);color:#fff;display:flex;align-items:center;justify-content:center;font-weight:800;font-size:13px;font-family:'Nunito'">MR</div>
+          <div style="line-height:1.15">
+            <div style="font-size:12.5px;font-weight:700">Marina Reis</div>
+            <div style="font-size:11px;color:var(--text-soft)">Administrador</div>
+          </div>
+        </div>
+      </div>
+    </header>
+
+    <main style="flex:1;overflow-y:auto;padding:28px 32px 60px">
+      <sc-if value="{{ isDashboard }}" hint-placeholder-val="{{ true }}">
+        <div style="animation:fadeIn .3s ease">
+          <div style="display:flex;align-items:flex-end;justify-content:space-between;margin-bottom:22px;flex-wrap:wrap;gap:12px">
+            <div>
+              <h1 style="font-size:27px;font-weight:800;letter-spacing:-.5px">Bom dia, Marina 👋</h1>
+              <p style="color:var(--text-soft);font-size:14px;margin:4px 0 0">Aqui está o panorama do conteúdo do Observa RNPI hoje.</p>
+            </div>
+            <div style="font-size:13px;color:var(--text-soft);font-weight:600;background:var(--card);border:1px solid var(--border);padding:8px 14px;border-radius:11px">14 de julho de 2026 · Segunda-feira</div>
+          </div>
+
+          <div style="display:grid;grid-template-columns:repeat(5,1fr);gap:16px;margin-bottom:20px">
+            <sc-for list="{{ kpis }}" as="k" hint-placeholder-count="5">
+              <div style="background:var(--card);border:1px solid var(--border);border-radius:var(--radius);padding:18px;box-shadow:var(--shadow)">
+                <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:14px">
+                  <div style="width:38px;height:38px;border-radius:11px;background:{{ k.iconBg }};color:{{ k.iconColor }};display:flex;align-items:center;justify-content:center;font-size:18px">{{ k.emoji }}</div>
+                  <span style="font-size:12px;font-weight:700;color:{{ k.deltaColor }};background:{{ k.deltaBg }};padding:2px 8px;border-radius:20px">{{ k.delta }}</span>
+                </div>
+                <div style="font-family:'Nunito';font-size:26px;font-weight:800;letter-spacing:-.5px">{{ k.value }}</div>
+                <div style="font-size:12.5px;color:var(--text-soft);font-weight:600;margin-top:2px">{{ k.label }}</div>
+              </div>
+            </sc-for>
+          </div>
+
+          <div style="display:grid;grid-template-columns:1.6fr 1fr;gap:20px;align-items:start">
+            <div style="display:flex;flex-direction:column;gap:20px">
+              <div style="background:var(--card);border:1px solid var(--border);border-radius:var(--radius);box-shadow:var(--shadow);overflow:hidden">
+                <div style="padding:16px 20px;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between">
+                  <h3 style="font-size:16px;font-weight:800">Atividades recentes</h3>
+                  <a style="font-size:12.5px;font-weight:700">Ver tudo</a>
+                </div>
+                <div>
+                  <sc-for list="{{ activities }}" as="a" hint-placeholder-count="5">
+                    <div style="display:flex;gap:13px;padding:13px 20px;border-bottom:1px solid var(--border);align-items:center">
+                      <div style="width:34px;height:34px;border-radius:10px;background:{{ a.bg }};color:{{ a.color }};display:flex;align-items:center;justify-content:center;flex-shrink:0">
+                        <span style="font-size:15px">{{ a.emoji }}</span>
+                      </div>
+                      <div style="flex:1;min-width:0">
+                        <div style="font-size:13.5px"><b style="font-weight:700">{{ a.user }}</b> {{ a.action }} <b style="font-weight:700">{{ a.target }}</b></div>
+                        <div style="font-size:12px;color:var(--text-soft);margin-top:1px">{{ a.time }}</div>
+                      </div>
+                      <span style="font-size:11px;font-weight:700;color:{{ a.tagColor }};background:{{ a.tagBg }};padding:2px 9px;border-radius:20px">{{ a.tag }}</span>
+                    </div>
+                  </sc-for>
+                </div>
+              </div>
+            </div>
+
+            <div style="display:flex;flex-direction:column;gap:20px">
+              <div style="background:var(--card);border:1px solid var(--border);border-radius:var(--radius);box-shadow:var(--shadow);padding:20px">
+                <h3 style="font-size:16px;font-weight:800;margin-bottom:14px">Atalhos rápidos</h3>
+                <div style="display:grid;grid-template-columns:1fr 1fr;gap:11px">
+                  <button onClick="{{ go.planos }}" style="display:flex;flex-direction:column;gap:9px;padding:15px;border-radius:13px;border:1px solid var(--border);text-align:left;background:var(--bg)" style-hover="border-color:var(--primary);background:var(--muted)">
+                    <span style="width:34px;height:34px;border-radius:10px;background:#FDE7DE;display:flex;align-items:center;justify-content:center;font-size:16px">📋</span>
+                    <span style="font-size:13px;font-weight:700">Novo plano</span>
+                  </button>
+                  <button onClick="{{ go.midiateca }}" style="display:flex;flex-direction:column;gap:9px;padding:15px;border-radius:13px;border:1px solid var(--border);text-align:left;background:var(--bg)" style-hover="border-color:var(--primary);background:var(--muted)">
+                    <span style="width:34px;height:34px;border-radius:10px;background:var(--accent);display:flex;align-items:center;justify-content:center;font-size:16px">📤</span>
+                    <span style="font-size:13px;font-weight:700">Enviar arquivo</span>
+                  </button>
+                  <button onClick="{{ openFaqModal }}" style="display:flex;flex-direction:column;gap:9px;padding:15px;border-radius:13px;border:1px solid var(--border);text-align:left;background:var(--bg)" style-hover="border-color:var(--primary);background:var(--muted)">
+                    <span style="width:34px;height:34px;border-radius:10px;background:#FDE7DE;display:flex;align-items:center;justify-content:center;font-size:16px">❓</span>
+                    <span style="font-size:13px;font-weight:700">Nova FAQ</span>
+                  </button>
+                  <button onClick="{{ openImport }}" style="display:flex;flex-direction:column;gap:9px;padding:15px;border-radius:13px;border:1px solid var(--border);text-align:left;background:var(--bg)" style-hover="border-color:var(--primary);background:var(--muted)">
+                    <span style="width:34px;height:34px;border-radius:10px;background:var(--accent);display:flex;align-items:center;justify-content:center;font-size:16px">📥</span>
+                    <span style="font-size:13px;font-weight:700">Importar CSV</span>
+                  </button>
+                </div>
+              </div>
+
+              <div style="background:var(--card);border:1px solid var(--border);border-radius:var(--radius);box-shadow:var(--shadow);overflow:hidden">
+                <div style="padding:16px 20px;border-bottom:1px solid var(--border)">
+                  <h3 style="font-size:16px;font-weight:800">Acessos recentes</h3>
+                </div>
+                <sc-for list="{{ accesses }}" as="u" hint-placeholder-count="4">
+                  <div style="display:flex;gap:11px;padding:11px 20px;align-items:center;border-bottom:1px solid var(--border)">
+                    <div style="width:32px;height:32px;border-radius:50%;background:{{ u.avBg }};color:#fff;display:flex;align-items:center;justify-content:center;font-weight:800;font-size:12px;font-family:'Nunito';flex-shrink:0">{{ u.initials }}</div>
+                    <div style="flex:1;min-width:0">
+                      <div style="font-size:13px;font-weight:700">{{ u.name }}</div>
+                      <div style="font-size:11.5px;color:var(--text-soft)">{{ u.role }}</div>
+                    </div>
+                    <div style="font-size:11.5px;color:var(--text-soft);font-weight:600">{{ u.time }}</div>
+                  </div>
+                </sc-for>
+              </div>
+            </div>
+          </div>
+        </div>
+      </sc-if>
+      <sc-if value="{{ isPlanos }}" hint-placeholder-val="{{ false }}">
+        <div style="animation:fadeIn .3s ease">
+          <div style="display:flex;align-items:flex-end;justify-content:space-between;margin-bottom:20px;flex-wrap:wrap;gap:12px">
+            <div>
+              <h1 style="font-size:26px;font-weight:800;letter-spacing:-.5px">Planos</h1>
+              <p style="color:var(--text-soft);font-size:14px;margin:4px 0 0">Gerencie planos, diretrizes e documentos com fluxo editorial.</p>
+            </div>
+            <button onClick="{{ newPlan }}" style="display:flex;align-items:center;gap:7px;height:40px;padding:0 18px;border-radius:11px;background:var(--primary);color:#fff;font-size:13.5px;font-weight:700;box-shadow:0 4px 12px rgba(242,93,39,.28)" style-hover="background:#e0521f">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><path d="M12 5v14M5 12h14"></path></svg>
+              Novo plano
+            </button>
+          </div>
+
+          <div style="display:flex;align-items:center;gap:8px;margin-bottom:16px;flex-wrap:wrap">
+            <sc-for list="{{ planTabs }}" as="t" hint-placeholder-count="5">
+              <button onClick="{{ t.onClick }}" style="display:flex;align-items:center;gap:7px;height:36px;padding:0 14px;border-radius:10px;font-size:13px;font-weight:700;border:1px solid var(--border);background:{{ t.bg }};color:{{ t.color }}">
+                {{ t.label }}
+                <span style="font-size:11px;font-weight:800;background:{{ t.nbg }};color:{{ t.ncolor }};padding:1px 7px;border-radius:20px">{{ t.n }}</span>
+              </button>
+            </sc-for>
+          </div>
+
+          <div style="background:var(--card);border:1px solid var(--border);border-radius:var(--radius);box-shadow:var(--shadow);overflow:hidden">
+            <div style="display:flex;align-items:center;gap:12px;padding:14px 18px;border-bottom:1px solid var(--border)">
+              <div style="position:relative;flex:1;max-width:360px">
+                <svg style="position:absolute;left:12px;top:50%;transform:translateY(-50%)" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#7a7663" stroke-width="2" stroke-linecap="round"><circle cx="11" cy="11" r="7"></circle><path d="m20 20-3-3"></path></svg>
+                <input value="{{ planSearch }}" onInput="{{ onPlanSearch }}" placeholder="Buscar planos…" style="width:100%;height:38px;padding:0 12px 0 38px;border-radius:10px;border:1px solid var(--border);background:var(--bg);font-size:13px;outline:none" style-focus="border-color:var(--primary)">
+              </div>
+              <button style="display:flex;align-items:center;gap:7px;height:38px;padding:0 13px;border-radius:10px;border:1px solid var(--border);background:var(--card);font-size:13px;font-weight:600" style-hover="background:var(--muted)">
+                <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 6h16M7 12h10M10 18h4"></path></svg>
+                Filtros
+              </button>
+              <button style="display:flex;align-items:center;gap:7px;height:38px;padding:0 13px;border-radius:10px;border:1px solid var(--border);background:var(--card);font-size:13px;font-weight:600" style-hover="background:var(--muted)">
+                <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 15V3M8 7l4-4 4 4"></path><path d="M4 17v2a1 1 0 0 0 1 1h14a1 1 0 0 0 1-1v-2"></path></svg>
+                Exportar
+              </button>
+            </div>
+
+            <div style="display:grid;grid-template-columns:40px 2.4fr 1.3fr 1fr .9fr 88px;align-items:center;padding:11px 18px;border-bottom:1px solid var(--border);font-size:11.5px;font-weight:700;color:var(--text-soft);letter-spacing:.4px;text-transform:uppercase">
+              <div><input type="checkbox" style="width:15px;height:15px;accent-color:var(--primary)"></div>
+              <div>Título</div><div>Categoria</div><div>Status</div><div>Atualizado</div><div style="text-align:right">Ações</div>
+            </div>
+
+            <sc-for list="{{ plans }}" as="p" hint-placeholder-count="6">
+              <div style="display:grid;grid-template-columns:40px 2.4fr 1.3fr 1fr .9fr 88px;align-items:center;padding:14px 18px;border-bottom:1px solid var(--border)" style-hover="background:var(--bg)">
+                <div><input type="checkbox" style="width:15px;height:15px;accent-color:var(--primary)"></div>
+                <div style="min-width:0;padding-right:14px">
+                  <button onClick="{{ p.open }}" style="font-size:14px;font-weight:700;text-align:left;display:block;line-height:1.3" style-hover="color:var(--primary)">{{ p.title }}</button>
+                  <div style="display:flex;gap:5px;margin-top:5px;flex-wrap:wrap">
+                    <sc-for list="{{ p.tags }}" as="tag" hint-placeholder-count="2">
+                      <span style="font-size:10.5px;font-weight:700;color:var(--text-soft);background:var(--muted);padding:1px 8px;border-radius:20px">{{ tag }}</span>
+                    </sc-for>
+                    <span style="font-size:10.5px;font-weight:600;color:var(--text-soft)">· {{ p.files }} anexos</span>
+                  </div>
+                </div>
+                <div style="font-size:13px;color:var(--text-soft);font-weight:600">{{ p.category }}</div>
+                <div>
+                  <span style="display:inline-flex;align-items:center;gap:6px;font-size:12px;font-weight:700;color:{{ p.st.color }};background:{{ p.st.bg }};padding:4px 11px;border-radius:20px">
+                    <span style="width:7px;height:7px;border-radius:50%;background:{{ p.st.dot }}"></span>{{ p.st.label }}
+                  </span>
+                </div>
+                <div style="font-size:13px;color:var(--text-soft);font-weight:600">{{ p.updated }}</div>
+                <div style="display:flex;gap:4px;justify-content:flex-end">
+                  <button onClick="{{ p.open }}" title="Editar" style="width:32px;height:32px;border-radius:9px;display:flex;align-items:center;justify-content:center;color:var(--text-soft)" style-hover="background:var(--muted);color:var(--text)">
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 20h9"></path><path d="M16.5 3.5a2.1 2.1 0 0 1 3 3L7 19l-4 1 1-4z"></path></svg>
+                  </button>
+                  <button onClick="{{ p.dup }}" title="Duplicar" style="width:32px;height:32px;border-radius:9px;display:flex;align-items:center;justify-content:center;color:var(--text-soft)" style-hover="background:var(--muted);color:var(--text)">
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="12" height="12" rx="2.5"></rect><path d="M6 15H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h8a2 2 0 0 1 2 2v1"></path></svg>
+                  </button>
+                </div>
+              </div>
+            </sc-for>
+
+            <div style="display:flex;align-items:center;justify-content:space-between;padding:14px 18px">
+              <span style="font-size:12.5px;color:var(--text-soft);font-weight:600">Mostrando {{ plans.length }} de 128 planos</span>
+              <div style="display:flex;gap:5px">
+                <button style="width:34px;height:34px;border-radius:9px;border:1px solid var(--border);display:flex;align-items:center;justify-content:center;color:var(--text-soft)" style-hover="background:var(--muted)"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="m15 18-6-6 6-6"></path></svg></button>
+                <button style="width:34px;height:34px;border-radius:9px;background:var(--primary);color:#fff;font-size:13px;font-weight:700">1</button>
+                <button style="width:34px;height:34px;border-radius:9px;border:1px solid var(--border);font-size:13px;font-weight:700" style-hover="background:var(--muted)">2</button>
+                <button style="width:34px;height:34px;border-radius:9px;border:1px solid var(--border);font-size:13px;font-weight:700" style-hover="background:var(--muted)">3</button>
+                <button style="width:34px;height:34px;border-radius:9px;border:1px solid var(--border);display:flex;align-items:center;justify-content:center" style-hover="background:var(--muted)"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="m9 18 6-6-6-6"></path></svg></button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </sc-if>
+      <sc-if value="{{ isMidiateca }}" hint-placeholder-val="{{ false }}">
+        <div style="animation:fadeIn .3s ease">
+          <div style="display:flex;align-items:flex-end;justify-content:space-between;margin-bottom:20px;flex-wrap:wrap;gap:12px">
+            <div>
+              <h1 style="font-size:26px;font-weight:800;letter-spacing:-.5px">Midiateca</h1>
+              <p style="color:var(--text-soft);font-size:14px;margin:4px 0 0">Envie e organize arquivos, imagens, vídeos e documentos.</p>
+            </div>
+            <div style="display:flex;gap:9px;align-items:center">
+              <div style="font-size:12.5px;color:var(--text-soft);font-weight:600;background:var(--card);border:1px solid var(--border);padding:9px 14px;border-radius:11px">6,4 GB de 20 GB usados</div>
+            </div>
+          </div>
+
+          <div onDragOver="{{ onDragEnter }}" onDragLeave="{{ onDragLeave }}" onDrop="{{ onDrop }}" style="border:2px dashed {{ dropBorder }};border-radius:var(--radius);background:{{ dropBg }};padding:32px;display:flex;flex-direction:column;align-items:center;gap:10px;margin-bottom:20px;transition:all .15s">
+            <div style="width:52px;height:52px;border-radius:14px;background:var(--primary);color:#fff;display:flex;align-items:center;justify-content:center;box-shadow:0 6px 16px rgba(242,93,39,.3)">
+              <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 16V4M7 9l5-5 5 5"></path><path d="M4 15v3a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-3"></path></svg>
+            </div>
+            <div style="font-size:15px;font-weight:800;font-family:'Nunito'">Arraste arquivos aqui ou <span style="color:var(--primary)">selecione do computador</span></div>
+            <div style="font-size:12.5px;color:var(--text-soft)">Suporta PDF, PNG, JPG, MP4, DOCX, XLSX · até 200 MB por arquivo · upload múltiplo</div>
+          </div>
+
+          <sc-if value="{{ hasUploads }}" hint-placeholder-val="{{ true }}">
+            <div style="background:var(--card);border:1px solid var(--border);border-radius:var(--radius);box-shadow:var(--shadow);padding:16px 18px;margin-bottom:20px">
+              <div style="font-size:13px;font-weight:800;margin-bottom:12px;display:flex;align-items:center;gap:8px">Enviando 3 arquivos<span style="width:16px;height:16px;border:2px solid var(--border);border-top-color:var(--primary);border-radius:50%;animation:spin .7s linear infinite"></span></div>
+              <div style="display:flex;flex-direction:column;gap:12px">
+                <sc-for list="{{ uploads }}" as="u" hint-placeholder-count="3">
+                  <div>
+                    <div style="display:flex;justify-content:space-between;margin-bottom:6px">
+                      <span style="font-size:12.5px;font-weight:600">{{ u.name }}</span>
+                      <span style="font-size:12px;font-weight:700;color:{{ u.statusColor }}">{{ u.status }} · {{ u.size }}</span>
+                    </div>
+                    <div style="height:6px;background:var(--muted);border-radius:20px;overflow:hidden">
+                      <div style="height:100%;width:{{ u.w }};background:{{ u.color }};border-radius:20px"></div>
+                    </div>
+                  </div>
+                </sc-for>
+              </div>
+            </div>
+          </sc-if>
+
+          <div style="display:flex;align-items:center;gap:8px;margin-bottom:16px;flex-wrap:wrap">
+            <sc-for list="{{ mediaFilters }}" as="t" hint-placeholder-count="5">
+              <button onClick="{{ t.onClick }}" style="display:flex;align-items:center;gap:7px;height:36px;padding:0 14px;border-radius:10px;font-size:13px;font-weight:700;border:1px solid var(--border);background:{{ t.bg }};color:{{ t.color }}">
+                {{ t.label }} <span style="opacity:.6;font-size:12px">{{ t.n }}</span>
+              </button>
+            </sc-for>
+            <div style="margin-left:auto;display:flex;align-items:center;gap:8px">
+              <span style="font-size:12.5px;color:var(--text-soft);font-weight:600">Ordenar:</span>
+              <select value="{{ mediaSort }}" onChange="{{ onMediaSort }}" style="height:36px;padding:0 12px;border-radius:10px;border:1px solid var(--border);background:var(--card);font-size:13px;font-weight:600;outline:none">
+                <option value="recent">Mais recentes</option><option value="name">Nome (A–Z)</option><option value="size">Tamanho</option>
+              </select>
+            </div>
+          </div>
+
+          <div style="display:grid;grid-template-columns:repeat(5,1fr);gap:16px">
+            <sc-for list="{{ mediaFiles }}" as="f" hint-placeholder-count="10">
+              <div style="background:var(--card);border:1px solid var(--border);border-radius:14px;box-shadow:var(--shadow);overflow:hidden;cursor:pointer" style-hover="border-color:var(--primary);box-shadow:0 10px 28px rgba(68,69,37,.1)">
+                <div style="height:110px;background:{{ f.t.bg }};display:flex;align-items:center;justify-content:center;position:relative">
+                  <sc-if value="{{ f.isImg }}" hint-placeholder-val="{{ false }}">
+                    <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="{{ f.t.color }}" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="16" rx="2.5"></rect><circle cx="8.5" cy="9.5" r="1.8"></circle><path d="m3 17 5-4 4 3 3-2 6 5"></path></svg>
+                  </sc-if>
+                  <sc-if value="{{ f.notImg }}" hint-placeholder-val="{{ true }}">
+                    <span style="font-family:'Nunito';font-weight:900;font-size:20px;color:{{ f.t.color }};letter-spacing:.5px">{{ f.t.label }}</span>
+                  </sc-if>
+                  <span style="position:absolute;top:9px;right:9px;background:rgba(255,255,255,.9);color:var(--text-soft);width:26px;height:26px;border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:16px;font-weight:800">⋯</span>
+                </div>
+                <div style="padding:11px 13px">
+                  <div style="font-size:12.5px;font-weight:700;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">{{ f.name }}</div>
+                  <div style="display:flex;justify-content:space-between;align-items:center;margin-top:5px">
+                    <span style="font-size:11px;color:var(--text-soft);font-weight:600">{{ f.size }}</span>
+                    <span style="font-size:11px;color:var(--text-soft);font-weight:600">{{ f.modified }}</span>
+                  </div>
+                </div>
+              </div>
+            </sc-for>
+          </div>
+        </div>
+      </sc-if>
+      <sc-if value="{{ isFaqs }}" hint-placeholder-val="{{ false }}">
+        <div style="animation:fadeIn .3s ease;max-width:860px">
+          <div style="display:flex;align-items:flex-end;justify-content:space-between;margin-bottom:20px;flex-wrap:wrap;gap:12px">
+            <div>
+              <h1 style="font-size:26px;font-weight:800;letter-spacing:-.5px">FAQs</h1>
+              <p style="color:var(--text-soft);font-size:14px;margin:4px 0 0">Perguntas frequentes. Arraste para reordenar como aparecem no site.</p>
+            </div>
+            <button onClick="{{ openFaqModal }}" style="display:flex;align-items:center;gap:7px;height:40px;padding:0 18px;border-radius:11px;background:var(--primary);color:#fff;font-size:13.5px;font-weight:700;box-shadow:0 4px 12px rgba(242,93,39,.28)" style-hover="background:#e0521f">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><path d="M12 5v14M5 12h14"></path></svg>
+              Nova FAQ
+            </button>
+          </div>
+
+          <div style="position:relative;margin-bottom:16px">
+            <svg style="position:absolute;left:14px;top:50%;transform:translateY(-50%)" width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="#7a7663" stroke-width="2" stroke-linecap="round"><circle cx="11" cy="11" r="7"></circle><path d="m20 20-3-3"></path></svg>
+            <input placeholder="Pesquisar perguntas…" style="width:100%;height:42px;padding:0 14px 0 40px;border-radius:11px;border:1px solid var(--border);background:var(--card);font-size:13.5px;outline:none" style-focus="border-color:var(--primary)">
+          </div>
+
+          <div style="display:flex;flex-direction:column;gap:10px">
+            <sc-for list="{{ faqs }}" as="f" hint-placeholder-count="6">
+              <div style="display:flex;align-items:center;gap:14px;background:var(--card);border:1px solid var(--border);border-radius:14px;box-shadow:var(--shadow);padding:14px 16px" style-hover="border-color:var(--primary)">
+                <div style="color:var(--text-soft);cursor:grab;display:flex;flex-direction:column;gap:3px">
+                  <span style="display:flex;gap:3px"><i style="width:3px;height:3px;border-radius:50%;background:currentColor;display:block"></i><i style="width:3px;height:3px;border-radius:50%;background:currentColor;display:block"></i></span>
+                  <span style="display:flex;gap:3px"><i style="width:3px;height:3px;border-radius:50%;background:currentColor;display:block"></i><i style="width:3px;height:3px;border-radius:50%;background:currentColor;display:block"></i></span>
+                  <span style="display:flex;gap:3px"><i style="width:3px;height:3px;border-radius:50%;background:currentColor;display:block"></i><i style="width:3px;height:3px;border-radius:50%;background:currentColor;display:block"></i></span>
+                </div>
+                <div style="width:26px;height:26px;border-radius:8px;background:var(--muted);color:var(--text-soft);display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:800;font-family:'Nunito';flex-shrink:0">{{ f.ord }}</div>
+                <div style="flex:1;min-width:0">
+                  <div style="font-size:14px;font-weight:700">{{ f.q }}</div>
+                  <div style="font-size:12px;color:var(--text-soft);font-weight:600;margin-top:2px">Categoria: {{ f.cat }}</div>
+                </div>
+                <span style="font-size:11.5px;font-weight:700;color:{{ f.pubColor }};background:{{ f.pubBg }};padding:4px 11px;border-radius:20px">{{ f.pubLabel }}</span>
+                <button style="width:32px;height:32px;border-radius:9px;display:flex;align-items:center;justify-content:center;color:var(--text-soft)" style-hover="background:var(--muted);color:var(--text)">
+                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 20h9"></path><path d="M16.5 3.5a2.1 2.1 0 0 1 3 3L7 19l-4 1 1-4z"></path></svg>
+                </button>
+              </div>
+            </sc-for>
+          </div>
+        </div>
+      </sc-if>
+      <sc-if value="{{ showPagesList }}" hint-placeholder-val="{{ false }}">
+        <div style="animation:fadeIn .3s ease;max-width:960px">
+          <div style="display:flex;align-items:flex-end;justify-content:space-between;margin-bottom:20px;flex-wrap:wrap;gap:12px">
+            <div>
+              <h1 style="font-size:26px;font-weight:800;letter-spacing:-.5px">Textos Institucionais</h1>
+              <p style="color:var(--text-soft);font-size:14px;margin:4px 0 0">Páginas de conteúdo do site com editor rich text, SEO e histórico.</p>
+            </div>
+            <button onClick="{{ newText }}" style="display:flex;align-items:center;gap:7px;height:40px;padding:0 18px;border-radius:11px;background:var(--primary);color:#fff;font-size:13.5px;font-weight:700;box-shadow:0 4px 12px rgba(242,93,39,.28)" style-hover="background:#e0521f">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><path d="M12 5v14M5 12h14"></path></svg>
+              Nova página
+            </button>
+          </div>
+          <div style="display:flex;flex-direction:column;gap:11px">
+            <sc-for list="{{ pages }}" as="p" hint-placeholder-count="5">
+              <button onClick="{{ p.open }}" style="display:flex;align-items:center;gap:16px;background:var(--card);border:1px solid var(--border);border-radius:14px;box-shadow:var(--shadow);padding:16px 18px;text-align:left" style-hover="border-color:var(--primary);box-shadow:0 10px 28px rgba(68,69,37,.1)">
+                <div style="width:42px;height:42px;border-radius:11px;background:var(--muted);color:var(--text-soft);display:flex;align-items:center;justify-content:center;flex-shrink:0">
+                  <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M6 3h9l4 4v13a1 1 0 0 1-1 1H6a1 1 0 0 1-1-1V4a1 1 0 0 1 1-1z"></path><path d="M14 3v5h5"></path></svg>
+                </div>
+                <div style="flex:1;min-width:0">
+                  <div style="font-size:15px;font-weight:800;font-family:'Nunito'">{{ p.title }}</div>
+                  <div style="font-size:12.5px;color:var(--text-soft);font-weight:600;margin-top:2px">observarnpi.org.br{{ p.slug }} · {{ p.author }} · {{ p.updated }}</div>
+                </div>
+                <span style="font-size:11.5px;font-weight:700;color:{{ p.st.color }};background:{{ p.st.bg }};padding:4px 11px;border-radius:20px">{{ p.st.label }}</span>
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#a49a87" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m9 18 6-6-6-6"></path></svg>
+              </button>
+            </sc-for>
+          </div>
+        </div>
+      </sc-if>
+
+      <sc-if value="{{ showTextEditor }}" hint-placeholder-val="{{ false }}">
+        <div style="animation:fadeIn .3s ease">
+          <div style="display:flex;align-items:center;gap:12px;margin-bottom:20px">
+            <button onClick="{{ backToPages }}" style="width:38px;height:38px;border-radius:10px;border:1px solid var(--border);background:var(--card);display:flex;align-items:center;justify-content:center" style-hover="background:var(--muted)">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="m15 18-6-6 6-6"></path></svg>
+            </button>
+            <div style="flex:1">
+              <div style="font-size:11.5px;font-weight:700;color:var(--text-soft);letter-spacing:.4px;text-transform:uppercase">Textos Institucionais</div>
+              <h1 style="font-size:22px;font-weight:800;letter-spacing:-.4px">Editar página</h1>
+            </div>
+            <button onClick="{{ savePage }}" style="height:40px;padding:0 16px;border-radius:11px;border:1px solid var(--border);background:var(--card);font-size:13px;font-weight:700" style-hover="background:var(--muted)">Salvar rascunho</button>
+            <button onClick="{{ publishPage }}" style="height:40px;padding:0 18px;border-radius:11px;background:var(--primary);color:#fff;font-size:13px;font-weight:800;box-shadow:0 4px 12px rgba(242,93,39,.28)" style-hover="background:#e0521f">Publicar</button>
+          </div>
+
+          <div style="display:grid;grid-template-columns:1fr 320px;gap:20px;align-items:start">
+            <div style="background:var(--card);border:1px solid var(--border);border-radius:var(--radius);box-shadow:var(--shadow);overflow:hidden">
+              <div style="padding:22px 26px 0">
+                <input value="{{ editPageTitle }}" style="width:100%;border:none;background:transparent;font-family:'Nunito';font-size:26px;font-weight:800;letter-spacing:-.5px;outline:none;padding:0 0 8px" placeholder="Título da página">
+                <div style="font-size:13px;color:var(--text-soft);font-weight:600;border-bottom:1px solid var(--border);padding-bottom:16px">observarnpi.org.br/sobre</div>
+              </div>
+              <div style="display:flex;align-items:center;gap:2px;padding:12px 22px;border-bottom:1px solid var(--border);color:var(--text-soft);flex-wrap:wrap">
+                <select style="height:32px;border:1px solid var(--border);border-radius:8px;padding:0 8px;background:var(--card);font-size:12.5px;font-weight:700;margin-right:6px;outline:none"><option>Parágrafo</option><option>Título 1</option><option>Título 2</option></select>
+                <span style="width:32px;height:32px;border-radius:8px;display:flex;align-items:center;justify-content:center;font-weight:800;font-size:15px" style-hover="background:var(--muted)">B</span>
+                <span style="width:32px;height:32px;border-radius:8px;display:flex;align-items:center;justify-content:center;font-style:italic;font-size:15px" style-hover="background:var(--muted)">I</span>
+                <span style="width:32px;height:32px;border-radius:8px;display:flex;align-items:center;justify-content:center;text-decoration:underline;font-size:15px" style-hover="background:var(--muted)">U</span>
+                <div style="width:1px;height:20px;background:var(--border);margin:0 6px"></div>
+                <span style="width:32px;height:32px;border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:14px" style-hover="background:var(--muted)">≔</span>
+                <span style="width:32px;height:32px;border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:14px" style-hover="background:var(--muted)">1.</span>
+                <span style="width:32px;height:32px;border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:14px" style-hover="background:var(--muted)">🔗</span>
+                <span style="width:32px;height:32px;border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:14px" style-hover="background:var(--muted)">🖼️</span>
+                <span style="width:32px;height:32px;border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:14px" style-hover="background:var(--muted)">❝</span>
+              </div>
+              <div style="padding:22px 26px 40px;font-size:15px;line-height:1.7;color:var(--text)">
+                <p style="margin:0 0 14px">O <b>Observa RNPI</b> é o observatório da Rede Nacional Primeira Infância, dedicado ao monitoramento de indicadores, políticas e planos voltados ao desenvolvimento integral de crianças de 0 a 6 anos.</p>
+                <h3 style="font-family:'Nunito';font-size:19px;font-weight:800;margin:22px 0 10px">Nossa atuação</h3>
+                <p style="margin:0 0 14px">Reunimos dados de municípios e estados para apoiar gestores, conselhos e a sociedade civil na formulação e no acompanhamento de políticas públicas para a primeira infância.</p>
+                <p style="margin:0;color:var(--text-soft)">Continue escrevendo o conteúdo da página aqui…</p>
+              </div>
+            </div>
+
+            <div style="display:flex;flex-direction:column;gap:16px">
+              <div style="background:var(--card);border:1px solid var(--border);border-radius:var(--radius);box-shadow:var(--shadow);padding:16px 18px">
+                <div style="font-size:13px;font-weight:800;margin-bottom:12px">Publicação</div>
+                <div style="display:flex;align-items:center;justify-content:space-between;font-size:13px;margin-bottom:10px"><span style="color:var(--text-soft);font-weight:600">Status</span><span style="font-weight:700;color:#17A649;background:var(--accent);padding:2px 10px;border-radius:20px;font-size:12px">Publicado</span></div>
+                <div style="display:flex;align-items:center;justify-content:space-between;font-size:13px;margin-bottom:10px"><span style="color:var(--text-soft);font-weight:600">Visibilidade</span><span style="font-weight:700">Pública</span></div>
+                <div style="display:flex;align-items:center;justify-content:space-between;font-size:13px"><span style="color:var(--text-soft);font-weight:600">Atualizado</span><span style="font-weight:700">11/07/2026</span></div>
+              </div>
+
+              <div style="background:var(--card);border:1px solid var(--border);border-radius:var(--radius);box-shadow:var(--shadow);padding:16px 18px">
+                <div style="font-size:13px;font-weight:800;margin-bottom:12px">Imagem de capa</div>
+                <div style="border:1.5px dashed var(--border);border-radius:12px;height:120px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:8px;color:var(--text-soft)" style-hover="border-color:var(--primary)">
+                  <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="16" rx="2.5"></rect><circle cx="8.5" cy="9.5" r="1.8"></circle><path d="m3 17 5-4 4 3 3-2 6 5"></path></svg>
+                  <span style="font-size:12px;font-weight:600">Enviar imagem</span>
+                </div>
+              </div>
+
+              <div style="background:var(--card);border:1px solid var(--border);border-radius:var(--radius);box-shadow:var(--shadow);padding:16px 18px">
+                <div style="font-size:13px;font-weight:800;margin-bottom:12px">SEO</div>
+                <label style="display:block;font-size:11.5px;font-weight:700;color:var(--text-soft);margin-bottom:5px">Meta título</label>
+                <input value="Sobre o Observa RNPI" style="width:100%;height:38px;padding:0 11px;border-radius:9px;border:1px solid var(--border);background:var(--bg);font-size:12.5px;outline:none;margin-bottom:12px" style-focus="border-color:var(--primary)">
+                <label style="display:block;font-size:11.5px;font-weight:700;color:var(--text-soft);margin-bottom:5px">Meta descrição</label>
+                <textarea style="width:100%;height:64px;padding:9px 11px;border-radius:9px;border:1px solid var(--border);background:var(--bg);font-size:12.5px;outline:none;resize:none;margin-bottom:6px" style-focus="border-color:var(--primary)">Observatório da Rede Nacional Primeira Infância dedicado ao monitoramento de indicadores e políticas.</textarea>
+                <label style="display:block;font-size:11.5px;font-weight:700;color:var(--text-soft);margin:6px 0 5px">Slug</label>
+                <input value="/sobre" style="width:100%;height:38px;padding:0 11px;border-radius:9px;border:1px solid var(--border);background:var(--bg);font-size:12.5px;outline:none" style-focus="border-color:var(--primary)">
+              </div>
+
+              <div style="background:var(--card);border:1px solid var(--border);border-radius:var(--radius);box-shadow:var(--shadow);padding:16px 18px">
+                <div style="font-size:13px;font-weight:800;margin-bottom:12px">Histórico de versões</div>
+                <div style="display:flex;flex-direction:column;gap:2px">
+                  <sc-for list="{{ history }}" as="h" hint-placeholder-count="4">
+                    <div style="display:flex;align-items:center;gap:10px;padding:8px 0">
+                      <span style="width:9px;height:9px;border-radius:50%;background:{{ h.dot }};flex-shrink:0"></span>
+                      <div style="flex:1;min-width:0">
+                        <div style="font-size:12.5px;font-weight:700">{{ h.v }}</div>
+                        <div style="font-size:11px;color:var(--text-soft)">{{ h.who }} · {{ h.when }}</div>
+                      </div>
+                      <button style="font-size:11.5px;font-weight:700;color:var(--primary)" style-hover="text-decoration:underline">{{ h.action }}</button>
+                    </div>
+                  </sc-for>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </sc-if>
+      <sc-if value="{{ isUsuarios }}" hint-placeholder-val="{{ false }}">
+        <div style="animation:fadeIn .3s ease">
+          <div style="display:flex;align-items:flex-end;justify-content:space-between;margin-bottom:20px;flex-wrap:wrap;gap:12px">
+            <div>
+              <h1 style="font-size:26px;font-weight:800;letter-spacing:-.5px">Usuários</h1>
+              <p style="color:var(--text-soft);font-size:14px;margin:4px 0 0">Perfis e permissões — Administrador, Editor e Revisor.</p>
+            </div>
+            <button onClick="{{ newUser }}" style="display:flex;align-items:center;gap:7px;height:40px;padding:0 18px;border-radius:11px;background:var(--primary);color:#fff;font-size:13.5px;font-weight:700;box-shadow:0 4px 12px rgba(242,93,39,.28)" style-hover="background:#e0521f">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><path d="M12 5v14M5 12h14"></path></svg>
+              Convidar usuário
+            </button>
+          </div>
+
+          <div style="background:var(--card);border:1px solid var(--border);border-radius:var(--radius);box-shadow:var(--shadow);overflow:hidden">
+            <div style="display:grid;grid-template-columns:2.2fr 1.2fr 1fr 1fr 60px;align-items:center;padding:11px 18px;border-bottom:1px solid var(--border);font-size:11.5px;font-weight:700;color:var(--text-soft);letter-spacing:.4px;text-transform:uppercase">
+              <div>Usuário</div><div>Perfil</div><div>Status</div><div>Último acesso</div><div></div>
+            </div>
+            <sc-for list="{{ users }}" as="u" hint-placeholder-count="6">
+              <div style="display:grid;grid-template-columns:2.2fr 1.2fr 1fr 1fr 60px;align-items:center;padding:13px 18px;border-bottom:1px solid var(--border)" style-hover="background:var(--bg)">
+                <div style="display:flex;align-items:center;gap:12px;min-width:0">
+                  <div style="width:38px;height:38px;border-radius:50%;background:{{ u.avBg }};color:#fff;display:flex;align-items:center;justify-content:center;font-weight:800;font-size:13px;font-family:'Nunito';flex-shrink:0">{{ u.av }}</div>
+                  <div style="min-width:0">
+                    <div style="font-size:13.5px;font-weight:700">{{ u.name }}</div>
+                    <div style="font-size:12px;color:var(--text-soft);white-space:nowrap;overflow:hidden;text-overflow:ellipsis">{{ u.email }}</div>
+                  </div>
+                </div>
+                <div><span style="font-size:12px;font-weight:700;color:{{ u.r.color }};background:{{ u.r.bg }};padding:4px 11px;border-radius:20px">{{ u.role }}</span></div>
+                <div><span style="display:inline-flex;align-items:center;gap:6px;font-size:12.5px;font-weight:700;color:{{ u.stColor }};background:{{ u.stBg }};padding:3px 10px;border-radius:20px"><span style="width:6px;height:6px;border-radius:50%;background:{{ u.stColor }}"></span>{{ u.status }}</span></div>
+                <div style="font-size:13px;color:var(--text-soft);font-weight:600">{{ u.last }}</div>
+                <div style="text-align:right">
+                  <button onClick="{{ u.open }}" style="width:32px;height:32px;border-radius:9px;display:flex;align-items:center;justify-content:center;color:var(--text-soft);margin-left:auto" style-hover="background:var(--muted);color:var(--text)">
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 20h9"></path><path d="M16.5 3.5a2.1 2.1 0 0 1 3 3L7 19l-4 1 1-4z"></path></svg>
+                  </button>
+                </div>
+              </div>
+            </sc-for>
+          </div>
+        </div>
+      </sc-if>
+      <sc-if value="{{ isConfig }}" hint-placeholder-val="{{ false }}">
+        <div style="animation:fadeIn .3s ease;max-width:820px">
+          <h1 style="font-size:26px;font-weight:800;letter-spacing:-.5px;margin-bottom:4px">Configurações</h1>
+          <p style="color:var(--text-soft);font-size:14px;margin:0 0 20px">Preferências gerais do painel de conteúdo.</p>
+
+          <div style="display:flex;gap:6px;border-bottom:1px solid var(--border);margin-bottom:22px">
+            <span style="font-size:13.5px;font-weight:700;padding:10px 4px;border-bottom:2px solid var(--primary);color:var(--text)">Geral</span>
+            <span style="font-size:13.5px;font-weight:600;padding:10px 14px;color:var(--text-soft)" style-hover="color:var(--text)">Marca</span>
+            <span style="font-size:13.5px;font-weight:600;padding:10px 14px;color:var(--text-soft)" style-hover="color:var(--text)">Notificações</span>
+            <span style="font-size:13.5px;font-weight:600;padding:10px 14px;color:var(--text-soft)" style-hover="color:var(--text)">Integrações</span>
+          </div>
+
+          <div style="display:flex;flex-direction:column;gap:16px">
+            <div style="background:var(--card);border:1px solid var(--border);border-radius:var(--radius);box-shadow:var(--shadow);padding:20px 22px">
+              <h3 style="font-size:15px;font-weight:800;margin-bottom:16px">Informações do site</h3>
+              <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px">
+                <div><label style="display:block;font-size:12.5px;font-weight:700;margin-bottom:7px">Nome do site</label><input value="Observa RNPI" style="width:100%;height:44px;padding:0 14px;border-radius:11px;border:1px solid var(--border);background:var(--bg);font-size:14px;outline:none" style-focus="border-color:var(--primary)"></div>
+                <div><label style="display:block;font-size:12.5px;font-weight:700;margin-bottom:7px">URL base</label><input value="https://observarnpi.org.br" style="width:100%;height:44px;padding:0 14px;border-radius:11px;border:1px solid var(--border);background:var(--bg);font-size:14px;outline:none" style-focus="border-color:var(--primary)"></div>
+                <div><label style="display:block;font-size:12.5px;font-weight:700;margin-bottom:7px">Idioma padrão</label><select style="width:100%;height:44px;padding:0 12px;border-radius:11px;border:1px solid var(--border);background:var(--bg);font-size:14px;outline:none"><option>Português (Brasil)</option><option>English</option></select></div>
+                <div><label style="display:block;font-size:12.5px;font-weight:700;margin-bottom:7px">Fuso horário</label><select style="width:100%;height:44px;padding:0 12px;border-radius:11px;border:1px solid var(--border);background:var(--bg);font-size:14px;outline:none"><option>America/Recife (GMT-3)</option><option>America/Sao_Paulo (GMT-3)</option></select></div>
+              </div>
+            </div>
+
+            <div style="background:var(--card);border:1px solid var(--border);border-radius:var(--radius);box-shadow:var(--shadow);padding:20px 22px">
+              <h3 style="font-size:15px;font-weight:800;margin-bottom:6px">Fluxo editorial</h3>
+              <p style="font-size:12.5px;color:var(--text-soft);margin:0 0 16px">Controle o comportamento de publicação do conteúdo.</p>
+              <div style="display:flex;align-items:center;justify-content:space-between;padding:12px 0;border-bottom:1px solid var(--border)">
+                <div><div style="font-size:13.5px;font-weight:700">Exigir revisão antes de publicar</div><div style="font-size:12px;color:var(--text-soft)">Conteúdo passa por Revisor antes de ir ao ar</div></div>
+                <div style="width:44px;height:26px;border-radius:20px;background:var(--secondary);position:relative;flex-shrink:0"><span style="position:absolute;top:3px;right:3px;width:20px;height:20px;border-radius:50%;background:#fff"></span></div>
+              </div>
+              <div style="display:flex;align-items:center;justify-content:space-between;padding:12px 0">
+                <div><div style="font-size:13.5px;font-weight:700">Salvamento automático de rascunhos</div><div style="font-size:12px;color:var(--text-soft)">Salva alterações a cada 30 segundos</div></div>
+                <div style="width:44px;height:26px;border-radius:20px;background:var(--secondary);position:relative;flex-shrink:0"><span style="position:absolute;top:3px;right:3px;width:20px;height:20px;border-radius:50%;background:#fff"></span></div>
+              </div>
+            </div>
+
+            <div style="display:flex;justify-content:flex-end;gap:10px">
+              <button style="height:44px;padding:0 18px;border-radius:11px;border:1px solid var(--border);background:var(--card);font-size:13.5px;font-weight:700" style-hover="background:var(--muted)">Descartar</button>
+              <button onClick="{{ saveSettings }}" style="height:44px;padding:0 22px;border-radius:11px;background:var(--primary);color:#fff;font-size:13.5px;font-weight:800;box-shadow:0 4px 12px rgba(242,93,39,.28)" style-hover="background:#e0521f">Salvar alterações</button>
+            </div>
+          </div>
+        </div>
+      </sc-if>
+      <!--END-CONTENT-->
+    </main>
+  </div>
+
+  <!-- PLAN DRAWER -->
+  <sc-if value="{{ planDrawer }}" hint-placeholder-val="{{ false }}">
+    <div onClick="{{ closePlan }}" style="position:fixed;inset:0;background:rgba(44,44,20,.32);z-index:150;animation:fadeIn .2s ease"></div>
+    <div style="position:fixed;top:0;right:0;bottom:0;width:640px;max-width:92vw;background:var(--bg);z-index:151;box-shadow:var(--shadow-lg);display:flex;flex-direction:column;animation:drawerIn .28s cubic-bezier(.2,.8,.2,1)">
+      <div style="display:flex;align-items:center;justify-content:space-between;padding:18px 24px;border-bottom:1px solid var(--border);background:var(--card)">
+        <div>
+          <div style="font-size:11.5px;font-weight:700;color:var(--text-soft);letter-spacing:.4px;text-transform:uppercase">{{ planIsNew }}</div>
+          <h2 style="font-size:19px;font-weight:800;letter-spacing:-.3px">Editor de plano</h2>
+        </div>
+        <button onClick="{{ closePlan }}" style="width:36px;height:36px;border-radius:10px;display:flex;align-items:center;justify-content:center;color:var(--text-soft)" style-hover="background:var(--muted)">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d="M18 6 6 18M6 6l12 12"></path></svg>
+        </button>
+      </div>
+
+      <div style="padding:16px 24px;background:var(--card);border-bottom:1px solid var(--border)">
+        <div style="font-size:11.5px;font-weight:700;color:var(--text-soft);letter-spacing:.4px;text-transform:uppercase;margin-bottom:12px">Fluxo editorial</div>
+        <div style="display:flex;align-items:center">
+          <sc-for list="{{ editorFlow }}" as="f" hint-placeholder-count="4">
+            <div style="display:flex;align-items:center;flex:1;min-width:0">
+              <div style="display:flex;flex-direction:column;align-items:center;gap:6px;flex-shrink:0">
+                <div style="width:30px;height:30px;border-radius:50%;border:1.5px solid var(--border);background:{{ f.circleBg }};color:{{ f.circleColor }};display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:800;font-family:'Nunito'">{{ f.num }}</div>
+                <span style="font-size:11px;font-weight:{{ f.labelW }};color:{{ f.labelColor }};white-space:nowrap">{{ f.label }}</span>
+              </div>
+              <div style="height:2px;flex:1;background:{{ f.lineBg }};margin:0 6px 22px"></div>
+            </div>
+          </sc-for>
+        </div>
+      </div>
+
+      <div style="flex:1;overflow-y:auto;padding:24px">
+        <div style="display:flex;flex-direction:column;gap:20px">
+          <div>
+            <label style="display:block;font-size:12.5px;font-weight:700;margin-bottom:8px">Documento do plano (PDF)</label>
+            <div style="border:2px dashed var(--border);border-radius:14px;background:var(--card);padding:28px;display:flex;flex-direction:column;align-items:center;gap:10px;text-align:center" style-hover="border-color:var(--primary);background:#FDF2ED">
+              <div style="width:48px;height:48px;border-radius:13px;background:var(--primary);color:#fff;display:flex;align-items:center;justify-content:center;box-shadow:0 6px 16px rgba(242,93,39,.3)">
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 16V4M7 9l5-5 5 5"></path><path d="M4 15v3a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-3"></path></svg>
+              </div>
+              <div style="font-size:14px;font-weight:800;font-family:'Nunito'">Arraste o PDF aqui ou <span style="color:var(--primary)">selecione o arquivo</span></div>
+              <div style="font-size:12px;color:var(--text-soft)">Um arquivo PDF · até 200 MB</div>
+            </div>
+            <div style="display:flex;align-items:center;gap:11px;padding:11px 13px;border:1px solid var(--border);border-radius:11px;background:var(--card);margin-top:10px">
+              <span style="width:34px;height:34px;border-radius:9px;background:#FDE7DE;color:#F25D27;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:800;font-family:'Nunito';flex-shrink:0">PDF</span>
+              <div style="flex:1;min-width:0">
+                <div style="font-size:13px;font-weight:700;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">plano-municipal-2026.pdf</div>
+                <div style="font-size:11.5px;color:var(--text-soft)">2,4 MB · enviado agora</div>
+              </div>
+              <span style="font-size:12px;font-weight:700;color:#17A649;background:var(--accent);padding:3px 10px;border-radius:20px">Enviado</span>
+              <button style="width:30px;height:30px;border-radius:8px;display:flex;align-items:center;justify-content:center;color:var(--text-soft)" style-hover="background:var(--muted)">
+                <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d="M18 6 6 18M6 6l12 12"></path></svg>
+              </button>
+            </div>
+          </div>
+
+          <div style="height:1px;background:var(--border)"></div>
+
+          <div>
+            <label style="display:block;font-size:12.5px;font-weight:700;margin-bottom:7px">Título do plano</label>
+            <input value="{{ planTitle }}" placeholder="Ex.: Plano Municipal pela Primeira Infância" style="width:100%;height:44px;padding:0 14px;border-radius:11px;border:1px solid var(--border);background:var(--card);font-size:14px;outline:none" style-focus="border-color:var(--primary)">
+          </div>
+          <div>
+            <label style="display:block;font-size:12.5px;font-weight:700;margin-bottom:7px">Breve descrição</label>
+            <textarea placeholder="Descrição curta exibida na listagem e na busca…" style="width:100%;height:88px;padding:12px 14px;border-radius:11px;border:1px solid var(--border);background:var(--card);font-size:14px;outline:none;resize:none" style-focus="border-color:var(--primary)"></textarea>
+            <div style="font-size:11.5px;color:var(--text-soft);margin-top:6px">Recomendado até 160 caracteres.</div>
+          </div>
+          <div>
+            <label style="display:block;font-size:12.5px;font-weight:700;margin-bottom:7px">Categoria <span style="font-weight:600;color:var(--text-soft)">(opcional)</span></label>
+            <select style="width:100%;height:44px;padding:0 12px;border-radius:11px;border:1px solid var(--border);background:var(--card);font-size:14px;outline:none">
+              <option>Planos Municipais</option><option>Planos Estaduais</option><option>Diretrizes</option><option>Documentos Legais</option><option>Indicadores</option><option>Saúde</option>
+            </select>
+          </div>
+        </div>
+      </div>
+
+      <div style="padding:16px 24px;border-top:1px solid var(--border);background:var(--card);display:flex;align-items:center;gap:10px">
+        <button onClick="{{ dupCurrent }}" style="height:42px;padding:0 14px;border-radius:11px;border:1px solid var(--border);font-size:13px;font-weight:700;color:var(--text-soft)" style-hover="background:var(--muted);color:var(--text)">Duplicar</button>
+        <button onClick="{{ archivePlan }}" style="height:42px;padding:0 14px;border-radius:11px;border:1px solid var(--border);font-size:13px;font-weight:700;color:var(--destructive)" style-hover="background:#fbeaee">Arquivar</button>
+        <div style="margin-left:auto;display:flex;gap:10px">
+          <button onClick="{{ savePlanDraft }}" style="height:42px;padding:0 16px;border-radius:11px;border:1px solid var(--border);background:var(--card);font-size:13px;font-weight:700" style-hover="background:var(--muted)">Salvar rascunho</button>
+          <button onClick="{{ submitReview }}" style="height:42px;padding:0 16px;border-radius:11px;background:var(--muted);color:var(--text);font-size:13px;font-weight:700" style-hover="background:#ece9d6">Enviar p/ revisão</button>
+          <button onClick="{{ publishPlan }}" style="height:42px;padding:0 20px;border-radius:11px;background:var(--primary);color:#fff;font-size:13px;font-weight:800;box-shadow:0 4px 12px rgba(242,93,39,.28)" style-hover="background:#e0521f">Publicar</button>
+        </div>
+      </div>
+    </div>
+  </sc-if>
+
+  <!-- FAQ MODAL -->
+  <sc-if value="{{ faqModal }}" hint-placeholder-val="{{ false }}">
+    <div onClick="{{ closeFaqModal }}" style="position:fixed;inset:0;background:rgba(44,44,20,.32);z-index:160;display:flex;align-items:center;justify-content:center;padding:24px;animation:fadeIn .2s ease">
+      <div onClick="{{ stop }}" style="width:560px;max-width:100%;background:var(--card);border-radius:20px;box-shadow:var(--shadow-lg);overflow:hidden;animation:slideIn .25s ease">
+        <div style="display:flex;align-items:center;justify-content:space-between;padding:20px 24px;border-bottom:1px solid var(--border)">
+          <h2 style="font-size:18px;font-weight:800">Nova FAQ</h2>
+          <button onClick="{{ closeFaqModal }}" style="width:34px;height:34px;border-radius:10px;display:flex;align-items:center;justify-content:center;color:var(--text-soft)" style-hover="background:var(--muted)">
+            <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d="M18 6 6 18M6 6l12 12"></path></svg>
+          </button>
+        </div>
+        <div style="padding:24px;display:flex;flex-direction:column;gap:16px">
+          <div>
+            <label style="display:block;font-size:12.5px;font-weight:700;margin-bottom:7px">Pergunta</label>
+            <input placeholder="Ex.: Como cadastrar um novo município?" style="width:100%;height:44px;padding:0 14px;border-radius:11px;border:1px solid var(--border);background:var(--bg);font-size:14px;outline:none" style-focus="border-color:var(--primary)">
+          </div>
+          <div>
+            <label style="display:block;font-size:12.5px;font-weight:700;margin-bottom:7px">Resposta</label>
+            <textarea placeholder="Escreva a resposta…" style="width:100%;height:110px;padding:12px 14px;border-radius:11px;border:1px solid var(--border);background:var(--bg);font-size:14px;outline:none;resize:none" style-focus="border-color:var(--primary)"></textarea>
+          </div>
+          <div style="display:grid;grid-template-columns:1fr 1fr;gap:14px">
+            <div>
+              <label style="display:block;font-size:12.5px;font-weight:700;margin-bottom:7px">Categoria</label>
+              <select style="width:100%;height:44px;padding:0 12px;border-radius:11px;border:1px solid var(--border);background:var(--bg);font-size:14px;outline:none">
+                <option>Cadastros</option><option>Indicadores</option><option>Planos</option><option>Acesso</option><option>Dados</option>
+              </select>
+            </div>
+            <div>
+              <label style="display:block;font-size:12.5px;font-weight:700;margin-bottom:7px">Publicação</label>
+              <select style="width:100%;height:44px;padding:0 12px;border-radius:11px;border:1px solid var(--border);background:var(--bg);font-size:14px;outline:none">
+                <option>Publicar agora</option><option>Salvar como rascunho</option>
+              </select>
+            </div>
+          </div>
+        </div>
+        <div style="padding:16px 24px;border-top:1px solid var(--border);display:flex;justify-content:flex-end;gap:10px">
+          <button onClick="{{ closeFaqModal }}" style="height:42px;padding:0 18px;border-radius:11px;border:1px solid var(--border);background:var(--card);font-size:13.5px;font-weight:700" style-hover="background:var(--muted)">Cancelar</button>
+          <button onClick="{{ saveFaq }}" style="height:42px;padding:0 20px;border-radius:11px;background:var(--primary);color:#fff;font-size:13.5px;font-weight:800;box-shadow:0 4px 12px rgba(242,93,39,.28)" style-hover="background:#e0521f">Criar FAQ</button>
+        </div>
+      </div>
+    </div>
+  </sc-if>
+
+  <!-- USER DRAWER -->
+  <sc-if value="{{ userDrawer }}" hint-placeholder-val="{{ false }}">
+    <div onClick="{{ closeUser }}" style="position:fixed;inset:0;background:rgba(44,44,20,.32);z-index:150;animation:fadeIn .2s ease"></div>
+    <div style="position:fixed;top:0;right:0;bottom:0;width:560px;max-width:92vw;background:var(--bg);z-index:151;box-shadow:var(--shadow-lg);display:flex;flex-direction:column;animation:drawerIn .28s cubic-bezier(.2,.8,.2,1)">
+      <div style="display:flex;align-items:center;justify-content:space-between;padding:18px 24px;border-bottom:1px solid var(--border);background:var(--card)">
+        <h2 style="font-size:19px;font-weight:800;letter-spacing:-.3px">{{ userTitle }}</h2>
+        <button onClick="{{ closeUser }}" style="width:36px;height:36px;border-radius:10px;display:flex;align-items:center;justify-content:center;color:var(--text-soft)" style-hover="background:var(--muted)">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d="M18 6 6 18M6 6l12 12"></path></svg>
+        </button>
+      </div>
+      <div style="flex:1;overflow-y:auto;padding:24px;display:flex;flex-direction:column;gap:18px">
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:14px">
+          <div>
+            <label style="display:block;font-size:12.5px;font-weight:700;margin-bottom:7px">Nome completo</label>
+            <input value="{{ editUserName }}" placeholder="Nome" style="width:100%;height:44px;padding:0 14px;border-radius:11px;border:1px solid var(--border);background:var(--card);font-size:14px;outline:none" style-focus="border-color:var(--primary)">
+          </div>
+          <div>
+            <label style="display:block;font-size:12.5px;font-weight:700;margin-bottom:7px">E-mail</label>
+            <input value="{{ editUserEmail }}" placeholder="email@rnpi.org.br" style="width:100%;height:44px;padding:0 14px;border-radius:11px;border:1px solid var(--border);background:var(--card);font-size:14px;outline:none" style-focus="border-color:var(--primary)">
+          </div>
+        </div>
+        <div>
+          <label style="display:block;font-size:12.5px;font-weight:700;margin-bottom:8px">Perfil (role do Strapi)</label>
+          <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:10px">
+            <div style="border:2px solid var(--primary);border-radius:12px;padding:12px;background:#FDF2ED">
+              <div style="font-size:13px;font-weight:800">Administrador</div>
+              <div style="font-size:11px;color:var(--text-soft);margin-top:2px">Acesso total</div>
+            </div>
+            <div style="border:1px solid var(--border);border-radius:12px;padding:12px;background:var(--card)" style-hover="border-color:var(--primary)">
+              <div style="font-size:13px;font-weight:800">Editor</div>
+              <div style="font-size:11px;color:var(--text-soft);margin-top:2px">Cria e edita</div>
+            </div>
+            <div style="border:1px solid var(--border);border-radius:12px;padding:12px;background:var(--card)" style-hover="border-color:var(--primary)">
+              <div style="font-size:13px;font-weight:800">Revisor</div>
+              <div style="font-size:11px;color:var(--text-soft);margin-top:2px">Revisa e aprova</div>
+            </div>
+          </div>
+        </div>
+        <div>
+          <label style="display:block;font-size:12.5px;font-weight:700;margin-bottom:8px">Permissões por coleção</label>
+          <div style="border:1px solid var(--border);border-radius:12px;overflow:hidden;background:var(--card)">
+            <div style="display:grid;grid-template-columns:1.6fr repeat(4,1fr);align-items:center;padding:10px 14px;border-bottom:1px solid var(--border);font-size:11px;font-weight:700;color:var(--text-soft);text-transform:uppercase;letter-spacing:.3px">
+              <div>Coleção</div><div style="text-align:center">Criar</div><div style="text-align:center">Ler</div><div style="text-align:center">Editar</div><div style="text-align:center">Excluir</div>
+            </div>
+            <sc-for list="{{ perms }}" as="p" hint-placeholder-count="5">
+              <div style="display:grid;grid-template-columns:1.6fr repeat(4,1fr);align-items:center;padding:11px 14px;border-bottom:1px solid var(--border)">
+                <div style="font-size:13px;font-weight:700">{{ p.mod }}</div>
+                <div style="text-align:center"><input type="checkbox" checked="{{ p.c }}" style="width:16px;height:16px;accent-color:var(--primary)"></div>
+                <div style="text-align:center"><input type="checkbox" checked="{{ p.r }}" style="width:16px;height:16px;accent-color:var(--primary)"></div>
+                <div style="text-align:center"><input type="checkbox" checked="{{ p.u }}" style="width:16px;height:16px;accent-color:var(--primary)"></div>
+                <div style="text-align:center"><input type="checkbox" checked="{{ p.d }}" style="width:16px;height:16px;accent-color:var(--primary)"></div>
+              </div>
+            </sc-for>
+          </div>
+        </div>
+      </div>
+      <div style="padding:16px 24px;border-top:1px solid var(--border);background:var(--card);display:flex;justify-content:flex-end;gap:10px">
+        <button onClick="{{ closeUser }}" style="height:42px;padding:0 18px;border-radius:11px;border:1px solid var(--border);background:var(--card);font-size:13.5px;font-weight:700" style-hover="background:var(--muted)">Cancelar</button>
+        <button onClick="{{ saveUser }}" style="height:42px;padding:0 20px;border-radius:11px;background:var(--primary);color:#fff;font-size:13.5px;font-weight:800;box-shadow:0 4px 12px rgba(242,93,39,.28)" style-hover="background:#e0521f">Salvar usuário</button>
+      </div>
+    </div>
+  </sc-if>
+
+  <!-- IMPORT MODAL -->
+  <sc-if value="{{ importOpen }}" hint-placeholder-val="{{ false }}">
+    <div onClick="{{ closeImport }}" style="position:fixed;inset:0;background:rgba(44,44,20,.32);z-index:160;display:flex;align-items:center;justify-content:center;padding:24px;animation:fadeIn .2s ease">
+      <div onClick="{{ stop }}" style="width:640px;max-width:100%;background:var(--card);border-radius:20px;box-shadow:var(--shadow-lg);overflow:hidden;animation:slideIn .25s ease">
+        <div style="display:flex;align-items:center;justify-content:space-between;padding:20px 24px;border-bottom:1px solid var(--border)">
+          <div>
+            <h2 style="font-size:18px;font-weight:800">Importar dados</h2>
+            <div style="font-size:12.5px;color:var(--text-soft);font-weight:600;margin-top:2px">CSV ou XLSX · validação automática antes de gravar</div>
+          </div>
+          <button onClick="{{ closeImport }}" style="width:34px;height:34px;border-radius:10px;display:flex;align-items:center;justify-content:center;color:var(--text-soft)" style-hover="background:var(--muted)">
+            <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d="M18 6 6 18M6 6l12 12"></path></svg>
+          </button>
+        </div>
+
+        <div style="display:flex;gap:0;padding:16px 24px 0">
+          <sc-for list="{{ importSteps }}" as="st" hint-placeholder-count="3">
+            <div style="display:flex;align-items:center;gap:8px;padding-right:20px">
+              <span style="width:24px;height:24px;border-radius:50%;background:{{ st.bg }};color:{{ st.color }};display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:800;font-family:'Nunito'">{{ st.n }}</span>
+              <span style="font-size:12.5px;font-weight:{{ st.w }};color:{{ st.tc }}">{{ st.label }}</span>
+            </div>
+          </sc-for>
+        </div>
+
+        <div style="padding:22px 24px">
+          <sc-if value="{{ importStep1 }}" hint-placeholder-val="{{ true }}">
+            <div style="border:2px dashed var(--border);border-radius:14px;padding:36px;display:flex;flex-direction:column;align-items:center;gap:11px" style-hover="border-color:var(--primary)">
+              <div style="width:48px;height:48px;border-radius:13px;background:var(--accent);color:#17A649;display:flex;align-items:center;justify-content:center"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M14 3v5h5"></path><path d="M6 3h9l4 4v13a1 1 0 0 1-1 1H6a1 1 0 0 1-1-1V4a1 1 0 0 1 1-1z"></path><path d="M9 14h6M9 17h4"></path></svg></div>
+              <div style="font-size:14px;font-weight:800;font-family:'Nunito'">Arraste a planilha ou <span style="color:var(--primary)">selecione o arquivo</span></div>
+              <div style="font-size:12px;color:var(--text-soft)">planos.csv · até 5.000 linhas · modelo disponível para download</div>
+              <a style="font-size:12.5px;font-weight:700;margin-top:4px">↓ Baixar modelo CSV</a>
+            </div>
+          </sc-if>
+          <sc-if value="{{ importStep2 }}" hint-placeholder-val="{{ false }}">
+            <div style="display:flex;flex-direction:column;gap:12px">
+              <div style="display:flex;align-items:center;gap:11px;background:var(--bg);border:1px solid var(--border);border-radius:12px;padding:12px 14px">
+                <span style="width:32px;height:32px;border-radius:8px;background:var(--accent);color:#17A649;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:800;font-family:'Nunito'">CSV</span>
+                <div style="flex:1"><div style="font-size:13px;font-weight:700">planos-2026.csv</div><div style="font-size:11.5px;color:var(--text-soft)">128 linhas · 6 colunas</div></div>
+                <span style="font-size:12px;font-weight:700;color:#17A649;background:var(--accent);padding:3px 10px;border-radius:20px">Validado</span>
+              </div>
+              <div style="display:flex;gap:10px">
+                <div style="flex:1;background:var(--accent);border-radius:12px;padding:13px 15px"><div style="font-family:'Nunito';font-size:22px;font-weight:800;color:#17A649">121</div><div style="font-size:12px;font-weight:600;color:var(--text-soft)">Linhas válidas</div></div>
+                <div style="flex:1;background:#fbeaee;border-radius:12px;padding:13px 15px"><div style="font-family:'Nunito';font-size:22px;font-weight:800;color:var(--destructive)">7</div><div style="font-size:12px;font-weight:600;color:var(--text-soft)">Com erros</div></div>
+              </div>
+              <div style="border:1px solid var(--border);border-radius:12px;overflow:hidden">
+                <div style="padding:10px 14px;background:var(--bg);border-bottom:1px solid var(--border);font-size:12px;font-weight:700;color:var(--text-soft)">Relatório de erros</div>
+                <div style="display:flex;align-items:center;gap:10px;padding:11px 14px;border-bottom:1px solid var(--border)"><span style="font-size:11px;font-weight:800;color:var(--destructive);background:#fbeaee;padding:2px 8px;border-radius:6px">Linha 14</span><span style="font-size:12.5px">Categoria "Planos Regionais" não existe no Strapi</span></div>
+                <div style="display:flex;align-items:center;gap:10px;padding:11px 14px;border-bottom:1px solid var(--border)"><span style="font-size:11px;font-weight:800;color:var(--destructive);background:#fbeaee;padding:2px 8px;border-radius:6px">Linha 33</span><span style="font-size:12.5px">Campo "título" obrigatório está vazio</span></div>
+                <div style="display:flex;align-items:center;gap:10px;padding:11px 14px"><span style="font-size:11px;font-weight:800;color:var(--destructive);background:#fbeaee;padding:2px 8px;border-radius:6px">Linha 58</span><span style="font-size:12.5px">Status "pendente" inválido — use rascunho/revisão/publicado</span></div>
+              </div>
+            </div>
+          </sc-if>
+        </div>
+
+        <div style="padding:16px 24px;border-top:1px solid var(--border);display:flex;justify-content:space-between;gap:10px">
+          <a style="font-size:12.5px;font-weight:700;align-self:center">↓ Baixar relatório de erros</a>
+          <div style="display:flex;gap:10px">
+            <button onClick="{{ closeImport }}" style="height:42px;padding:0 18px;border-radius:11px;border:1px solid var(--border);background:var(--card);font-size:13.5px;font-weight:700" style-hover="background:var(--muted)">Cancelar</button>
+            <button onClick="{{ importNext }}" style="height:42px;padding:0 20px;border-radius:11px;background:var(--primary);color:#fff;font-size:13.5px;font-weight:800;box-shadow:0 4px 12px rgba(242,93,39,.28)" style-hover="background:#e0521f">{{ importCta }}</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </sc-if>
+
+  <!-- TOAST -->
+  <sc-if value="{{ toast }}" hint-placeholder-val="{{ false }}">
+    <div style="position:fixed;bottom:24px;left:50%;transform:translateX(-50%);z-index:200;animation:slideIn .25s ease">
+      <div style="display:flex;align-items:center;gap:11px;background:var(--text);color:#fff;padding:13px 18px;border-radius:12px;box-shadow:var(--shadow-lg);font-size:13.5px;font-weight:600">
+        <span style="width:22px;height:22px;border-radius:50%;background:var(--secondary);display:flex;align-items:center;justify-content:center;flex-shrink:0">
+          <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"></path></svg>
+        </span>
+        {{ toast }}
+      </div>
+    </div>
+  </sc-if>
+</div>
+
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props="{&quot;$preview&quot;:{&quot;width&quot;:1440,&quot;height&quot;:940}}">
+class Component extends DCLogic {
+  state = { active:'dashboard', globalSearch:'', toast:null,
+    planSearch:'', planStatus:'all', planDrawer:false, editPlan:null,
+    faqModal:false, importOpen:false, importStep:1,
+    userDrawer:false, editUser:null, textEditor:false, editPage:null,
+    mediaFilter:'all', mediaSort:'recent', dragOver:false };
+
+  toast(msg){ clearTimeout(this._t); this.setState({toast:msg}); this._t=setTimeout(()=>this.setState({toast:null}),2600); }
+
+  renderVals(){
+    const s=this.state, set=(o)=>this.setState(o);
+    const navKey=(k)=>({ bg: s.active===k?'var(--primary)':'transparent', color: s.active===k?'#fff':'var(--text)' });
+    const go={};
+    ['dashboard','planos','midiateca','faqs','textos','usuarios','config'].forEach(k=> go[k]=()=>set({active:k}));
+
+    const createPrimary=()=>{
+      if(s.active==='faqs') return set({faqModal:true});
+      if(s.active==='usuarios') return set({userDrawer:true,editUser:null});
+      if(s.active==='textos') return set({textEditor:true,editPage:null});
+      set({active:'planos',planDrawer:true,editPlan:null});
+    };
+
+    // ---- PLANOS ----
+    const STATUS={
+      rascunho:{label:'Rascunho',color:'#7a7663',bg:'var(--muted)',dot:'#a49a87'},
+      revisao:{label:'Em revisão',color:'#F25D27',bg:'#FDE7DE',dot:'#F25D27'},
+      publicado:{label:'Publicado',color:'#17A649',bg:'var(--accent)',dot:'#17A649'},
+      arquivado:{label:'Arquivado',color:'#9a5b5b',bg:'#f3e2e2',dot:'#c08585'},
+    };
+    const allPlans=[
+      {id:1,title:'Plano Municipal pela Primeira Infância 2026',category:'Planos Municipais',tags:['primeira infância','municipal'],status:'publicado',author:'Carla Menezes',updated:'12/07/2026',files:6},
+      {id:2,title:'Marco Legal da Primeira Infância — Guia',category:'Documentos Legais',tags:['marco legal','guia'],status:'publicado',author:'João Prado',updated:'10/07/2026',files:3},
+      {id:3,title:'Diretrizes de Busca Ativa Escolar',category:'Diretrizes',tags:['busca ativa','educação'],status:'revisao',author:'Ana Sousa',updated:'09/07/2026',files:2},
+      {id:4,title:'Painel de Indicadores da Infância — RN',category:'Indicadores',tags:['dados','indicadores'],status:'revisao',author:'Rafael Lopes',updated:'08/07/2026',files:5},
+      {id:5,title:'Protocolo de Atenção à Gestante',category:'Saúde',tags:['saúde','gestante'],status:'rascunho',author:'Marina Reis',updated:'07/07/2026',files:1},
+      {id:6,title:'Plano Estadual de Educação Infantil',category:'Planos Estaduais',tags:['educação','estadual'],status:'rascunho',author:'Carla Menezes',updated:'05/07/2026',files:0},
+      {id:7,title:'Cadernos de Formação Continuada 2025',category:'Formação',tags:['formação','2025'],status:'arquivado',author:'João Prado',updated:'22/12/2025',files:8},
+      {id:8,title:'Guia de Governança Intersetorial',category:'Diretrizes',tags:['governança'],status:'publicado',author:'Ana Sousa',updated:'02/07/2026',files:4},
+    ];
+    const q=s.planSearch.toLowerCase();
+    const plans=allPlans
+      .filter(p=>(s.planStatus==='all'||p.status===s.planStatus)&&(!q||p.title.toLowerCase().includes(q)||p.category.toLowerCase().includes(q)))
+      .map((p,i)=>({...p,st:STATUS[p.status],even:i%2===1,
+        open:()=>this.setState({planDrawer:true,editPlan:p}),
+        dup:()=>this.toast('Conteúdo duplicado: '+p.title)}));
+    const cnt=(k)=>k==='all'?allPlans.length:allPlans.filter(p=>p.status===k).length;
+    const planTabs=[
+      {k:'all',label:'Todos',n:cnt('all'),active:s.planStatus==='all'},
+      {k:'rascunho',label:'Rascunhos',n:cnt('rascunho'),active:s.planStatus==='rascunho'},
+      {k:'revisao',label:'Em revisão',n:cnt('revisao'),active:s.planStatus==='revisao'},
+      {k:'publicado',label:'Publicados',n:cnt('publicado'),active:s.planStatus==='publicado'},
+      {k:'arquivado',label:'Arquivados',n:cnt('arquivado'),active:s.planStatus==='arquivado'},
+    ].map(t=>({...t,onClick:()=>this.setState({planStatus:t.k}),bg:t.active?'var(--text)':'var(--card)',color:t.active?'#fff':'var(--text)',nbg:t.active?'rgba(255,255,255,.2)':'var(--muted)',ncolor:t.active?'#fff':'var(--text-soft)'}));
+    // ---- MIDIATECA ----
+    const TYPE={
+      pdf:{label:'PDF',bg:'#FDE7DE',color:'#F25D27'},
+      img:{label:'IMG',bg:'var(--accent)',color:'#17A649'},
+      video:{label:'VÍD',bg:'#efe6fb',color:'#8a6bd6'},
+      doc:{label:'DOC',bg:'#e6eefb',color:'#3b6bd6'},
+    };
+    const allFiles=[
+      {id:1,name:'Plano Municipal 2026.pdf',type:'pdf',size:'2,4 MB',modified:'12/07/2026',owner:'CM'},
+      {id:2,name:'Capa campanha primeira infância.png',type:'img',size:'840 KB',modified:'11/07/2026',owner:'JP'},
+      {id:3,name:'Vídeo institucional RNPI.mp4',type:'video',size:'48 MB',modified:'10/07/2026',owner:'CM'},
+      {id:4,name:'Relatório de indicadores.xlsx',type:'doc',size:'320 KB',modified:'10/07/2026',owner:'AS'},
+      {id:5,name:'Marco Legal comentado.pdf',type:'pdf',size:'1,1 MB',modified:'09/07/2026',owner:'JP'},
+      {id:6,name:'Infográfico busca ativa.png',type:'img',size:'1,6 MB',modified:'08/07/2026',owner:'RL'},
+      {id:7,name:'Ata reunião intersetorial.docx',type:'doc',size:'92 KB',modified:'07/07/2026',owner:'MR'},
+      {id:8,name:'Cobertura vacinal - foto.jpg',type:'img',size:'2,1 MB',modified:'06/07/2026',owner:'CM'},
+      {id:9,name:'Diretrizes de governança.pdf',type:'pdf',size:'760 KB',modified:'05/07/2026',owner:'AS'},
+      {id:10,name:'Webinar formação 2026.mp4',type:'video',size:'112 MB',modified:'04/07/2026',owner:'JP'},
+    ];
+    const mediaFiles=allFiles
+      .filter(f=>s.mediaFilter==='all'||f.type===s.mediaFilter)
+      .map(f=>({...f,t:TYPE[f.type],isImg:f.type==='img',notImg:f.type!=='img',open:()=>this.toast('Abrindo '+f.name)}));
+    const mcnt=(k)=>k==='all'?allFiles.length:allFiles.filter(f=>f.type===k).length;
+    const mediaFilters=[
+      {k:'all',label:'Todos',n:mcnt('all')},{k:'pdf',label:'PDFs',n:mcnt('pdf')},
+      {k:'img',label:'Imagens',n:mcnt('img')},{k:'video',label:'Vídeos',n:mcnt('video')},{k:'doc',label:'Documentos',n:mcnt('doc')},
+    ].map(t=>({...t,onClick:()=>this.setState({mediaFilter:t.k}),active:s.mediaFilter===t.k,bg:s.mediaFilter===t.k?'var(--text)':'var(--card)',color:s.mediaFilter===t.k?'#fff':'var(--text)'}));
+    const uploads=[
+      {name:'diagnostico-2026.pdf',pct:100,size:'3,2 MB',done:true},
+      {name:'campanha-outubro.png',pct:68,size:'1,1 MB',done:false},
+      {name:'entrevista-secretaria.mp4',pct:24,size:'86 MB',done:false},
+    ].map(u=>({...u,w:u.pct+'%',color:u.done?'var(--secondary)':'var(--primary)',statusColor:u.done?'#17A649':'#7a7663',status:u.done?'Concluído':u.pct+'%'}));
+
+    // ---- FAQS ----
+    const faqs=[
+      {q:'Como cadastrar um novo município no observatório?',cat:'Cadastros',pub:true},
+      {q:'Quais indicadores da primeira infância são monitorados?',cat:'Indicadores',pub:true},
+      {q:'Como enviar um plano municipal para revisão?',cat:'Planos',pub:true},
+      {q:'Quem pode acessar a área administrativa?',cat:'Acesso',pub:true},
+      {q:'Como faço para exportar dados em CSV?',cat:'Dados',pub:false},
+      {q:'O que significa cada status do fluxo editorial?',cat:'Editorial',pub:true},
+      {q:'Como atualizar a imagem de capa de uma página?',cat:'Conteúdo',pub:false},
+    ].map((f,i)=>({...f,ord:i+1,pubBg:f.pub?'var(--accent)':'var(--muted)',pubColor:f.pub?'#17A649':'#7a7663',pubLabel:f.pub?'Publicada':'Rascunho'}));
+
+    // ---- TEXTOS ----
+    const pages=[
+      {title:'Sobre o Observa RNPI',slug:'/sobre',status:'publicado',updated:'11/07/2026',author:'Marina Reis'},
+      {title:'Missão, Visão e Valores',slug:'/missao',status:'publicado',updated:'09/07/2026',author:'Carla Menezes'},
+      {title:'Contato',slug:'/contato',status:'publicado',updated:'02/07/2026',author:'João Prado'},
+      {title:'Política de Privacidade',slug:'/politica-de-privacidade',status:'revisao',author:'Ana Sousa',updated:'12/07/2026'},
+      {title:'Termos de Uso',slug:'/termos',status:'rascunho',author:'Rafael Lopes',updated:'06/07/2026'},
+    ].map(p=>({...p,open:()=>this.setState({active:'textos',textEditor:true,editPage:p}),st:{rascunho:{label:'Rascunho',color:'#7a7663',bg:'var(--muted)'},revisao:{label:'Em revisão',color:'#F25D27',bg:'#FDE7DE'},publicado:{label:'Publicado',color:'#17A649',bg:'var(--accent)'}}[p.status]}));
+    const history=[
+      {v:'v4 — atual',who:'Marina Reis',when:'11/07/2026 14:32',cur:true},
+      {v:'v3',who:'Carla Menezes',when:'08/07/2026 09:10',cur:false},
+      {v:'v2',who:'Marina Reis',when:'02/07/2026 16:44',cur:false},
+      {v:'v1 — criação',who:'João Prado',when:'20/06/2026 11:05',cur:false},
+    ].map(h=>({...h,dot:h.cur?'var(--secondary)':'var(--border)',action:h.cur?'Atual':'Restaurar'}));
+
+    // ---- USUÁRIOS ----
+    const ROLE={
+      Administrador:{color:'#F25D27',bg:'#FDE7DE'},
+      Editor:{color:'#17A649',bg:'var(--accent)'},
+      Revisor:{color:'#8a6bd6',bg:'#efe6fb'},
+    };
+    const users=[
+      {name:'Marina Reis',email:'marina.reis@rnpi.org.br',role:'Administrador',status:'Ativo',last:'agora',av:'MR',avBg:'#F25D27'},
+      {name:'Carla Menezes',email:'carla.menezes@rnpi.org.br',role:'Editor',status:'Ativo',last:'há 22 min',av:'CM',avBg:'#17A649'},
+      {name:'João Prado',email:'joao.prado@rnpi.org.br',role:'Editor',status:'Ativo',last:'há 1 h',av:'JP',avBg:'#3b6bd6'},
+      {name:'Rafael Lopes',email:'rafael.lopes@rnpi.org.br',role:'Revisor',status:'Ativo',last:'há 2 h',av:'RL',avBg:'#8a6bd6'},
+      {name:'Ana Sousa',email:'ana.sousa@rnpi.org.br',role:'Revisor',status:'Ativo',last:'ontem',av:'AS',avBg:'#d68b2b'},
+      {name:'Pedro Nunes',email:'pedro.nunes@rnpi.org.br',role:'Editor',status:'Inativo',last:'há 30 dias',av:'PN',avBg:'#a49a87'},
+    ].map(u=>({...u,open:()=>this.setState({userDrawer:true,editUser:u}),r:ROLE[u.role],active:u.status==='Ativo',stColor:u.status==='Ativo'?'#17A649':'#7a7663',stBg:u.status==='Ativo'?'var(--accent)':'var(--muted)'}));
+    const perms=[
+      {mod:'Planos',c:true,r:true,u:true,d:false},
+      {mod:'Midiateca',c:true,r:true,u:true,d:false},
+      {mod:'FAQs',c:true,r:true,u:true,d:true},
+      {mod:'Textos Institucionais',c:false,r:true,u:true,d:false},
+      {mod:'Usuários',c:false,r:true,u:false,d:false},
+    ];
+
+    const ep=s.editPlan;
+    const flow=['rascunho','revisao','publicado','arquivado'];
+    const curStage=ep?flow.indexOf(ep.status):0;
+    const editorFlow=flow.map((k,i)=>({k,num:i+1,label:STATUS[k].label,done:i<=curStage,current:i===curStage,
+      circleBg:i<=curStage?STATUS[k].dot:'var(--card)',circleColor:i<=curStage?'#fff':'var(--text-soft)',
+      lineBg:i<curStage?STATUS[k].dot:'var(--border)',labelColor:i===curStage?'var(--text)':'var(--text-soft)',labelW:i===curStage?'700':'600'}));
+
+    return {
+      // nav
+      nav:{ dashboard:navKey('dashboard'), planos:navKey('planos'), midiateca:navKey('midiateca'),
+            faqs:navKey('faqs'), textos:navKey('textos'), usuarios:navKey('usuarios'), config:navKey('config') },
+      go,
+      isDashboard:s.active==='dashboard', isPlanos:s.active==='planos', isMidiateca:s.active==='midiateca',
+      isFaqs:s.active==='faqs', isTextos:s.active==='textos', isUsuarios:s.active==='usuarios', isConfig:s.active==='config',
+      globalSearch:s.globalSearch, onGlobalSearch:(e)=>set({globalSearch:e.target.value}),
+      stop:(e)=>e.stopPropagation(),
+      toast:s.toast, createPrimary,
+      openImport:()=>set({importOpen:true,importStep:1}),
+      closeImport:()=>set({importOpen:false}),
+      importStep1:s.importStep===1, importStep2:s.importStep===2,
+      importCta:s.importStep===1?'Validar arquivo':'Importar 121 registros',
+      importNext:()=>{ if(s.importStep===1) set({importStep:2}); else {set({importOpen:false});this.toast('121 registros importados');} },
+      importSteps:[
+        {n:1,label:'Enviar arquivo'},{n:2,label:'Validação'},{n:3,label:'Concluir'},
+      ].map(t=>({...t,done:t.n<=s.importStep,cur:t.n===s.importStep,
+        bg:t.n<=s.importStep?'var(--primary)':'var(--muted)',color:t.n<=s.importStep?'#fff':'var(--text-soft)',
+        tc:t.n===s.importStep?'var(--text)':'var(--text-soft)',w:t.n===s.importStep?'800':'600'})),
+      openFaqModal:()=>set({faqModal:true}),
+      closeFaqModal:()=>set({faqModal:false}),
+      saveFaq:()=>{set({faqModal:false});this.toast('FAQ criada com sucesso');},
+
+      // planos
+      plans, planTabs, planSearch:s.planSearch,
+      onPlanSearch:(e)=>set({planSearch:e.target.value}),
+      setPlanStatus:(k)=>()=>set({planStatus:k}),
+      openPlan:(p)=>()=>set({planDrawer:true,editPlan:p||{title:'',category:'Planos Municipais',status:'rascunho',tags:[]}}),
+      newPlan:()=>set({planDrawer:true,editPlan:{title:'',category:'Planos Municipais',status:'rascunho',tags:[]}}),
+      closePlan:()=>set({planDrawer:false}),
+      planDrawer:s.planDrawer, editPlan:ep, editorFlow,
+      planTitle:ep?ep.title:'', planIsNew:(!ep||!ep.id)?'Novo conteúdo':'Editando',
+      savePlanDraft:()=>{set({planDrawer:false});this.toast('Rascunho salvo');},
+      submitReview:()=>{set({planDrawer:false});this.toast('Enviado para revisão');},
+      publishPlan:()=>{set({planDrawer:false});this.toast('Plano publicado');},
+      dupCurrent:()=>{this.toast('Conteúdo duplicado: '+(ep?ep.title:''));},
+      archivePlan:()=>{set({planDrawer:false});this.toast('Plano arquivado');},
+
+      // midiateca
+      mediaFilters, mediaFiles, mediaSort:s.mediaSort,
+      setMediaFilter:(k)=>()=>set({mediaFilter:k}),
+      onMediaSort:(e)=>set({mediaSort:e.target.value}),
+      dragOver:s.dragOver, hasUploads:true,
+      dropBorder:s.dragOver?'var(--primary)':'var(--border)',
+      dropBg:s.dragOver?'#FDF2ED':'var(--card)',
+      onDragEnter:(e)=>{e.preventDefault();set({dragOver:true});},
+      onDragLeave:(e)=>{e.preventDefault();set({dragOver:false});},
+      onDrop:(e)=>{e.preventDefault();set({dragOver:false});this.toast('3 arquivos enviados');},
+      uploads,
+
+      // faqs
+      faqs, faqModal:s.faqModal,
+
+      // textos
+      pages, history, textEditor:s.textEditor,
+      showPagesList:s.active==='textos'&&!s.textEditor,
+      showTextEditor:s.active==='textos'&&s.textEditor,
+      editPageTitle:s.editPage?s.editPage.title:'Sobre o Observa RNPI',
+      openText:(p)=>()=>set({active:'textos',textEditor:true,editPage:p||null}),
+      newText:()=>set({textEditor:true,editPage:null}),
+      backToPages:()=>set({textEditor:false}),
+      savePage:()=>{set({textEditor:false});this.toast('Página salva');},
+      publishPage:()=>{set({textEditor:false});this.toast('Página publicada');},
+
+      // usuarios
+      users, perms, userDrawer:s.userDrawer,
+      openUser:(u)=>()=>set({userDrawer:true,editUser:u||null}),
+      newUser:()=>set({userDrawer:true,editUser:null}),
+      closeUser:()=>set({userDrawer:false}),
+      saveUser:()=>{set({userDrawer:false});this.toast('Usuário salvo');},
+      editUserName:s.editUser?s.editUser.name:'',
+      editUserEmail:s.editUser?s.editUser.email:'',
+      userTitle:s.editUser?'Editar usuário':'Novo usuário',
+      saveSettings:()=>this.toast('Configurações salvas'),
+
+      // dashboard data
+      kpis:[
+        {emoji:'📋',iconBg:'#FDE7DE',iconColor:'#F25D27',value:'128',label:'Planos publicados',delta:'+12',deltaColor:'#17A649',deltaBg:'var(--accent)'},
+        {emoji:'❓',iconBg:'var(--accent)',iconColor:'#17A649',value:'54',label:'FAQs ativas',delta:'+5',deltaColor:'#17A649',deltaBg:'var(--accent)'},
+        {emoji:'🗂️',iconBg:'#FDE7DE',iconColor:'#F25D27',value:'1.842',label:'Arquivos',delta:'+63',deltaColor:'#17A649',deltaBg:'var(--accent)'},
+        {emoji:'💾',iconBg:'var(--accent)',iconColor:'#17A649',value:'6,4 GB',label:'Armazenamento',delta:'32%',deltaColor:'#7a7663',deltaBg:'var(--muted)'},
+        {emoji:'📤',iconBg:'#FDE7DE',iconColor:'#F25D27',value:'37',label:'Uploads no mês',delta:'+9',deltaColor:'#17A649',deltaBg:'var(--accent)'},
+      ],
+      activities:[
+        {emoji:'📝',bg:'#FDE7DE',color:'#F25D27',user:'Carla Menezes',action:'publicou o plano',target:'Plano Municipal Primeira Infância 2026',time:'há 12 minutos',tag:'Publicado',tagColor:'#17A649',tagBg:'var(--accent)'},
+        {emoji:'📤',bg:'var(--accent)',color:'#17A649',user:'João Prado',action:'enviou 4 arquivos para',target:'Midiateca / Relatórios',time:'há 40 minutos',tag:'Upload',tagColor:'#F25D27',tagBg:'#FDE7DE'},
+        {emoji:'❓',bg:'#FDE7DE',color:'#F25D27',user:'Marina Reis',action:'editou a FAQ',target:'Como cadastrar um município?',time:'há 1 hora',tag:'Editado',tagColor:'#7a7663',tagBg:'var(--muted)'},
+        {emoji:'👤',bg:'var(--accent)',color:'#17A649',user:'Marina Reis',action:'adicionou o usuário',target:'Rafael Lopes (Revisor)',time:'há 3 horas',tag:'Usuário',tagColor:'#7a7663',tagBg:'var(--muted)'},
+        {emoji:'📄',bg:'#FDE7DE',color:'#F25D27',user:'Carla Menezes',action:'enviou para revisão',target:'Política de Privacidade',time:'ontem, 17:20',tag:'Revisão',tagColor:'#F25D27',tagBg:'#FDE7DE'},
+      ],
+      accesses:[
+        {initials:'CM',avBg:'#F25D27',name:'Carla Menezes',role:'Editora',time:'agora'},
+        {initials:'JP',avBg:'#17A649',name:'João Prado',role:'Editor',time:'há 22 min'},
+        {initials:'RL',avBg:'#8a6bd6',name:'Rafael Lopes',role:'Revisor',time:'há 1 h'},
+        {initials:'AS',avBg:'#d68b2b',name:'Ana Sousa',role:'Revisora',time:'há 2 h'},
+      ],
+    };
+  }
+}
+</script>
+</body>
+</html>
