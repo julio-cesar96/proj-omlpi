@@ -46,8 +46,28 @@ Não são obrigação — tratar como extra opcional, priorizar por último, e u
 
 Não é possível usar o "Review Workflows" nativo do Strapi (recurso pago). **Solução:** campo `estado_editorial` customizado (enum), como o próprio design já sugere no modelo de dado — sem custo de licença, só trabalho de modelagem normal.
 
+## Decisão de arquitetura confirmada (investigação técnica de 14/07/2026)
+
+**Painel administrativo = aplicação React + Vite separada**, consumindo a API REST do Strapi v3 via `users-permissions`/JWT. Não será um plugin/customização do admin nativo — o admin Strapi v3 não suporta o nível de customização visual exigido pelo design (tema limitado a cores/tamanhos, sem drawer nativo, sem drag & drop nativo).
+
+Content-types novos: `plano`, `faq`, `pagina-institucional`, `categoria`. Content-types existentes (`artigo`, `blog`, `locale`, `regiao`, `tag`) permanecem intocados; `blog` fica oculto no novo painel, não deletado.
+
+Stack recomendada: React + Vite, React Query, Lucide React, `@hello-pangea/dnd` (drag & drop), `react-dropzone`, PapaParse (CSV), SheetJS (XLSX). Hospedagem sugerida: Vercel, mesmo provedor do site público.
+
+## Achado de segurança — comunicar separadamente, com urgência
+
+O admin do Strapi está exposto publicamente (`/admin`, sem VPN/restrição de IP), rodando em Strapi v3 + Node 14, ambos sem suporte desde 2023. Mitigação recomendada antes de iniciar o desenvolvimento do painel: restringir `/admin` por IP ou HTTP Basic Auth no Nginx. Isso é uma comunicação urgente ao cliente, separada da decisão de redesign — é risco vivo, independente de qual caminho de painel for escolhido.
+
+**Pendência de verificação:** existe divergência entre a versão do Strapi no `docker-compose.yml` (`3.3.3-node14`) e a lida do `package.json` (`3.0.0-beta.17.5`) — confirmar via lockfile antes de comunicar a gravidade ao cliente.
+
 ## Pendências a confirmar com o cliente antes de fechar o plano de fases
 
 1. ~~Escopo real de "controlar ordem de exibição de conteúdos simples" (5.1g)~~ — **Resolvido: é só FAQ.**
 2. ~~Escopo real de "exportação de base para conferência" (5.3b)~~ — **Resolvido: é só Planos.**
 3. Confirmar que Dashboard analítico, busca global, notificações e histórico de versões são aceitos como fora do MVP (ou se o cliente insiste nalgum desses, tratar como escopo adicional com prazo/custo à parte).
+
+## Pendências de acesso para prosseguir
+
+1. Credenciais de admin do Strapi — para confirmar schemas completos de `locale`/`regiao`/`tag` e criar os content-types novos.
+2. Acesso SSH/painel de hosting — para implementar a restrição de `/admin`.
+3. Decisão de subdomínio para o novo painel (`admin.rnpiobserva.org.br`? `cms.observarnpi.org.br`?).
