@@ -1,0 +1,21 @@
+{
+  "kind": "singleType",
+  "collectionName": "banners",
+  "info": {
+    "name": "Home - Banner",
+    "description": ""
+  },
+  "options": {
+    "increments": true,
+    "timestamps": true,
+    "draftAndPublish": true
+  },
+  "attributes": {
+    "title": {
+      "type": "string"
+    },
+    "text": {
+      "type": "richtext"
+    }
+  }
+}

@@ -1,0 +1,61 @@
+{
+  "kind": "collectionType",
+  "collectionName": "artigos",
+  "info": {
+    "name": "artigos",
+    "description": ""
+  },
+  "options": {
+    "increments": true,
+    "timestamps": true,
+    "draftAndPublish": true
+  },
+  "attributes": {
+    "title": {
+      "type": "string"
+    },
+    "description": {
+      "type": "text"
+    },
+    "tags": {
+      "collection": "tags"
+    },
+    "file": {
+      "model": "file",
+      "via": "related",
+      "allowedTypes": [
+        "images",
+        "files",
+        "videos"
+      ],
+      "plugin": "upload",
+      "required": false
+    },
+    "author": {
+      "type": "string"
+    },
+    "image": {
+      "collection": "file",
+      "via": "related",
+      "allowedTypes": [
+        "images",
+        "files",
+        "videos"
+      ],
+      "plugin": "upload",
+      "required": false
+    },
+    "date": {
+      "type": "string"
+    },
+    "organization": {
+      "type": "string"
+    },
+    "youtube": {
+      "type": "string",
+      "regex": "^((?:https?:)?\\/\\/)?((?:www|m)\\.)?((?:youtube\\.com|youtu.be))(\\/(?:[\\w\\-]+\\?v=|embed\\/|v\\/)?)([\\w\\-]+)(\\S+)?$|^$",
+      "private": false,
+      "required": false
+    }
+  }
+}

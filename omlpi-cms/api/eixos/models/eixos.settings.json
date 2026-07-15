@@ -1,0 +1,42 @@
+{
+  "kind": "collectionType",
+  "collectionName": "eixos",
+  "info": {
+    "name": "eixos",
+    "description": ""
+  },
+  "options": {
+    "increments": true,
+    "timestamps": true,
+    "draftAndPublish": true
+  },
+  "attributes": {
+    "title": {
+      "type": "string",
+      "required": true
+    },
+    "image": {
+      "model": "file",
+      "via": "related",
+      "allowedTypes": [
+        "images",
+        "files",
+        "videos"
+      ],
+      "plugin": "upload",
+      "required": false
+    },
+    "order": {
+      "type": "integer"
+    },
+    "link": {
+      "type": "string"
+    },
+    "text": {
+      "type": "richtext"
+    },
+    "link_title": {
+      "type": "string"
+    }
+  }
+}

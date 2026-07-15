@@ -1,0 +1,28 @@
+{
+  "routes": [
+    {
+      "method": "GET",
+      "path": "/politica-de-privacidade",
+      "handler": "politica-de-privacidade.find",
+      "config": {
+        "policies": []
+      }
+    },
+    {
+      "method": "PUT",
+      "path": "/politica-de-privacidade",
+      "handler": "politica-de-privacidade.update",
+      "config": {
+        "policies": []
+      }
+    },
+    {
+      "method": "DELETE",
+      "path": "/politica-de-privacidade",
+      "handler": "politica-de-privacidade.delete",
+      "config": {
+        "policies": []
+      }
+    }
+  ]
+}

@@ -1,0 +1,28 @@
+{
+  "routes": [
+    {
+      "method": "GET",
+      "path": "/infographics",
+      "handler": "infographics.find",
+      "config": {
+        "policies": []
+      }
+    },
+    {
+      "method": "PUT",
+      "path": "/infographics",
+      "handler": "infographics.update",
+      "config": {
+        "policies": []
+      }
+    },
+    {
+      "method": "DELETE",
+      "path": "/infographics",
+      "handler": "infographics.delete",
+      "config": {
+        "policies": []
+      }
+    }
+  ]
+}

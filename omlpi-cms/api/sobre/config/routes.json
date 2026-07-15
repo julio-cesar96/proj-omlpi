@@ -1,0 +1,52 @@
+{
+  "routes": [
+    {
+      "method": "GET",
+      "path": "/sobres",
+      "handler": "sobre.find",
+      "config": {
+        "policies": []
+      }
+    },
+    {
+      "method": "GET",
+      "path": "/sobres/count",
+      "handler": "sobre.count",
+      "config": {
+        "policies": []
+      }
+    },
+    {
+      "method": "GET",
+      "path": "/sobres/:id",
+      "handler": "sobre.findOne",
+      "config": {
+        "policies": []
+      }
+    },
+    {
+      "method": "POST",
+      "path": "/sobres",
+      "handler": "sobre.create",
+      "config": {
+        "policies": []
+      }
+    },
+    {
+      "method": "PUT",
+      "path": "/sobres/:id",
+      "handler": "sobre.update",
+      "config": {
+        "policies": []
+      }
+    },
+    {
+      "method": "DELETE",
+      "path": "/sobres/:id",
+      "handler": "sobre.delete",
+      "config": {
+        "policies": []
+      }
+    }
+  ]
+}

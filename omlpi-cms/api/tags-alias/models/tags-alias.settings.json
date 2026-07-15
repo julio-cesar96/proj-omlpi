@@ -1,0 +1,26 @@
+{
+  "kind": "collectionType",
+  "collectionName": "tags-alias",
+  "info": {
+    "name": "Temas",
+    "description": ""
+  },
+  "options": {
+    "increments": true,
+    "timestamps": true,
+    "draftAndPublish": false
+  },
+  "attributes": {
+    "Alias": {
+      "type": "string",
+      "required": true,
+      "unique": true
+    },
+    "aliases": {
+      "columnName": "alias",
+      "collection": "tags",
+      "via": "tags_aliases",
+      "dominant": true
+    }
+  }
+}

@@ -1,0 +1,44 @@
+{
+  "kind": "collectionType",
+  "collectionName": "sobres",
+  "info": {
+    "name": "Sobre (texto)",
+    "description": ""
+  },
+  "options": {
+    "increments": true,
+    "timestamps": true,
+    "draftAndPublish": true
+  },
+  "attributes": {
+    "title": {
+      "type": "string"
+    },
+    "text": {
+      "type": "richtext"
+    },
+    "image": {
+      "model": "file",
+      "via": "related",
+      "allowedTypes": [
+        "images",
+        "files",
+        "videos"
+      ],
+      "plugin": "upload",
+      "required": false
+    },
+    "link": {
+      "type": "string"
+    },
+    "link_title": {
+      "type": "string"
+    },
+    "link2": {
+      "type": "string"
+    },
+    "link2_title": {
+      "type": "string"
+    }
+  }
+}
