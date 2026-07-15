@@ -24,40 +24,58 @@ export interface ContactFormData {
 }
 
 /**
- * Número do WhatsApp de destino (provisório).
- *
- * TODO: substituir pelo número real quando confirmado.
- * Formato: código do país + DDD + número, sem símbolos (ex.: "5511999999999").
+ * Chave de acesso pública do Web3Forms.
  */
-// Número confirmado pelo cliente em 2026-07-09.
-// Formato: código do país + DDD + número, sem símbolos.
-const WHATSAPP_NUMBER = "5521982581194";
+const WEB3FORMS_ACCESS_KEY = process.env.NEXT_PUBLIC_WEB3FORMS_KEY;
 
 /**
- * Gera a URL de abertura do WhatsApp com a mensagem pré-preenchida.
- *
- * Uso no componente de formulário (client component, Fase 2):
- *   import { buildWhatsAppUrl } from "@/lib/contact";
- *   window.open(buildWhatsAppUrl(formData), "_blank", "noopener,noreferrer");
+ * Envia os dados do formulário de contato para a API do Web3Forms.
+ * Lança um erro caso a submissão falhe ou a chave de acesso não esteja configurada.
  */
-export function buildWhatsAppUrl(data: ContactFormData): string {
-  const text = [
-    `*Contato via Observa*`,
-    ``,
-    `*Nome:* ${data.name}`,
-    data.state ? `*Estado:* ${data.state}` : null,
-    `*E-mail:* ${data.email}`,
-    data.subject ? `*Assunto:* ${data.subject}` : null,
-    ``,
-    `*Mensagem:*`,
-    data.message,
-  ]
-    .filter((line) => line !== null)
-    .join("\n");
+export async function submitContactForm(data: ContactFormData): Promise<void> {
+  if (!WEB3FORMS_ACCESS_KEY) {
+    throw new Error("Erro de configuração: Chave de acesso do formulário não encontrada.");
+  }
 
-  const encoded = encodeURIComponent(text);
-  const number = WHATSAPP_NUMBER.replace(/\D/g, ""); // sanitiza o número
-  return `https://wa.me/${number}?text=${encoded}`;
+  // Se o estado estiver presente, incorpora-o à mensagem para preservá-lo,
+  // já que a API do Web3Forms não possui um campo nativo para o Estado.
+  const formattedMessage = data.state
+    ? `Estado: ${data.state}\n\n${data.message}`
+    : data.message;
+
+  const payload = {
+    access_key: WEB3FORMS_ACCESS_KEY,
+    name: data.name,
+    email: data.email,
+    subject: data.subject || "Contato via Observa",
+    message: formattedMessage,
+  };
+
+  try {
+    const response = await fetch("https://api.web3forms.com/submit", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        Accept: "application/json",
+      },
+      body: JSON.stringify(payload),
+    });
+
+    if (!response.ok) {
+      throw new Error("Erro de rede ao enviar o formulário.");
+    }
+
+    const result = await response.json();
+
+    if (!result.success) {
+      throw new Error(result.message || "Falha ao enviar a mensagem.");
+    }
+  } catch (error) {
+    if (error instanceof Error) {
+      throw error;
+    }
+    throw new Error("Ocorreu um erro inesperado ao enviar a mensagem. Tente novamente.");
+  }
 }
 
 /**

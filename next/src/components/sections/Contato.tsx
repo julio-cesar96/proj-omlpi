@@ -13,7 +13,7 @@
 "use client";
 
 import { useState } from "react";
-import { buildWhatsAppUrl, validateContactForm, ContactFormData } from "@/lib/contact";
+import { submitContactForm, validateContactForm, ContactFormData } from "@/lib/contact";
 
 // ─── Dados estáticos ──────────────────────────────────────────────────────────
 
@@ -76,6 +76,7 @@ export function Contato() {
   });
   const [error, setError] = useState<string | null>(null);
   const [submitted, setSubmitted] = useState(false);
+  const [loading, setLoading] = useState(false);
 
   function handleChange(
     e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement>
@@ -84,21 +85,32 @@ export function Contato() {
     setError(null);
   }
 
-  function handleSubmit(e: React.FormEvent) {
+  async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
     const validationError = validateContactForm(form);
     if (validationError) {
       setError(validationError);
       return;
     }
-    const url = buildWhatsAppUrl(form as ContactFormData);
-    window.open(url, "_blank", "noopener,noreferrer");
-    setSubmitted(true);
-    // Reseta o formulário após 3s
-    setTimeout(() => {
-      setSubmitted(false);
-      setForm({ name: "", state: "", email: "", subject: SUBJECT_OPTIONS[0], message: "" });
-    }, 3000);
+    setLoading(true);
+    setError(null);
+    try {
+      await submitContactForm(form as ContactFormData);
+      setSubmitted(true);
+      // Reseta o formulário após 3s
+      setTimeout(() => {
+        setSubmitted(false);
+        setForm({ name: "", state: "", email: "", subject: SUBJECT_OPTIONS[0], message: "" });
+      }, 3000);
+    } catch (err) {
+      if (err instanceof Error) {
+        setError(err.message);
+      } else {
+        setError("Ocorreu um erro inesperado ao enviar. Tente novamente.");
+      }
+    } finally {
+      setLoading(false);
+    }
   }
 
   return (
@@ -201,7 +213,7 @@ export function Contato() {
                   Mensagem enviada!
                 </p>
                 <p className="text-sm text-muted-foreground">
-                  O WhatsApp foi aberto com sua mensagem pré-preenchida.
+                  Sua mensagem foi enviada! Retornaremos em breve pelo e-mail informado.
                 </p>
               </div>
             ) : (
@@ -307,9 +319,10 @@ export function Contato() {
 
                 <button
                   type="submit"
-                  className="w-full flex items-center justify-center gap-2 py-3.5 bg-primary text-white font-semibold rounded-xl hover:bg-[#e04d18] transition-colors shadow-sm text-[15px]"
+                  disabled={loading}
+                  className="w-full flex items-center justify-center gap-2 py-3.5 bg-primary text-white font-semibold rounded-xl hover:bg-[#e04d18] transition-colors shadow-sm text-[15px] disabled:opacity-50 disabled:cursor-not-allowed"
                 >
-                  Enviar mensagem
+                  {loading ? "Enviando..." : "Enviar mensagem"}
                   <svg
                     xmlns="http://www.w3.org/2000/svg"
                     width="16"
@@ -325,10 +338,6 @@ export function Contato() {
                     <path d="M5 12h14M12 5l7 7-7 7" />
                   </svg>
                 </button>
-
-                <p className="text-xs text-center text-muted-foreground">
-                  Ao enviar, você será redirecionado para o WhatsApp com sua mensagem pré-preenchida.
-                </p>
               </form>
             )}
           </div>
