@@ -54,11 +54,18 @@ Content-types novos: `plano`, `faq`, `pagina-institucional`, `categoria`. Conten
 
 Stack recomendada: React + Vite, React Query, Lucide React, `@hello-pangea/dnd` (drag & drop), `react-dropzone`, PapaParse (CSV), SheetJS (XLSX). Hospedagem sugerida: Vercel, mesmo provedor do site público.
 
-## Achado de segurança — comunicar separadamente, com urgência
+## Achado de segurança — RESOLVIDO (15/07/2026)
 
-O admin do Strapi está exposto publicamente (`/admin`, sem VPN/restrição de IP), rodando em Strapi v3 + Node 14, ambos sem suporte desde 2023. Mitigação recomendada antes de iniciar o desenvolvimento do painel: restringir `/admin` por IP ou HTTP Basic Auth no Nginx. Isso é uma comunicação urgente ao cliente, separada da decisão de redesign — é risco vivo, independente de qual caminho de painel for escolhido.
+O admin do Strapi estava exposto publicamente. **Mitigação aplicada e confirmada**: HTTP Basic Auth via Nginx em `/admin` (`/etc/nginx/sites-available/observa`, com backup salvo antes da mudança). Testado: `/admin` → `401`; `/locales` e `/artigos` → `200`, sem impacto no restante do tráfego.
 
-**Pendência de verificação:** existe divergência entre a versão do Strapi no `docker-compose.yml` (`3.3.3-node14`) e a lida do `package.json` (`3.0.0-beta.17.5`) — confirmar via lockfile antes de comunicar a gravidade ao cliente.
+**Versão real do Strapi confirmada**: `3.3.3` (última versão estável do v3, via `docker exec` no container de produção) — não a beta que uma investigação anterior havia indicado incorretamente, por ter lido um clone GitHub desatualizado em vez do código real do servidor. EOL desde 2023 continua valendo (é a versão, não a idade dela, que está sem suporte).
+
+**Pendência secundária, não urgente**: o arquivo Nginx tem um bloco `server_name` duplicado (cópia inativa, sem a rota `/artigos`) — vale limpar depois, sem pressa.
+
+## Content-types existentes — decisão final sobre sobreposição (investigação de 16/07/2026)
+
+- **`listaplanos`**: intocado. É `singleType` (1 documento só), conceito diferente de `plano` (registro individual por município), zero uso confirmado no front atual. `plano` será criado do zero como `collectionType`. Se houver dado real em produção dentro de `listaplanos`, confirmar com o cliente antes de eventualmente descontinuar — não é urgente.
+- **`infographics`**: não expor no novo painel. `singleType`, zero uso confirmado no front atual — provável feature nunca lançada. Não deletar do Strapi, só não incluir como módulo do painel novo.
 
 ## Pendências a confirmar com o cliente antes de fechar o plano de fases
 
