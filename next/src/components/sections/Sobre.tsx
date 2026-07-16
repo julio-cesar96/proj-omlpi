@@ -1,9 +1,14 @@
 /**
  * Sobre — Server Component (seção Sobre)
  *
- * Busca os registros da collection `sobres` ordenados por `order:asc`.
+ * Busca os registros da collection `sobres` ordenados por `createdAt:asc`.
  * Cada registro = uma aba (Quem somos / Resultados do levantamento / Histórico).
  * Confirmado na Fase 1: N registros, um por aba.
+ *
+ * ⚠️ O schema real do `sobre` não tem campo `order`. Usa `createdAt:asc`
+ * como proxy de ordem de inserção. Se a ordem das abas precisar ser
+ * controlável via CMS, será necessário adicionar campo `order` ao schema
+ * (decisão de escopo do redesign do CMS, fora desta migração).
  *
  * Passa os dados para SobreClient para gerenciamento de estado client-side.
  * Cache: revalidate 3600s (dado estático, muda raramente).
@@ -27,7 +32,7 @@ export async function Sobre() {
   let abas: StrapiSobre[] = [];
 
   try {
-    abas = await getSobres({ _sort: "order:asc" });
+    abas = await getSobres({ _sort: "createdAt:asc" });
   } catch {
     // Sem API configurada: renderiza a estrutura vazia
   }

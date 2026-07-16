@@ -88,14 +88,22 @@ export interface StrapiTag {
   slug?: string;
 }
 
-/** Banner da home */
+/**
+ * Banner da home (seção Hero).
+ *
+ * ⚠️ ATENÇÃO: `banners` é um **singleType** no Strapi — retorna um único
+ * objeto, não um array. Schema real confirmado (07/2026):
+ * apenas `title` (string) e `text` (richtext). Campos `image`, `subtitle`,
+ * `link` e `order` **NÃO existem** no schema real.
+ *
+ * O Hero usa o campo `text` para o parágrafo descritivo, com fallback estático
+ * caso o campo esteja vazio. A imagem do Hero é decorativa (SVG hardcoded).
+ */
 export interface StrapiBanner {
-  id: number;
+  id?: number;
   title?: string;
-  subtitle?: string;
-  image?: StrapiFile;
-  link?: string;
-  order?: number;
+  /** Conteúdo rich-text descritivo do banner. Campo real: `text`. */
+  text?: string;
   published_at?: string;
   [key: string]: unknown;
 }
@@ -125,31 +133,47 @@ export interface StrapiNoticia {
 /**
  * Texto institucional (seção Sobre).
  *
- * Confirmado: `sobres` retorna N registros, um por aba
+ * `sobres` retorna N registros (collectionType), um por aba
  * (Quem somos / Resultados do levantamento / Histórico).
- * Usar `_sort=order:asc` na Fase 2 para garantir a ordem das abas.
+ *
+ * ⚠️ ATENÇÃO (confirmado 07/2026):
+ * - Campo real é `text` (richtext), **não** `content`.
+ * - **Não existe campo `order`** no schema real do Strapi.
+ *   Ordenação por `createdAt:asc` é usada como proxy — se a ordem das abas
+ *   precisar ser controlável via CMS, será necessário adicionar um campo
+ *   `order` ao content-type (decisão de escopo do redesign do CMS).
  */
 export interface StrapiSobre {
   id: number;
   title?: string;
-  content?: string; // markdown
-  /** Identificador/slug da aba (ex.: "quem-somos", "resultados", "historico") */
-  tab?: string;
-  /** Ordem de exibição das abas */
-  order?: number;
+  /** Conteúdo rich-text da aba. Campo real: `text` (não `content`). */
+  text?: string;
+  /** Upload de imagem opcional da aba. */
+  image?: StrapiFile;
+  link?: string;
+  link_title?: string;
+  link2?: string;
+  link2_title?: string;
   [key: string]: unknown;
 }
 
 /**
- * Texto da página de indicadores.
+ * Texto introdutório da seção Midiateca (equivalente a `/indicadores` no site antigo).
  *
- * TODO (mapeamento no one-page): confirmar qual seção/componente usará esta
- * collection. Não há mapeamento definitivo no PLANO_ONEPAGE.md.
+ * `textoindicadors` é um **singleType** no Strapi — retorna um único objeto.
+ *
+ * ⚠️ ATENÇÃO (confirmado 07/2026): campos reais são em português:
+ * - `titulo` (string) — não `title`
+ * - `texto` (richtext)  — não `content`
+ *
+ * A função `getTextoIndicador()` retorna `StrapiTextoIndicador` (não array).
  */
 export interface StrapiTextoIndicador {
-  id: number;
-  title?: string;
-  content?: string; // markdown
+  id?: number;
+  /** Título do texto introdutório. Campo real: `titulo` (em português). */
+  titulo?: string;
+  /** Conteúdo rich-text. Campo real: `texto` (em português). */
+  texto?: string;
   [key: string]: unknown;
 }
 
@@ -218,9 +242,15 @@ export interface StrapiLocale {
 
 // ─── Funções públicas ─────────────────────────────────────────────────────────
 
-/** Banners da home (seção Hero / Início) */
-export function getBanners(params?: StrapiQueryParams): Promise<StrapiBanner[]> {
-  return strapiGet<StrapiBanner[]>("banners", params);
+/**
+ * Banner da home (seção Hero).
+ *
+ * `banners` é **singleType** — retorna um único objeto `StrapiBanner`,
+ * não um array. Campos disponíveis: `title`, `text`.
+ * Não passar `_sort` — singleType ignora parâmetros de sort.
+ */
+export function getBanner(): Promise<StrapiBanner> {
+  return strapiGet<StrapiBanner>("banners");
 }
 
 /** Eixos temáticos (seção Início) */
@@ -236,23 +266,28 @@ export function getNoticias(params?: StrapiQueryParams): Promise<StrapiNoticia[]
 /**
  * Textos institucionais da seção Sobre.
  *
- * Retorna N registros, um por aba (order:asc).
- * Uso recomendado na Fase 2:
- *   getSobres({ _sort: "order:asc" })
+ * Retorna N registros (collectionType), um por aba.
+ * Ordenação por `createdAt:asc` como proxy de ordem de inserção —
+ * o schema real **não tem campo `order`**. Se a ordem das abas precisar
+ * ser controlável via CMS, adicionar campo `order` ao content-type.
+ *
+ * Uso: getSobres({ _sort: "createdAt:asc" })
  */
 export function getSobres(params?: StrapiQueryParams): Promise<StrapiSobre[]> {
   return strapiGet<StrapiSobre[]>("sobres", params);
 }
 
 /**
- * Texto da página de indicadores.
+ * Texto introdutório da seção Midiateca.
  *
- * TODO (mapeamento): confirmar seção destino antes de usar.
+ * `textoindicadors` é **singleType** — retorna um único objeto.
+ * Campos: `titulo` (string), `texto` (richtext) — ambos em português.
+ *
+ * Renomeada de `getTextoIndicadors` (plural, array) para refletir
+ * o tipo real de retorno. A forma plural antiga foi removida.
  */
-export function getTextoIndicadors(
-  params?: StrapiQueryParams
-): Promise<StrapiTextoIndicador[]> {
-  return strapiGet<StrapiTextoIndicador[]>("textoindicadors", params);
+export function getTextoIndicador(): Promise<StrapiTextoIndicador> {
+  return strapiGet<StrapiTextoIndicador>("textoindicadors");
 }
 
 /** Guias / documentos de referência (Midiateca / PNIPI) */

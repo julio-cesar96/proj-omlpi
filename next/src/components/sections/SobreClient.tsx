@@ -4,8 +4,10 @@
  * Gerencia a aba ativa da seção Sobre e renderiza o conteúdo de cada registro.
  * Os dados já chegam prontos como prop (buscados pelo Server Component Sobre.tsx).
  *
- * Cada aba corresponde a um registro `sobres` do Strapi (order:asc).
- * O campo `title` define o label da aba; `content` é markdown renderizado como HTML.
+ * Cada aba corresponde a um registro `sobres` do Strapi (createdAt:asc).
+ * O campo `title` define o label da aba; `text` é richtext renderizado como HTML.
+ * Campo real confirmado: `text` (não `content`) — ver lib/strapi.ts e
+ * docs/progresso/correcao-schemas-strapi.md.
  */
 
 "use client";
@@ -69,14 +71,14 @@ export function SobreClient({ abas }: Props) {
       {activeAba && (
         <div className="grid lg:grid-cols-2 gap-10 lg:gap-16 items-start">
           {/* Imagem da aba (se houver) */}
-          {(activeAba as { image?: { url: string } }).image?.url && (
+          {activeAba.image?.url && (
             <div
               className="rounded-[2rem] overflow-hidden shadow-md flex-shrink-0"
               style={{ aspectRatio: "4/3", background: "#fff3ee" }}
             >
               {/* eslint-disable-next-line @next/next/no-img-element */}
               <img
-                src={(activeAba as { image?: { url: string } }).image!.url}
+                src={activeAba.image.url}
                 alt={activeAba.title ?? ""}
                 className="w-full h-full object-cover"
               />
@@ -84,7 +86,7 @@ export function SobreClient({ abas }: Props) {
           )}
           <div
             className={
-              (activeAba as { image?: { url: string } }).image?.url
+              activeAba.image?.url
                 ? ""
                 : "col-span-full max-w-3xl"
             }
@@ -97,11 +99,11 @@ export function SobreClient({ abas }: Props) {
                 {activeAba.title}
               </h3>
             )}
-            {activeAba.content && (
+            {activeAba.text && (
               <div
                 className="prose prose-sm max-w-none text-muted-foreground leading-[1.75] [&_p]:mb-4 [&_h2]:text-foreground [&_h2]:font-bold [&_h3]:text-foreground [&_strong]:text-foreground [&_ul]:list-disc [&_ul]:pl-5 [&_li]:mb-1"
                 dangerouslySetInnerHTML={{
-                  __html: renderMarkdown(activeAba.content),
+                  __html: renderMarkdown(activeAba.text),
                 }}
               />
             )}

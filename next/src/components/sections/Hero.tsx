@@ -12,7 +12,7 @@
  * Fase 2 — seção Início.
  */
 
-import { getBanners, getEixos, StrapiBanner, StrapiEixo } from "@/lib/strapi";
+import { getBanner, getEixos, StrapiBanner, StrapiEixo } from "@/lib/strapi";
 
 // ─── Stats (placeholder) ─────────────────────────────────────────────────────
 // TODO: substituir pelos dados reais do endpoint omlpi-api `data/resume/` quando confirmado.
@@ -37,35 +37,32 @@ function SectionLabel({ children }: { children: React.ReactNode }) {
   );
 }
 
-function BannerImage({ banner }: { banner: StrapiBanner | null }) {
-  const src = banner?.image?.url;
+/**
+ * Componente visual da área de imagem do Hero.
+ *
+ * ⚠️ O schema real de `banners` (singleType) não tem campo `image`.
+ * A imagem é decorativa (SVG hardcoded). O campo `image` não existe
+ * no schema real de `banners` (singleType: apenas `title` e `text`).
+ */
+function BannerImage() {
   return (
     <div className="relative">
       <div
         className="rounded-[2rem] overflow-hidden shadow-lg"
         style={{ aspectRatio: "4/3", background: "#e8f5ee" }}
       >
-        {src ? (
-          // eslint-disable-next-line @next/next/no-img-element
-          <img
-            src={src}
-            alt={banner?.title ?? "Imagem Observa"}
-            className="w-full h-full object-cover"
-          />
-        ) : (
-          // Fallback visual quando não há banner cadastrado
-          <div className="w-full h-full flex items-center justify-center">
-            <svg
-              viewBox="0 0 200 150"
-              className="w-40 opacity-30"
-              aria-hidden="true"
-            >
-              <circle cx="60" cy="75" r="40" fill="#17a649" />
-              <circle cx="140" cy="75" r="30" fill="#f25d27" />
-              <circle cx="100" cy="55" r="20" fill="#444525" />
-            </svg>
-          </div>
-        )}
+        {/* SVG decorativo — não existe campo `image` no schema real de banners */}
+        <div className="w-full h-full flex items-center justify-center">
+          <svg
+            viewBox="0 0 200 150"
+            className="w-40 opacity-30"
+            aria-hidden="true"
+          >
+            <circle cx="60" cy="75" r="40" fill="#17a649" />
+            <circle cx="140" cy="75" r="30" fill="#f25d27" />
+            <circle cx="100" cy="55" r="20" fill="#444525" />
+          </svg>
+        </div>
       </div>
       {/* Floating stat badges */}
       <div className="absolute -bottom-5 -left-5 bg-white rounded-2xl shadow-lg px-5 py-4 border border-border">
@@ -128,19 +125,17 @@ function EixoCard({ eixo }: { eixo: StrapiEixo }) {
 // ─── Main ────────────────────────────────────────────────────────────────────
 
 export async function Hero() {
-  let banners: StrapiBanner[] = [];
+  let banner: StrapiBanner | null = null;
   let eixos: StrapiEixo[] = [];
 
   try {
-    [banners, eixos] = await Promise.all([
-      getBanners({ _sort: "order:asc" }),
+    [banner, eixos] = await Promise.all([
+      getBanner(),
       getEixos({ _sort: "order:asc" }),
     ]);
   } catch {
     // Sem API configurada (dev local sem .env): renderiza com fallback gracioso
   }
-
-  const firstBanner = banners[0] ?? null;
 
   return (
     <>
@@ -183,7 +178,7 @@ export async function Hero() {
                 no Brasil
               </h1>
               <p className="text-[17px] text-muted-foreground leading-[1.75] mb-9 max-w-xl">
-                {firstBanner?.subtitle ??
+                {banner?.text ??
                   "Acompanhe o panorama nacional de planos municipais, estaduais e o plano nacional voltados ao desenvolvimento integral de crianças de 0 a 6 anos."}
               </p>
               <div className="flex flex-wrap gap-3">
@@ -216,8 +211,8 @@ export async function Hero() {
               </div>
             </div>
 
-            {/* Banner image */}
-            <BannerImage banner={firstBanner} />
+            {/* Banner image area — decorative SVG (no image field in banners schema) */}
+            <BannerImage />
           </div>
         </div>
       </section>
