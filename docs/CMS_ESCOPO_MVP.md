@@ -46,13 +46,13 @@ Não são obrigação — tratar como extra opcional, priorizar por último, e u
 
 Não é possível usar o "Review Workflows" nativo do Strapi (recurso pago). **Solução:** campo `estado_editorial` customizado (enum), como o próprio design já sugere no modelo de dado — sem custo de licença, só trabalho de modelagem normal.
 
-## Decisão de arquitetura confirmada (investigação técnica de 14/07/2026)
+## Decisão de arquitetura (investigação técnica de 14/07/2026 — SUPERSEDED)
 
-**Painel administrativo = aplicação React + Vite separada**, consumindo a API REST do Strapi v3 via `users-permissions`/JWT. Não será um plugin/customização do admin nativo — o admin Strapi v3 não suporta o nível de customização visual exigido pelo design (tema limitado a cores/tamanhos, sem drawer nativo, sem drag & drop nativo).
+> [!NOTE]
+> **ATUALIZAÇÃO EM 16/07/2026:** A decisão de construir uma aplicação React + Vite separada foi revertida. Ver seção *"Decisão de caminho — MVP vs. redesign rico"* abaixo.
 
-Content-types novos: `plano`, `faq`, `pagina-institucional`, `categoria`. Content-types existentes (`artigo`, `blog`, `locale`, `regiao`, `tag`) permanecem intocados; `blog` fica oculto no novo painel, não deletado.
+Content-types novos: `plano`, `faq`, `pagina-institucional`, `categoria`. Content-types existentes (`artigos`, `banners`, `eixos`, `guias`, `infographics`, `listaplanos`, `locales`, `noticias`, `politica-de-privacidade`, `sobre`, `tags`, `tags-alias`, `textoindicadors`) permanecem intocados.
 
-Stack recomendada: React + Vite, React Query, Lucide React, `@hello-pangea/dnd` (drag & drop), `react-dropzone`, PapaParse (CSV), SheetJS (XLSX). Hospedagem sugerida: Vercel, mesmo provedor do site público.
 
 ## Achado de segurança — RESOLVIDO (15/07/2026)
 
@@ -75,6 +75,13 @@ O admin do Strapi estava exposto publicamente. **Mitigação aplicada e confirma
 
 ## Pendências de acesso para prosseguir
 
-1. Credenciais de admin do Strapi — para confirmar schemas completos de `locale`/`regiao`/`tag` e criar os content-types novos.
+1. Credenciais de admin do Strapi — para confirmar schemas completos, habilitar permissão pública de `find` em `politica-de-privacidade` (atualmente retornando 403), e criar os content-types novos.
 2. Acesso SSH/painel de hosting — para implementar a restrição de `/admin`.
 3. Decisão de subdomínio para o novo painel (`admin.rnpiobserva.org.br`? `cms.observarnpi.org.br`?).
+
+## Decisão de caminho — MVP vs. redesign rico (16/07/2026)
+
+Decidido: seguir o Caminho A — MVP no admin nativo do Strapi (content-types + Draft & Publish + roles nativos), sem construir a app React+Vite separada descrita em `CMS_DESIGN_SPEC.md`. O redesign hifi fica arquivado como proposta de aditivo futuro, não iniciar implementação dele agora.
+
+Pendência aberta do Caminho A: requisito 5.3a (importação CSV/XLSX) não existe nativamente no admin do Strapi — precisa de solução customizada (rota custom, plugin, ou processo manual via script). Decidir abordagem antes da Fase 4.
+
