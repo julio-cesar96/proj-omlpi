@@ -1,12 +1,21 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { CheckCircle2 } from 'lucide-react';
 
 interface ToastProps {
   message: string;
-  visible: boolean;
+  visible?: boolean;
+  onClose?: () => void;
 }
 
-export const Toast: React.FC<ToastProps> = ({ message, visible }) => {
+export const Toast: React.FC<ToastProps> = ({ message, visible = true, onClose }) => {
+  useEffect(() => {
+    if (!visible || !onClose) return;
+    const timer = setTimeout(() => {
+      onClose();
+    }, 2600);
+    return () => clearTimeout(timer);
+  }, [visible, onClose, message]);
+
   if (!visible) return null;
 
   return (
@@ -35,3 +44,4 @@ export const Toast: React.FC<ToastProps> = ({ message, visible }) => {
     </div>
   );
 };
+
