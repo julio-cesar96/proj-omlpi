@@ -79,9 +79,15 @@ O admin do Strapi estava exposto publicamente. **Mitigação aplicada e confirma
 2. Acesso SSH/painel de hosting — para implementar a restrição de `/admin`.
 3. Decisão de subdomínio para o novo painel (`admin.rnpiobserva.org.br`? `cms.observarnpi.org.br`?).
 
-## Decisão de caminho — MVP vs. redesign rico (16/07/2026)
+## Decisão de caminho — MVP vs. redesign rico (revisão final: 21/07/2026)
 
-Decidido: seguir o Caminho A — MVP no admin nativo do Strapi (content-types + Draft & Publish + roles nativos), sem construir a app React+Vite separada descrita em `CMS_DESIGN_SPEC.md`. O redesign hifi fica arquivado como proposta de aditivo futuro, não iniciar implementação dele agora.
+Decisão de 16/07/2026 (Caminho A, admin nativo do Strapi) foi revertida.
+Decidido definitivamente: **Caminho A2 — aplicação React + Vite separada**,
+consumindo a API REST do Strapi, conforme design em `CMS_DESIGN_SPEC.md` /
+`observa-redesign.html`. Motivo: melhorar o processo de desenvolvimento.
 
-Pendência aberta do Caminho A: requisito 5.3a (importação CSV/XLSX) não existe nativamente no admin do Strapi — precisa de solução customizada (rota custom, plugin, ou processo manual via script). Decidir abordagem antes da Fase 4.
+A pendência de importação CSV/XLSX (antes associada ao Caminho A) deixa de
+ser um problema — no Caminho A2 ela é resolvida nativamente pelo overlay
+de importação já especificado no design (Fase 4 do painel novo), usando
+PapaParse/SheetJS no client e chamadas em lote à API REST do Strapi.
 

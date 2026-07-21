@@ -12,7 +12,7 @@ Este projeto é **exclusivamente a migração do front-end**. A API Perl (`omlpi
 >
 > **Restrição de licenciamento desta fase:** todo o trabalho no CMS deve rodar no plano **gratuito (Community)** do Strapi. Nunca implementar, sugerir ou depender de recursos pagos (Growth/Enterprise), como "Review Workflows" ou "Content History" nativos. Onde o design pede um comportamento equivalente, construir uma versão customizada (campo/content-type próprio) — ver `docs/CMS_ESCOPO_MVP.md` para o que está dentro e fora do MVP.
 >
-> **DECISÃO DE CAMINHO E ARQUITETURA (16/07/2026):** Seguir o **Caminho A (MVP no admin nativo do Strapi)**, abandonando a ideia de construir uma aplicação React + Vite separada. Todo o trabalho de customização de campos, content-types novos e permissões será feito diretamente no painel administrativo padrão do Strapi. Content-types novos a criar: `plano`, `faq`, `pagina-institucional`, `categoria`. Content-types existentes (`artigos`, `banners`, `eixos`, `guias`, `infographics`, `listaplanos`, `locales`, `noticias`, `politica-de-privacidade`, `sobre`, `tags`, `tags-alias`, `textoindicadors`) permanecem intocados por padrão.
+> **DECISÃO DE CAMINHO E ARQUITETURA (21/07/2026 — revisão final):** Após reavaliação, confirmado o **Caminho A2 — aplicação React + Vite separada**, revertendo a decisão de 16/07/2026 (Caminho A, admin nativo do Strapi). Motivo da reversão: melhorar o processo de desenvolvimento — o esforço de manter customizações dentro do admin nativo do Strapi v3 se mostrou maior que construir a app separada, e o cliente priorizou fidelidade visual ao design aprovado. O painel roda como app própria (`painel-cms/`), consumindo a API REST do Strapi via JWT (`users-permissions`), sem depender de nenhum recurso pago do Strapi (Growth/Enterprise). Content-types novos: `plano`, `faq`, `pagina-institucional`, `categoria` — já criados e em produção. Content-types existentes (`artigos`, `banners`, `eixos`, `guias`, `infographics`, `listaplanos`, `locales`, `noticias`, `politica-de-privacidade`, `sobre`, `tags`, `tags-alias`, `textoindicadors`) permanecem intocados por padrão.
 >
 > **DETALHE DE ROTA / PERMISSÃO (16/07/2026):** A rota de política de privacidade no Strapi é `/politica-de-privacidade` (não `/privacy-policy`), porém ela retorna `403 Forbidden` devido às permissões públicas de `find` estarem desativadas no Strapi admin (precisa ser habilitada pelo cliente/admin em Settings -> Roles -> Public).
 >
@@ -38,3 +38,14 @@ Este projeto é **exclusivamente a migração do front-end**. A API Perl (`omlpi
 - Formulário de contato: se não houver endpoint de backend confirmado, seguir alternativa descrita em `docs/PLANO_ONEPAGE.md` (Resend + Route Handler como primeira opção, Web3Forms como fallback de menor esforço).
 - Trabalhar por fase, conforme `docs/PLANO_ONEPAGE.md`. Não pular fases nem antecipar trabalho de uma fase posterior sem indicação explícita.
 - Ao final de cada fase, gerar um resumo do que foi implementado e quais pendências (das listadas em `docs/API_CONTRACTS.md` ou `docs/PLANO_ONEPAGE.md`) seguem em aberto.
+
+## Documentação de progresso
+
+Duas frentes de trabalho neste monorepo, com pastas de progresso separadas:
+
+- `docs/progresso/` — migração do front-end (Hugo/Vue2 → Next.js), branch `feature/migration-next`.
+- `docs/progresso-cms/` — redesign do painel administrativo (CMS), branch `feature/cms-redesign`.
+
+Ao final de cada fase implementada, registrar um resumo na pasta correspondente,
+seguindo o padrão `fase-N-nome-curto.md`, com: o que foi decidido, o que foi
+implementado, qualquer desvio do plano original, e pendências para a próxima fase.
