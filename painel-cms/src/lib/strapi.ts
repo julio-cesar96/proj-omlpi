@@ -101,6 +101,24 @@ export interface Faq {
   updated_at: string;
 }
 
+export interface FaqPayload {
+  pergunta: string;
+  resposta: string;
+  categoria?: number | null;
+  ordem?: number | null;
+  // CRÍTICO: nunca omitir — null = rascunho, ISOString = publicada.
+  // Omitir aciona o bug de auto-publicação do Strapi v3 (documentado em fase-2-planos.md):
+  // o Strapi preenche published_at com o timestamp atual se o campo for undefined/ausente.
+  published_at: string | null;
+}
+
+export interface FaqsListParams {
+  _start?: number;
+  _limit?: number;
+  _sort?: string;
+  _q?: string;
+}
+
 export interface PaginaInstitucional {
   id: number;
   titulo: string;
