@@ -13,10 +13,29 @@ O content-type `plano` possui o mecanismo nativo de `draftAndPublish` do Strapi 
 
 > [!CRITICAL]
 > **Bug de Segurança de Conteúdo no Strapi v3 (Descoberto e Corrigido)**
-> 
+>
 > Durante o teste empírico da API, descobriu-se que o Strapi v3 com `draftAndPublish: true` preenche automaticamente `published_at` com o timestamp atual no `POST` ou `PUT` caso o campo `published_at` seja omitido ou enviado como `undefined`. Isso faria com que planos salvos como "rascunho" fossem acidentalmente publicados na API pública (`/planos`).
-> 
+>
 > **Correção aplicada:** Todos os métodos de criação e atualização em `usePlanoMutations.ts` e no `PlanoDrawer.tsx` passam a enviar obrigatoriamente `published_at: null` de forma explícita no JSON do payload quando o estado não for `'publicado'`.
+
+> [!IMPORTANT]
+> **Comportamento de LEITURA do Draft & Publish no Strapi v3 (Descoberto em 23/07/2026)**
+>
+> O comportamento acima (escrita) é **distinto e independente** de um segundo comportamento igualmente crítico que afeta a **leitura**:
+>
+> O Strapi v3 com `draftAndPublish: true` filtra por padrão **qualquer `GET /planos`** — mesmo autenticado com JWT válido — para retornar **apenas registros com `published_at` não-nulo**. Rascunhos, em revisão e arquivados ficam invisíveis por padrão nessa rota.
+>
+> Isso foi descoberto durante testes de listagem: 8 registros de teste (ids 2–9, todos `estado_editorial: 'rascunho'`) haviam sido criados corretamente no banco desde o início, mas **nunca apareciam na tela do painel**. Não havia bug de criação — os planos sempre existiram. O problema era exclusivamente a ausência do parâmetro de leitura.
+>
+> O parâmetro `_publicationState=preview` na query-string faz a mesma rota retornar **todos os estados editoriais** (confirmado via `curl` manual). Isso também se aplica ao endpoint `/planos/count` usado nas contagens das tabs.
+>
+> **Correção aplicada:** `_publicationState=preview` adicionado como parâmetro fixo em **todas** as chamadas `GET /planos` e `GET /planos/count` dentro do `painel-cms/`:
+> - `painel-cms/src/hooks/planos/usePlanos.ts`
+> - `painel-cms/src/hooks/planos/usePlanosCount.ts`
+>
+> **Esta correção é EXCLUSIVA do painel.** O site público (`next/`) consulta o Strapi **sem** esse parâmetro e deve continuar assim — ver apenas `published_at` não-nulo é o comportamento correto para conteúdo público.
+>
+> **Regra resultante para novos módulos:** Qualquer hook de leitura do `painel-cms/` que consuma um content-type com `draftAndPublish: true` **deve sempre incluir `_publicationState=preview`** na query-string. Omitir esse parâmetro tornará rascunhos e arquivados invisíveis.
 
 ### 2. Decisões do Plano (D1–D4)
 - **D1 (Regra de publicação)**: Aprovada e implementada com a trava explícita de `published_at: null`.

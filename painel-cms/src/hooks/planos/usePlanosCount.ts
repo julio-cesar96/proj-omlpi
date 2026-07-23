@@ -18,8 +18,11 @@ export function usePlanosCount(querySearch: string = '') {
       {
         queryKey: ['planos-count', 'all', querySearch],
         queryFn: async () => {
-          const qParam = querySearch ? `?_q=${encodeURIComponent(querySearch)}` : '';
-          const res = await apiFetch(`/planos/count${qParam}`);
+          // CRÍTICO: _publicationState=preview expõe todos os estados ao painel.
+          // Sem ele, /planos/count retorna apenas registros com published_at não-nulo.
+          const params = new URLSearchParams({ _publicationState: 'preview' });
+          if (querySearch) params.append('_q', querySearch);
+          const res = await apiFetch(`/planos/count?${params.toString()}`);
           if (!res.ok) return 0;
           return res.json();
         },
@@ -27,7 +30,8 @@ export function usePlanosCount(querySearch: string = '') {
       ...states.map((st) => ({
         queryKey: ['planos-count', st, querySearch],
         queryFn: async () => {
-          const params = new URLSearchParams();
+          // CRÍTICO: _publicationState=preview necessário para estados não-publicados.
+          const params = new URLSearchParams({ _publicationState: 'preview' });
           params.append('estado_editorial', st);
           if (querySearch) params.append('_q', querySearch);
           const res = await apiFetch(`/planos/count?${params.toString()}`);

@@ -8,6 +8,13 @@ export function usePlanos(params: PlanosListParams = {}) {
     queryFn: async () => {
       const searchParams = new URLSearchParams();
       
+      // CRÍTICO: _publicationState=preview é necessário para que o Strapi v3 retorne
+      // TODOS os estados editoriais (rascunho, revisão, publicado, arquivado).
+      // Sem ele, o Strapi filtra por padrão apenas registros com published_at não-nulo,
+      // tornando rascunhos e arquivados invisíveis. Exclusivo do painel — o site público
+      // (Next.js) deve continuar SEM este parâmetro para ver apenas conteúdo publicado.
+      searchParams.append('_publicationState', 'preview');
+
       if (params._start !== undefined) searchParams.append('_start', params._start.toString());
       if (params._limit !== undefined) searchParams.append('_limit', params._limit.toString());
       if (params._sort) searchParams.append('_sort', params._sort);
