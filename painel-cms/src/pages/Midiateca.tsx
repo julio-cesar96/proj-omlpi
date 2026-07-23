@@ -9,6 +9,7 @@ import { UploadProgressPanel } from '../components/midiateca/UploadProgressPanel
 import { MediaFilterBar } from '../components/midiateca/MediaFilterBar';
 import { MediaGrid } from '../components/midiateca/MediaGrid';
 import { Toast } from '../components/ui/Toast';
+import { ConfirmDialog } from '../components/ui/ConfirmDialog';
 import type { MediaFilterKey, MediaSortKey } from '../lib/strapi';
 
 export const Midiateca: React.FC = () => {
@@ -16,6 +17,7 @@ export const Midiateca: React.FC = () => {
   const [activeSort, setActiveSort] = useState<MediaSortKey>('recent');
   const [currentPage, setCurrentPage] = useState(1);
   const [toastMessage, setToastMessage] = useState<string | null>(null);
+  const [deleteTarget, setDeleteTarget] = useState<{ id: number; name: string; relatedCount: number } | null>(null);
 
   const LIMIT = 25;
 
@@ -46,20 +48,7 @@ export const Midiateca: React.FC = () => {
 
   // Handle file deletion
   const handleDelete = (id: number, name: string, relatedCount: number) => {
-    const message = relatedCount > 0
-      ? `Este arquivo está em uso por ${relatedCount} registro(s) — excluir mesmo assim?`
-      : `Excluir o arquivo "${name}" permanentemente?`;
-
-    if (window.confirm(message)) {
-      deleteMutation.mutate(id, {
-        onSuccess: () => {
-          showToast('Arquivo excluído com sucesso');
-        },
-        onError: (err) => {
-          showToast(err.message || 'Erro ao excluir o arquivo');
-        },
-      });
-    }
+    setDeleteTarget({ id, name, relatedCount });
   };
 
   // Trigger uploads
@@ -197,6 +186,37 @@ export const Midiateca: React.FC = () => {
           </div>
         </div>
       )}
+
+      {/* Confirm Dialog */}
+      <ConfirmDialog
+        open={deleteTarget !== null}
+        onOpenChange={(open) => {
+          if (!open) setDeleteTarget(null);
+        }}
+        title="Confirmar exclusão"
+        description={
+          deleteTarget
+            ? deleteTarget.relatedCount > 0
+              ? `Este arquivo está em uso por ${deleteTarget.relatedCount} registro(s) — excluir mesmo assim?`
+              : `Excluir o arquivo "${deleteTarget.name}" permanentemente?`
+            : ''
+        }
+        confirmLabel="Excluir"
+        cancelLabel="Cancelar"
+        variant="destructive"
+        onConfirm={() => {
+          if (!deleteTarget) return;
+          deleteMutation.mutate(deleteTarget.id, {
+            onSuccess: () => {
+              showToast('Arquivo excluído com sucesso');
+            },
+            onError: (err) => {
+              showToast(err.message || 'Erro ao excluir o arquivo');
+            },
+          });
+          setDeleteTarget(null);
+        }}
+      />
 
       {/* Toast Notification */}
       {toastMessage && (
