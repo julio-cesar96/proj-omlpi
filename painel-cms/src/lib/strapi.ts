@@ -1,14 +1,48 @@
 export type EditorialState = 'rascunho' | 'revisao' | 'publicado' | 'arquivado';
 
+export interface StrapiFileFormat {
+  name: string;
+  hash: string;
+  ext: string;
+  mime: string;
+  size: number;
+  url: string;
+  width?: number;
+  height?: number;
+}
+
 export interface StrapiFile {
   id: number;
   name: string;
-  url: string;
-  size: number;
+  alternativeText?: string | null;
+  caption?: string | null;
+  width?: number | null;
+  height?: number | null;
+  formats?: Record<string, StrapiFileFormat> | null;
+  hash: string;
+  ext: string;
   mime: string;
+  size: number; // KILOBYTES (float)
+  url: string;
+  previewUrl?: string | null;
+  provider: string;
+  provider_metadata?: unknown | null;
+  related?: unknown[];
   created_at: string;
   updated_at: string;
 }
+
+export type MediaFileType = 'pdf' | 'img' | 'video' | 'doc';
+export type MediaSortKey = 'recent' | 'name' | 'size';
+export type MediaFilterKey = 'all' | MediaFileType;
+
+export interface MediaListParams {
+  _start: number;
+  _limit: number;
+  _sort: string;
+  mime_contains?: string;
+}
+
 
 export interface Categoria {
   id: number;
