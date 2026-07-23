@@ -124,11 +124,28 @@ export interface PaginaInstitucional {
   titulo: string;
   slug: string;
   conteudo: string;
-  capa?: any;
-  seo_meta_titulo?: string;
-  seo_meta_descricao?: string;
+  capa?: StrapiFile | null;
+  seo_meta_titulo?: string | null;
+  seo_meta_descricao?: string | null;
   published_at?: string | null;
   created_at: string;
   updated_at: string;
+}
+
+export interface PaginaInstitucionalPayload {
+  titulo: string;
+  slug: string;
+  conteudo: string;
+  capa?: number | null; // ID do arquivo de upload no Strapi
+  seo_meta_titulo?: string | null;
+  seo_meta_descricao?: string | null;
+  published_at: string | null; // CRÍTICO: nunca omitir (bug auto-publicação Strapi v3)
+}
+
+export interface TextosListParams {
+  _start?: number;
+  _limit?: number;
+  _sort?: string;
+  _q?: string;
 }
 

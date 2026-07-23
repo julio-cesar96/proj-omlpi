@@ -8,7 +8,8 @@ import { Dashboard } from '../pages/Dashboard';
 import { Planos } from '../pages/Planos';
 import { Midiateca } from '../pages/Midiateca';
 import { Faqs } from '../pages/Faqs';
-import { Textos } from '../pages/Textos';
+import { TextosList } from '../pages/TextosList';
+import { TextosEditor } from '../pages/TextosEditor';
 import { Usuarios } from '../pages/Usuarios';
 import { Configuracoes } from '../pages/Configuracoes';
 
@@ -58,7 +59,9 @@ export const AppRouter: React.FC = () => {
           <Route path="/planos" element={<Planos />} />
           <Route path="/midiateca" element={<Midiateca />} />
           <Route path="/faqs" element={<Faqs />} />
-          <Route path="/textos" element={<Textos />} />
+          <Route path="/textos" element={<TextosList />} />
+          <Route path="/textos/novo" element={<TextosEditor />} />
+          <Route path="/textos/:id" element={<TextosEditor />} />
           <Route path="/usuarios" element={<Usuarios />} />
           <Route path="/configuracoes" element={<Configuracoes />} />
         </Route>
