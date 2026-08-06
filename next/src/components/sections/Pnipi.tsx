@@ -8,7 +8,7 @@
  * Referência: docs/API_CONTRACTS.md §1 — collection `guias`
  */
 
-import { getGuias, StrapiGuia } from "@/lib/strapi";
+import { getGuias, getFaqs, getPlanos, StrapiGuia, StrapiFaq, StrapiPlano } from "@/lib/strapi";
 import { PnipiClient } from "./PnipiClient";
 
 function SectionLabel({ children }: { children: React.ReactNode }) {
@@ -24,11 +24,20 @@ function SectionLabel({ children }: { children: React.ReactNode }) {
 
 export async function Pnipi() {
   let guias: StrapiGuia[] = [];
+  let faqs: StrapiFaq[] = [];
+  let planos: StrapiPlano[] = [];
 
   try {
-    guias = await getGuias({ _sort: "order:asc" });
+    const [fetchedGuias, fetchedFaqs, fetchedPlanos] = await Promise.all([
+      getGuias({ _sort: "order:asc" }).catch(() => []),
+      getFaqs({ _sort: "ordem:asc" }).catch(() => []),
+      getPlanos({ _sort: "titulo:asc" }).catch(() => []),
+    ]);
+    guias = fetchedGuias;
+    faqs = fetchedFaqs;
+    planos = fetchedPlanos;
   } catch {
-    // Sem API configurada: usa array vazio (PnipiClient lida com isso)
+    // Sem API configurada: usa arrays vazios
   }
 
   return (
@@ -45,7 +54,7 @@ export async function Pnipi() {
           pela Primeira Infância
         </p>
 
-        <PnipiClient guias={guias} />
+        <PnipiClient guias={guias} faqs={faqs} planos={planos} />
       </div>
     </section>
   );

@@ -37,6 +37,8 @@ export interface StrapiQueryParams {
   locale_id?: string | number;
   /** Filtro por exclusão de localidade */
   locale_id_ne?: string | number;
+  /** Filtro por slug (ex.: "sobre") */
+  slug?: string;
 }
 
 function buildQuery(params?: StrapiQueryParams): string {
@@ -240,6 +242,51 @@ export interface StrapiLocale {
   [key: string]: unknown;
 }
 
+/** Categoria de plano/faq */
+export interface StrapiCategoria {
+  id: number;
+  nome: string;
+  slug?: string;
+  [key: string]: unknown;
+}
+
+/** FAQ / Dúvida frequente */
+export interface StrapiFaq {
+  id: number;
+  pergunta: string;
+  resposta: string; // texto puro, não markdown
+  categoria?: StrapiCategoria | null;
+  ordem?: number;
+  published_at?: string;
+  [key: string]: unknown;
+}
+
+/** Plano de Ação */
+export interface StrapiPlano {
+  id: number;
+  titulo: string;
+  descricao?: string;
+  documento?: StrapiFile | null;
+  categoria?: StrapiCategoria | null;
+  tags?: StrapiTag[];
+  estado_editorial: "rascunho" | "revisao" | "publicado" | "arquivado";
+  published_at?: string;
+  [key: string]: unknown;
+}
+
+/** Página institucional */
+export interface StrapiPaginaInstitucional {
+  id: number;
+  titulo: string;
+  slug: string;
+  conteudo: string; // HTML puro, vindo do editor Tiptap
+  capa?: StrapiFile | null;
+  seo_meta_titulo?: string;
+  seo_meta_descricao?: string;
+  published_at?: string;
+  [key: string]: unknown;
+}
+
 // ─── Funções públicas ─────────────────────────────────────────────────────────
 
 /**
@@ -323,4 +370,25 @@ export function getPrivacyPolicy(): Promise<StrapiPrivacyPolicy> {
 /** Localidades com dados de planos, cod_ibge, etc. */
 export function getStrapiLocales(params?: StrapiQueryParams): Promise<StrapiLocale[]> {
   return strapiGet<StrapiLocale[]>("locales", params);
+}
+
+/** FAQs / Dúvidas frequentes (PNIPI) */
+export function getFaqs(params?: StrapiQueryParams): Promise<StrapiFaq[]> {
+  return strapiGet<StrapiFaq[]>("faqs", params);
+}
+
+/** Planos de Ação (PNIPI) */
+export function getPlanos(params?: StrapiQueryParams): Promise<StrapiPlano[]> {
+  return strapiGet<StrapiPlano[]>("planos", params);
+}
+
+/**
+ * Busca uma página institucional específica pelo slug.
+ * Retorna null se nenhuma for encontrada.
+ */
+export async function getPaginaInstitucional(slug: string): Promise<StrapiPaginaInstitucional | null> {
+  const paginas = await strapiGet<StrapiPaginaInstitucional[]>("paginas-institucionais", {
+    slug,
+  });
+  return paginas.length > 0 ? paginas[0] : null;
 }
