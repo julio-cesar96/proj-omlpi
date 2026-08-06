@@ -2,3 +2,6 @@
 design-reference/
 next/node_modules/
 next/.next/
+painel-cms/node_modules/
+painel-cms/dist/
+painel-cms/.env.local
