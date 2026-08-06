@@ -1,0 +1,16 @@
+{
+  "routes": [
+    {
+      "method": "GET",
+      "path": "/cms-config",
+      "handler": "cms-config.find",
+      "config": { "policies": [] }
+    },
+    {
+      "method": "PUT",
+      "path": "/cms-config",
+      "handler": "cms-config.update",
+      "config": { "policies": [] }
+    }
+  ]
+}

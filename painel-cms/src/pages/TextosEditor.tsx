@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useMemo } from 'react';
 import { useParams, useNavigate, Link } from 'react-router-dom';
 import { ArrowLeft } from 'lucide-react';
 import { useTexto } from '../hooks/textos/useTexto';
@@ -6,6 +6,7 @@ import { useTextoMutations } from '../hooks/textos/useTextoMutations';
 import { TextoEditor, slugify } from '../components/textos/TextoEditor';
 import { Toast } from '../components/ui/Toast';
 import type { PaginaInstitucionalPayload, StrapiFile } from '../lib/strapi';
+import { useAutosave } from '../hooks/configuracoes/useAutosave';
 
 export const TextosEditor: React.FC = () => {
   const { id: routeId } = useParams<{ id?: string }>();
@@ -36,6 +37,33 @@ export const TextosEditor: React.FC = () => {
 
   const showToast = (message: string) => setToast({ visible: true, message });
 
+  // ─── Autosave ──────────────────────────────────────────────────────────────
+  const autosaveDraft = useMemo(() => ({
+    titulo, slug, conteudo, capaId: capa?.id ?? null, seoTitulo, seoDescricao,
+  }), [titulo, slug, conteudo, capa, seoTitulo, seoDescricao]);
+
+  const { cancelTimer: cancelAutosaveTimer } = useAutosave({
+    data: autosaveDraft,
+    isEditing: isEditing,
+    onSave: async (_draft) => {
+      if (!id) return; // guard explícito (isEditing já garante isso)
+      await updateTexto.mutateAsync({
+        id,
+        payload: {
+          titulo: _draft.titulo.trim() || pagina?.titulo || 'Sem título',
+          slug: _draft.slug.trim() || slugify(_draft.titulo),
+          conteudo: _draft.conteudo,
+          capa: _draft.capaId,
+          seo_meta_titulo: _draft.seoTitulo.trim() || null,
+          seo_meta_descricao: _draft.seoDescricao.trim() || null,
+          // NUNCA altera published_at — preserva o estado de publicação atual
+          published_at: pagina?.published_at ?? null,
+        },
+      });
+    },
+  });
+  // ──────────────────────────────────────────────────────────────
+
   // Sincronizar dados iniciais
   useEffect(() => {
     if (isEditing && pagina) {
@@ -58,6 +86,7 @@ export const TextosEditor: React.FC = () => {
   }, [isEditing, pagina]);
 
   const handleSave = async (publish: boolean) => {
+    cancelAutosaveTimer(); // cancela timer pendente antes da ação manual
     if (!titulo.trim()) {
       showToast('O título é obrigatório.');
       return;

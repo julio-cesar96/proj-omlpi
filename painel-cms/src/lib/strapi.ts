@@ -196,3 +196,28 @@ export interface UsuariosListParams {
   _limit?: number;
   _start?: number;
 }
+
+// ── Configurações ─────────────────────────────────────────────────────────────
+
+/**
+ * Configuração geral do painel, persistida via strapi.store() no Strapi.
+ * Campos de "Informações do site" (site_name, site_url, idioma_padrao,
+ * fuso_horario) são salvos mas não consumidos pelo site ainda — preparação
+ * para uso futuro. O Sidebar continua com "Observa RNPI" fixo.
+ */
+export interface CmsConfig {
+  site_name: string;
+  site_url: string;
+  idioma_padrao: string;
+  fuso_horario: string;
+  /** Se true, os editores de Planos, FAQ e Textos salvam rascunho automaticamente */
+  autosave_enabled: boolean;
+  /**
+   * Toggle "Exigir revisão antes de publicar" — salvo mas sem efeito operacional
+   * nesta fase. Pendência formal: FAQ e Textos não têm campo de estado editorial
+   * equivalente ao de Planos; requer mudança de schema em produção para paridade.
+   */
+  require_review: boolean;
+}
+
+export type CmsConfigPayload = Partial<CmsConfig>;

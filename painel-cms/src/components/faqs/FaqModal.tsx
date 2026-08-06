@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import type { Faq, FaqPayload } from '../../lib/strapi';
 import { useCategorias } from '../../hooks/planos/useCategorias';
+import { useAutosave } from '../../hooks/configuracoes/useAutosave';
 
 interface FaqModalProps {
   open: boolean;
@@ -30,6 +31,27 @@ export const FaqModal: React.FC<FaqModalProps> = ({
   const [form, setForm] = useState<FormState>(EMPTY_FORM);
   const { data: categorias = [] } = useCategorias();
 
+  // ─── Autosave ──────────────────────────────────────────────────────────────
+  // Usa `form` diretamente (sem useMemo extra — FormState é pequeno e string-only).
+  // Reutiliza buildPayload() para construir o payload, preservando published_at.
+  const { cancelTimer: cancelAutosaveTimer } = useAutosave({
+    data: form,
+    isEditing: faq !== null && faq.id !== undefined,
+    onSave: async (_form) => {
+      // buildPayload ainda não está acessível aqui (definido abaixo do hook),
+      // por isso replicamos a lógica diretamente:
+      const payload: FaqPayload = {
+        pergunta: _form.pergunta.trim(),
+        resposta: _form.resposta.trim(),
+        categoria: _form.categoriaId ? Number(_form.categoriaId) : null,
+        // Preserva o published_at ATUAL — nunca altera o estado de publicação
+        published_at: faq!.published_at ?? null,
+      };
+      onSaveDraft(payload);
+    },
+  });
+  // ──────────────────────────────────────────────────────────────
+
   // Popular form ao abrir em modo edição, limpar ao abrir em modo criação
   useEffect(() => {
     if (open) {
@@ -58,11 +80,13 @@ export const FaqModal: React.FC<FaqModalProps> = ({
   const isValid = form.pergunta.trim().length > 0 && form.resposta.trim().length > 0;
 
   const handleSaveDraft = () => {
+    cancelAutosaveTimer(); // cancela timer pendente antes da ação manual
     if (!isValid) return;
     onSaveDraft(buildPayload(null));
   };
 
   const handlePublish = () => {
+    cancelAutosaveTimer(); // cancela timer pendente antes da ação manual
     if (!isValid) return;
     // Em modo edição de FAQ já publicada, preserva o published_at original;
     // caso contrário, define agora.

@@ -211,11 +211,53 @@ async function setupCustomRoles() {
   }
 }
 
+/**
+ * Habilita permissões de find e update do endpoint /cms-config
+ * para o role Authenticated.
+ * Idempotente: cria se não existe, habilita se existir desabilitada.
+ */
+async function enableCmsConfigPermissions() {
+  const authRole = await strapi
+    .query('role', 'users-permissions')
+    .findOne({ type: 'authenticated' });
+
+  if (!authRole) {
+    strapi.log.warn('[bootstrap] Role "authenticated" não encontrado — abortando cms-config permissions.');
+    return;
+  }
+
+  for (const action of ['find', 'update']) {
+    const existing = await strapi
+      .query('permission', 'users-permissions')
+      .findOne({ type: 'application', controller: 'cms-config', action, role: authRole.id });
+
+    if (!existing) {
+      await strapi.query('permission', 'users-permissions').create({
+        type: 'application',
+        controller: 'cms-config',
+        action,
+        enabled: true,
+        policy: '',
+        role: authRole.id,
+      });
+      strapi.log.info(`[bootstrap] Permissão criada: cms-config.${action}`);
+    } else if (!existing.enabled) {
+      await strapi
+        .query('permission', 'users-permissions')
+        .update({ id: existing.id }, { enabled: true });
+      strapi.log.info(`[bootstrap] Permissão habilitada: cms-config.${action}`);
+    } else {
+      strapi.log.debug(`[bootstrap] Permissão já ativa: cms-config.${action}`);
+    }
+  }
+}
+
 module.exports = async () => {
   try {
     await cleanupMalformedPublicPermissions();
     await enablePublicPermissions();
     await setupCustomRoles();
+    await enableCmsConfigPermissions();
   } catch (err) {
     strapi.log.error('[bootstrap] Erro ao configurar permissões:', err);
   }

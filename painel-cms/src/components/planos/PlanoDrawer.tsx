@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useMemo } from 'react';
 import { X } from 'lucide-react';
 import { PlanoStepper } from './PlanoStepper';
 import { PlanoPdfDropzone } from './PlanoPdfDropzone';
@@ -6,6 +6,7 @@ import { useUploadFile } from '../../hooks/planos/useUploadFile';
 import { useCategorias } from '../../hooks/planos/useCategorias';
 import { useTags } from '../../hooks/planos/useTags';
 import type { Plano, PlanoPayload, StrapiFile, EditorialState } from '../../lib/strapi';
+import { useAutosave } from '../../hooks/configuracoes/useAutosave';
 
 interface PlanoDrawerProps {
   isOpen: boolean;
@@ -34,6 +35,8 @@ export const PlanoDrawer: React.FC<PlanoDrawerProps> = ({
   const [selectedTagIds, setSelectedTagIds] = useState<number[]>([]);
   const [file, setFile] = useState<StrapiFile | null>(null);
   const [isSubmitting, setIsSubmitting] = useState(false);
+  // Timestamp do último autosave bem-sucedido (null = nenhum ainda nesta sessão)
+  const [lastAutosaveAt, setLastAutosaveAt] = useState<Date | null>(null);
 
   const { data: categorias = [] } = useCategorias();
   const { data: tagsList = [] } = useTags();
@@ -60,6 +63,33 @@ export const PlanoDrawer: React.FC<PlanoDrawerProps> = ({
 
   const currentStatus: EditorialState = plano?.estado_editorial || 'rascunho';
   const isNew = !plano || !plano.id;
+
+  // ─── Autosave ──────────────────────────────────────────────────────────────
+  // Payload memoizado: só inclui campos do formulário — NUNCA altera
+  // estado_editorial nem published_at (apenas o usuário faz isso explicitamente).
+  // eslint-disable-next-line react-hooks/rules-of-hooks
+  const autosaveDraft = useMemo(() => ({
+    titulo, descricao, categoriaId, selectedTagIds, fileId: file?.id ?? null,
+  }), [titulo, descricao, categoriaId, selectedTagIds, file]);
+
+  // eslint-disable-next-line react-hooks/rules-of-hooks
+  const { cancelTimer: cancelAutosaveTimer } = useAutosave({
+    data: autosaveDraft,
+    isEditing: !isNew,
+    onSave: async (_draft) => {
+      await onSaveDraft({
+        titulo: _draft.titulo.trim() || 'Sem título',
+        descricao: _draft.descricao.trim() || undefined,
+        categoria: _draft.categoriaId || null,
+        tags: _draft.selectedTagIds,
+        documento: _draft.fileId,
+        estado_editorial: plano!.estado_editorial, // NUNCA altera
+        published_at: plano!.published_at ?? null,  // NUNCA altera
+      });
+      setLastAutosaveAt(new Date());
+    },
+  });
+  // ─────────────────────────────────────────────────────────────────────────
 
   const handleFileSelect = async (selectedFile: File) => {
     try {
@@ -88,6 +118,7 @@ export const PlanoDrawer: React.FC<PlanoDrawerProps> = ({
   };
 
   const handleDraft = async () => {
+    cancelAutosaveTimer(); // cancela qualquer autosave pendente antes da ação manual
     setIsSubmitting(true);
     try {
       await onSaveDraft(getPayload('rascunho'));
@@ -99,6 +130,7 @@ export const PlanoDrawer: React.FC<PlanoDrawerProps> = ({
   };
 
   const handleReview = async () => {
+    cancelAutosaveTimer();
     setIsSubmitting(true);
     try {
       await onSubmitReview(getPayload('revisao'));
@@ -110,6 +142,7 @@ export const PlanoDrawer: React.FC<PlanoDrawerProps> = ({
   };
 
   const handlePublish = async () => {
+    cancelAutosaveTimer();
     setIsSubmitting(true);
     try {
       await onPublish(getPayload('publicado'));
@@ -121,6 +154,7 @@ export const PlanoDrawer: React.FC<PlanoDrawerProps> = ({
   };
 
   const handleArchive = async () => {
+    cancelAutosaveTimer();
     if (!plano?.id) return;
     setIsSubmitting(true);
     try {
@@ -133,6 +167,7 @@ export const PlanoDrawer: React.FC<PlanoDrawerProps> = ({
   };
 
   const handleDuplicate = async () => {
+    cancelAutosaveTimer();
     if (!plano) return;
     setIsSubmitting(true);
     try {
@@ -209,6 +244,12 @@ export const PlanoDrawer: React.FC<PlanoDrawerProps> = ({
             <h2 style={{ fontSize: '19px', fontWeight: 800, letterSpacing: '-.3px' }}>
               Editor de plano
             </h2>
+            {lastAutosaveAt && (
+              <div style={{ fontSize: '11px', color: 'var(--text-soft)', marginTop: '2px' }}>
+                Rascunho salvo automaticamente às{' '}
+                {lastAutosaveAt.toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' })}
+              </div>
+            )}
           </div>
           <button
             type="button"
