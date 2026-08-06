@@ -149,3 +149,50 @@ export interface TextosListParams {
   _q?: string;
 }
 
+// ── Usuários ─────────────────────────────────────────────────────────────────
+
+export interface RoleLookup {
+  id: number;
+  name: string;
+}
+
+export interface UsuarioRole {
+  id: number;
+  name: string;
+  description?: string;
+  type?: string;
+}
+
+export interface StrapiUsuario {
+  id: number;
+  username: string;
+  email: string;
+  provider?: string;
+  confirmed?: boolean;
+  blocked?: boolean;
+  role?: UsuarioRole;
+  created_at?: string;
+  updated_at?: string;
+}
+
+export interface UsuarioPayload {
+  username: string;
+  email: string;
+  password: string;
+  role: number;      // ID do role
+  confirmed: boolean;
+  blocked: boolean;
+}
+
+export interface UsuarioUpdatePayload {
+  username?: string;
+  email?: string;
+  role?: number;
+  blocked?: boolean;
+}
+
+export interface UsuariosListParams {
+  _sort?: string;
+  _limit?: number;
+  _start?: number;
+}
