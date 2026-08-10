@@ -1,6 +1,7 @@
 import type { StrapiLocale } from "@/lib/strapi";
 import { LocalidadeBusca } from "./LocalidadeBusca";
 import { PainelMunicipal } from "./PainelMunicipal";
+import { DownloadPlanLink } from "./DownloadPlanLink";
 
 /**
  * PainelEstadual — Server Component
@@ -116,54 +117,56 @@ export async function PainelEstadual({
             const style = STATUS_STYLES[status];
 
             return (
-              <a
+              <article
                 key={locale.id}
-                href={`?tab=estaduais&location_id=${locale.id}#consulta-publica`}
                 className={[
-                  "group block bg-card border border-border rounded-xl p-4",
+                  "group relative bg-card border border-border rounded-xl p-4",
                   "hover:border-primary/40 hover:shadow-sm transition-all",
                 ].join(" ")}
               >
-                <div className="flex items-start justify-between gap-2">
-                  <div className="flex-1 min-w-0">
-                    <p className="font-semibold text-sm text-foreground truncate">
-                      {locale.name}
-                    </p>
-                    {locale.state && (
-                      <p className="text-xs text-muted-foreground">
-                        {locale.state}
+                {/* Link-overlay: cobre o card inteiro para navegação (z-0) */}
+                <a
+                  href={`?tab=estaduais&location_id=${locale.id}#consulta-publica`}
+                  className="absolute inset-0 z-0 rounded-xl"
+                  aria-label={`Ver dados de ${locale.name}`}
+                />
+
+                {/* Conteúdo do card (relative z-10 para ficar acima do overlay) */}
+                <div className="relative z-10">
+                  <div className="flex items-start justify-between gap-2">
+                    <div className="flex-1 min-w-0">
+                      <p className="font-semibold text-sm text-foreground truncate">
+                        {locale.name}
                       </p>
-                    )}
-                  </div>
-                  <span
-                    className={`flex-shrink-0 px-2 py-0.5 rounded-full text-xs font-medium ${style.badge}`}
-                  >
-                    {locale.is_law ? "Lei" : status === "approved" ? "✓" : "—"}
-                  </span>
-                </div>
-
-                <div className="mt-3 flex items-center gap-2">
-                  <span className={`w-2 h-2 rounded-full ${style.dot}`} />
-                  <span className="text-xs text-muted-foreground">
-                    {style.label}
-                  </span>
-                </div>
-
-                {/* Link de download (se tiver plano) */}
-                {locale.plan?.url && !locale.hide_plan && (
-                  <div className="mt-2 pt-2 border-t border-border">
-                    <a
-                      href={locale.plan.url}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      onClick={(e) => e.stopPropagation()}
-                      className="text-xs text-primary font-medium hover:underline"
+                      {locale.state && (
+                        <p className="text-xs text-muted-foreground">
+                          {locale.state}
+                        </p>
+                      )}
+                    </div>
+                    <span
+                      className={`flex-shrink-0 px-2 py-0.5 rounded-full text-xs font-medium ${style.badge}`}
                     >
-                      ↓ Baixar {locale.is_law ? "Lei" : "Plano"}
-                    </a>
+                      {locale.is_law ? "Lei" : status === "approved" ? "✓" : "—"}
+                    </span>
                   </div>
-                )}
-              </a>
+
+                  <div className="mt-3 flex items-center gap-2">
+                    <span className={`w-2 h-2 rounded-full ${style.dot}`} />
+                    <span className="text-xs text-muted-foreground">
+                      {style.label}
+                    </span>
+                  </div>
+
+                  {/* Link de download isolado em Client Component (z-10 > overlay z-0) */}
+                  {locale.plan?.url && !locale.hide_plan && (
+                    <DownloadPlanLink
+                      url={locale.plan.url}
+                      label={`Baixar ${locale.is_law ? "Lei" : "Plano"}`}
+                    />
+                  )}
+                </div>
+              </article>
             );
           })}
       </div>

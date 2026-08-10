@@ -277,6 +277,31 @@ export function MapaBrasil({ locales }: MapaBrasilProps) {
     });
   }, [stateLocales, cityLocalesByState, router]);
 
+  /**
+   * Sincronização de hcLoaded na remontagem do componente.
+   *
+   * O <Script> do Next.js (strategy="afterInteractive") não re-dispara onLoad
+   * para scripts que já estão no DOM de uma montagem anterior. Sem isso,
+   * hcLoaded ficaria preso em false eternamente na segunda (e subsequentes)
+   * montagens — causando o skeleton de "Carregando mapa..." infinito.
+   *
+   * Segurança contra volta rápida (antes do HC ter carregado):
+   *   - Se window.Highcharts ainda não existe, o effect é no-op e o onLoad
+   *     do <Script> cuida do caso normalmente.
+   *   - O guard `!hcLoaded` via setHcLoaded é idempotente (React bate shallow
+   *     equality em booleans, não re-renderiza se já for true).
+   */
+  useEffect(() => {
+    if (
+      typeof window !== "undefined" &&
+      window.Highcharts &&
+      window.Highcharts.maps?.["countries/br/br-all"]
+    ) {
+      setHcLoaded(true);
+    }
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []); // intencional: roda só na montagem para detectar HC já presente
+
   useEffect(() => {
     if (hcLoaded) {
       initChart();
