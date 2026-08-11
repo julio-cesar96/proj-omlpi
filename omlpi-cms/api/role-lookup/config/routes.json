@@ -1,0 +1,12 @@
+{
+  "routes": [
+    {
+      "method": "GET",
+      "path": "/role-lookup",
+      "handler": "role-lookup.find",
+      "config": {
+        "policies": []
+      }
+    }
+  ]
+}

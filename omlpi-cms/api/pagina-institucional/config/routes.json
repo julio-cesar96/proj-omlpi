@@ -1,0 +1,52 @@
+{
+  "routes": [
+    {
+      "method": "GET",
+      "path": "/paginas-institucionais",
+      "handler": "pagina-institucional.find",
+      "config": {
+        "policies": []
+      }
+    },
+    {
+      "method": "GET",
+      "path": "/paginas-institucionais/count",
+      "handler": "pagina-institucional.count",
+      "config": {
+        "policies": []
+      }
+    },
+    {
+      "method": "GET",
+      "path": "/paginas-institucionais/:id",
+      "handler": "pagina-institucional.findOne",
+      "config": {
+        "policies": []
+      }
+    },
+    {
+      "method": "POST",
+      "path": "/paginas-institucionais",
+      "handler": "pagina-institucional.create",
+      "config": {
+        "policies": []
+      }
+    },
+    {
+      "method": "PUT",
+      "path": "/paginas-institucionais/:id",
+      "handler": "pagina-institucional.update",
+      "config": {
+        "policies": []
+      }
+    },
+    {
+      "method": "DELETE",
+      "path": "/paginas-institucionais/:id",
+      "handler": "pagina-institucional.delete",
+      "config": {
+        "policies": []
+      }
+    }
+  ]
+}

@@ -1,0 +1,21 @@
+{
+  "kind": "singleType",
+  "collectionName": "textoindicadors",
+  "info": {
+    "name": "Indicadores (texto)",
+    "description": ""
+  },
+  "options": {
+    "increments": true,
+    "timestamps": true,
+    "draftAndPublish": true
+  },
+  "attributes": {
+    "titulo": {
+      "type": "string"
+    },
+    "texto": {
+      "type": "richtext"
+    }
+  }
+}

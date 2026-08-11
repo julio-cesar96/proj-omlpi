@@ -1,0 +1,19 @@
+version: '2'
+services:
+  web:
+    image: strapi/strapi
+    container_name: omlpi_strapi_new
+    restart: unless-stopped
+    environment:
+      DATABASE_CLIENT: postgres
+      DATABASE_NAME: omlpi_strapi
+      DATABASE_HOST: 172.17.0.1
+      DATABASE_PORT: 5432
+      DATABASE_USERNAME: postgres
+      DATABASE_PASSWORD: trustme
+    volumes:
+      - .:/srv/app/
+    ports:
+      - "172.17.0.1:4139:1337"
+    network_mode: bridge
+

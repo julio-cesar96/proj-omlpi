@@ -1,0 +1,49 @@
+:root {
+  /* Cores principais */
+  --bg: #FFFFF0;
+  --card: #FFFFFF;
+  --text: #444525;
+  --text-soft: #7a7663;
+  --primary: #F25D27;
+  --primary-hover: #e0521f;
+  --primary-deep: #d94e1c;
+  --secondary: #17A649;
+  --accent: #E8F5EE;
+  --muted: #F5F5E8;
+  --destructive: #D4183D;
+  --border: rgba(164, 154, 135, 0.2);
+
+  /* Cores semânticas / Badges */
+  --badge-orange-bg: #FDE7DE;
+  --badge-orange-bg-soft: #FDF2ED;
+  --badge-orange-color: #F25D27;
+  --badge-purple-bg: #efe6fb;
+  --badge-purple-color: #8a6bd6;
+  --badge-blue-bg: #e6eefb;
+  --badge-blue-color: #3b6bd6;
+  --badge-error-bg: #fbeaee;
+
+  /* Formas e raios */
+  --radius: 16px;
+  --radius-sm: 10px;
+  --radius-xs: 9px;
+  --radius-pill: 20px;
+  --radius-avatar: 50%;
+
+  /* Sombras */
+  --shadow: 0 1px 2px rgba(68, 69, 37, 0.04), 0 8px 24px rgba(68, 69, 37, 0.05);
+  --shadow-lg: 0 12px 40px rgba(68, 69, 37, 0.14);
+  --shadow-btn: 0 4px 12px rgba(242, 93, 39, 0.28);
+
+  /* Dimensões do Layout */
+  --sidebar-width: 264px;
+  --topbar-height: 66px;
+  --drawer-plan-width: 640px;
+  --drawer-user-width: 560px;
+  --content-padding-x: 32px;
+  --content-padding-y: 28px;
+
+  /* Tipografia */
+  --font-heading: 'Nunito', sans-serif;
+  --font-body: 'Plus Jakarta Sans', system-ui, -apple-system, sans-serif;
+}

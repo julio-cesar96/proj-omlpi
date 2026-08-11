@@ -1,0 +1,28 @@
+{
+  "routes": [
+    {
+      "method": "GET",
+      "path": "/listaplanos",
+      "handler": "listaplanos.find",
+      "config": {
+        "policies": []
+      }
+    },
+    {
+      "method": "PUT",
+      "path": "/listaplanos",
+      "handler": "listaplanos.update",
+      "config": {
+        "policies": []
+      }
+    },
+    {
+      "method": "DELETE",
+      "path": "/listaplanos",
+      "handler": "listaplanos.delete",
+      "config": {
+        "policies": []
+      }
+    }
+  ]
+}

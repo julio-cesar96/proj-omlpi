@@ -1,0 +1,28 @@
+{
+  "routes": [
+    {
+      "method": "GET",
+      "path": "/textoindicadors",
+      "handler": "textoindicadors.find",
+      "config": {
+        "policies": []
+      }
+    },
+    {
+      "method": "PUT",
+      "path": "/textoindicadors",
+      "handler": "textoindicadors.update",
+      "config": {
+        "policies": []
+      }
+    },
+    {
+      "method": "DELETE",
+      "path": "/textoindicadors",
+      "handler": "textoindicadors.delete",
+      "config": {
+        "policies": []
+      }
+    }
+  ]
+}

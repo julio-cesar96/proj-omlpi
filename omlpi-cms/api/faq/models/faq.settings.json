@@ -1,0 +1,29 @@
+{
+  "kind": "collectionType",
+  "collectionName": "faqs",
+  "info": {
+    "name": "faq",
+    "description": ""
+  },
+  "options": {
+    "increments": true,
+    "timestamps": true,
+    "draftAndPublish": true
+  },
+  "attributes": {
+    "pergunta": {
+      "type": "string",
+      "required": true
+    },
+    "resposta": {
+      "type": "richtext",
+      "required": true
+    },
+    "categoria": {
+      "model": "categoria"
+    },
+    "ordem": {
+      "type": "integer"
+    }
+  }
+}

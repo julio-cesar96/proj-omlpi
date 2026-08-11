@@ -1,0 +1,40 @@
+{
+  "kind": "collectionType",
+  "collectionName": "planos",
+  "info": {
+    "name": "plano",
+    "description": ""
+  },
+  "options": {
+    "increments": true,
+    "timestamps": true,
+    "draftAndPublish": true
+  },
+  "attributes": {
+    "titulo": {
+      "type": "string",
+      "required": true
+    },
+    "descricao": {
+      "type": "text"
+    },
+    "documento": {
+      "model": "file",
+      "via": "related",
+      "allowedTypes": ["files"],
+      "plugin": "upload"
+    },
+    "categoria": {
+      "model": "categoria"
+    },
+    "tags": {
+      "collection": "tags"
+    },
+    "estado_editorial": {
+      "type": "enumeration",
+      "enum": ["rascunho", "revisao", "publicado", "arquivado"],
+      "default": "rascunho",
+      "required": true
+    }
+  }
+}

@@ -10,16 +10,19 @@ Collections consumidas hoje:
 
 | Collection | Uso atual | Página/seção nova correspondente |
 |---|---|---|
-| `banners` | Home banner | Hero (Início) |
-| `eixos` | Blocos de eixo temático | Seção "Axis" (Início) |
-| `noticias` | Lista de notícias | News strip (Início) |
-| `sobres` | Texto institucional | **CONFIRMADO (Fase 1):** N registros, um por aba (Quem somos / Resultados do levantamento / Histórico). Consultar com `getSobres({ _sort: "order:asc" })` — o campo `order` define a ordem das abas. |
-| `textoindicadors` | Texto da página de indicadores | **CONFIRMADO:** verificado o código-fonte real (`indicatorsText.js`) — é montado em `#app-indicators-text`, elemento que vive em `indicadores.html`, como texto introdutório antes da busca/overview de indicadores. Como `/indicadores` redireciona para `/#midiateca` no one-page, o destino é um **parágrafo introdutório no topo da seção Midiateca**, preservando o papel original do texto. |
-| `guias` | Guias/documentos de referência | Midiateca / PNIPI (a confirmar) — **INVESTIGADO E RESOLVIDO:** não existe content-type "FAQ" ou "Planos de ação" hoje. `blog` (content-type existente, não usado por nenhuma página do front atual — confirmado via busca em `omlpi-www/`) está livre, mas **decisão de modelagem adiada intencionalmente**: o CMS terá uma fase própria de redesign (fora do escopo desta migração de front). "Dúvidas frequentes" e "Planos de ação" permanecem como placeholder estático no front (já implementado na Fase 2) até essa fase futura, quando a estrutura de conteúdo definitiva será decidida junto com o resto do redesign do painel administrativo. Não é pendência bloqueante desta migração. |
-| `tags` | Tags de artigos | Midiateca |
-| `artigos` | Artigos da biblioteca (busca, tags, paginação) | **CONFIRMADO (Fase 1):** Midiateca usa esta collection para metadados. Paginação via `{ _limit: 15, _start: offset }`. **A busca/filtro em si vem do `omlpi-cms-search` (ver §3), não daqui — ver correção aplicada na Fase 2.** |
-| `locales` | Lista de localidades (municípios/estados). **CONFIRMADO (Fase 3d):** Esta é a única fonte oficial para dados completos (incluindo `cod_ibge`, `is_law`, `hide_plan` e o arquivo do plano `plan`). Deve ser usado para popular o MapaBrasil e os Painéis. | Consulta pública — mapa e painéis |
-| `privacy-policy` | Conteúdo da política de privacidade | **CONFIRMADO (Fase 1):** não tem seção própria no menu — abre como modal (`<PrivacyPolicyModal />`) a partir de um link no Footer. |
+| `banners` | Home banner | Hero (Início). **RESOLVIDO (16/07/2026):** schema real é `singleType` só com `title` + `text` (richtext). `lib/strapi.ts` e `Hero.tsx` corrigidos em `next/` — `getBanners()` virou `getBanner()` (singleType, sem array), Hero usa `banner?.text`. Hero não renderiza imagem real do CMS (campo `image` não existe) — usa SVG decorativo. **Pendência de design pro redesign do CMS:** se quiser imagem real no Hero, precisa adicionar campo `image` ao content-type. |
+| `eixos` | Blocos de eixo temático | Seção "Axis" (Início). Schema confirmado batendo: `title` (obrigatório), `image`, `order`, `link`, `text`, `link_title`. |
+| `noticias` | Lista de notícias | News strip (Início). Schema confirmado batendo: `title`, `date` (datetime), `image`, `link`, `hide_date`. |
+| `sobres` | Texto institucional | **CONFIRMADO (Fase 1):** N registros, um por aba (Quem somos / Resultados do levantamento / Histórico). **RESOLVIDO (16/07/2026):** campos reais são `title`, `text` (richtext), `image` (upload), `link`, `link_title`, `link2`, `link2_title` — corrigido em `next/`. **Bug crítico que estava ativo, agora corrigido:** `SobreClient.tsx` renderizava `activeAba.content` (sempre `undefined`) — as abas do Sobre estavam em branco no site. Sort mudou de `order:asc` (campo inexistente) para `createdAt:asc` (determinístico). **Pendência de design pro redesign do CMS:** sem campo `order`, a ordem das abas não é controlável via painel — se precisar ser controlável, adicionar campo `order` (integer) ao content-type. |
+| `textoindicadors` | Texto da página de indicadores | **CONFIRMADO:** é o texto introdutório da Midiateca (ex-`/indicadores`), como parágrafo no topo da seção. **RESOLVIDO (16/07/2026):** campos reais são `titulo`/`texto` (português) — `StrapiTextoIndicador` corrigido em `next/`, e `getTextoIndicadors()` (array) virou `getTextoIndicador()` (singleType, objeto único). Ainda sem componente consumindo — implementar ao conectar o parágrafo introdutório da Midiateca. |
+| `guias` | Guias/documentos de referência | Midiateca / PNIPI — **INVESTIGADO E RESOLVIDO:** não existe content-type "FAQ" ou "Planos de ação" hoje. Schema confirmado: `title` (obrigatório), `description` (tipo `text` - plain text/textarea, não richtext), `file` (obrigatório, upload), sem Draft & Publish. **Decisão de modelagem adiada intencionalmente** para a fase de redesign do CMS — "Dúvidas frequentes" e "Planos de ação" permanecem como placeholder estático no front (Fase 2) até lá. |
+| `tags` | Tags de artigos | Midiateca. Schema confirmado: `name`, relação `tags_aliases`. |
+| `tags-alias` | **NOVO — schema confirmado (16/07/2026).** `Alias` (obrigatório, único), relação M2M com `tags`. Nome no admin: "Temas". Sem uso direto identificado em scripts do front atual. | Sem ação necessária por ora. |
+| `artigos` | Artigos da biblioteca (busca, tags, paginação) | **CONFIRMADO (Fase 1):** Midiateca usa esta collection para metadados. Schema confirmado: `title`, `description` (richtext), `tags`, `file`, `author`, `image` (⚠️ collection/upload múltiplo, não model/upload único - comportamento normal do Strapi 3, não um bug), `date` (⚠️ string, não datetime), `organization`, `youtube`. **A busca/filtro em si vem do `omlpi-cms-search` (ver §3), não daqui.** |
+| `locales` | Lista de localidades (municípios/estados) | Consulta pública — busca e seleção. Schema confirmado batendo exatamente com `StrapiLocale`: `name`, `type`, `cod_ibge` (único), `state`, `plan`, `region`, `is_capital`, `is_law`, `hide_plan`. |
+| `politica-de-privacidade` | Conteúdo da política de privacidade | **CONFIRMADO (16/07/2026):** a rota REST correta é `/politica-de-privacidade` (definida no `routes.json` do Strapi v3, enquanto `privacy-policy` é apenas o `collectionName` do banco). O endpoint público atual retorna `403 Forbidden` porque as permissões públicas de `find` estão desativadas no painel do Strapi (precisa habilitar no admin do Strapi em Settings -> Roles -> Public). Continua sem seção própria no menu — abre como modal (`<PrivacyPolicyModal />`) a partir de um link no Footer. |
+| `infographics` | **CONFIRMADO (16/07/2026): content-type morto.** `singleType`, zero uso em `omlpi-www/`. Não incluir no novo painel do CMS; não deletar do Strapi. | Sem ação necessária no front. |
+| `listaplanos` | **CONFIRMADO (16/07/2026): sem sobreposição com o `plano` planejado.** `singleType` (1 documento), conceito diferente de um registro de plano por município. Zero uso no front atual. Deixar intocado; `plano` será criado do zero. | Sem ação necessária no front. |
 
 ### Padrões de query já em uso (preservar exatamente)
 
@@ -40,11 +43,11 @@ Collections consumidas hoje:
 
 ## 2. API custom (Perl/Mojolicious) — `omlpi-api`
 
-Base: definir `OMLPI_API_URL` como variável de ambiente. Fonte da verdade: `omlpi-api/public/openapi.yaml` — **mas com ressalva confirmada na Fase 3b: a spec pode divergir do comportamento real** (`data/compare`/`data/historical` tinham um wrapper `locales` na spec que não existe na implementação real). Para qualquer endpoint ainda não exercido em produção pelo front novo (ex: `data/download`, `data/download_indicator`), tratar o shape do `openapi.yaml` como hipótese a validar contra o código-fonte Perl (`omlpi-api/lib/...`) ou contra uma chamada real, não como garantia.
+Base: definir `OMLPI_API_URL` como variável de ambiente. **CONFIRMADO:** a API tem `basePath: /v2` no openapi.yaml — a URL base correta é `https://omlpi-api.rnpiobserva.org.br/v2`, não a raiz do domínio. O campo `host` do próprio openapi.yaml está desatualizado (aponta `dev-omlpi-api.appcivico.com`, domínio de desenvolvimento antigo) — mais um caso de spec divergindo da realidade, na linha do que a Fase 3b já achou com `data/compare`/`data/historical` (wrapper `locales` que não existe de verdade). **AÇÃO URGENTE:** verificar se `OMLPI_API_URL` em `next/.env.local` e `.env.local.example` já inclui o sufixo `/v2` — se não incluir, todas as chamadas de `lib/omlpi-api.ts` (mapa, painéis, upload) podem estar retornando 404 desde a Fase 3a. Fonte da verdade pra qualquer parâmetro ainda não exercido: `omlpi-api/public/openapi.yaml`, sempre validado contra chamada real, não como garantia isolada.
 
 | Endpoint | Parâmetros | Uso atual | Página/seção nova correspondente |
 |---|---|---|---|
-| `locales` | — | Lista de localidades. **CORRIGIDO (Fase 3d):** Fornece APENAS `{id, name, type, latitude, longitude}`. NÃO contém `cod_ibge` nem informações do plano. NÃO deve ser usado para popular o mapa ou painéis (usar Strapi `locales` para isso). Resposta vem envelopada como `{ locales: [...] }`. | Uso legado (geocoding/autocomplete básico) |
+| `locales` | — | Lista de localidades para busca/autocomplete. **CONFIRMADO (Fase 3a):** resposta vem envelopada como `{ locales: [...] }`, não array plano — tratar defensivamente. | Consulta pública (busca) |
 | `states` | — | **CONFIRMADO (openapi.yaml):** sem parâmetros. Retorna `{ states: State[] }` onde `State = { id, name, latitude, longitude }`. Ordem alfabética. | Consulta pública, aba "Estaduais/Distrital" |
 | `cities` | `state_id` (opcional) | **CONFIRMADO (openapi.yaml):** filtra cidades por estado. Retorna `{ cities: City[] }` onde `City = { id, name, latitude, longitude }`. Ordem alfabética. | Consulta pública, aba "Municipais" |
 | `areas` | — | **CONFIRMADO (openapi.yaml):** retorna `{ areas: Area[] }` onde `Area = { id, name }`. Taxonomia de dado — distinto da collection `eixos` do Strapi (conteúdo de marketing). | Filtros da Consulta pública |
@@ -67,22 +70,28 @@ Base: definir `OMLPI_API_URL` como variável de ambiente. Fonte da verdade: `oml
 
 ## 3. Busca full-text — `omlpi-cms-search`
 
-Serviço **separado** do Strapi (Node + Restify), porque o Strapi não tem full-text search nativo. **Fonte correta para a Midiateca — não usar a collection `artigos` do Strapi diretamente para busca/filtro.**
+Serviço **separado** do Strapi (Node + Restify), porque o Strapi não tem full-text search nativo.
 
-Base: definir `CMS_SEARCH_API_URL` como variável de ambiente.
+**CONFIRMADO (15/07/2026), via inspeção direta de `/etc/nginx/sites-available/observa` e teste real:** não existe uma URL/host separado para este serviço. O Nginx roteia por **path**, no mesmo domínio do Strapi: `https://omlpi-strapi.rnpiobserva.org.br/artigos` é redirecionado internamente para o container `cms_search` (porta 2003), enquanto qualquer outra rota nesse mesmo domínio (`/locales`, `/banners`, etc.) vai para o Strapi de verdade (porta 2001). 
+
+Comportamento confirmado com chamadas reais (16/07/2026):
+- `GET /artigos?_q=teste` → `200 OK` (retorna `{"hasMore":true,"limit":2,"offset":0,"results":[...]}` com dados reais).
+- `HEAD /artigos` → `405 Method Not Allowed` (o microserviço cms_search não suporta o método HEAD).
+- Nenhuma ocorrência de `403` em `/artigos`.
+
+**Não existe `CMS_SEARCH_API_URL` como variável separada** — é o mesmo valor de `STRAPI_API_URL`. **Ação necessária:** corrigir `lib/cms-search.ts` (criado na correção da Fase 2) para usar `STRAPI_API_URL` em vez de uma variável de ambiente própria; remover `CMS_SEARCH_API_URL` de `.env.local` e `.env.local.example`.
 
 | Endpoint | Funcionalidade |
 |---|---|
-| `GET /artigos` | Busca de artigos com full-text search, filtro por tags e paginação |
-
-**Status: CONCLUÍDO na Fase 2 (corretiva pontual).** `lib/cms-search.ts` já foi criado apontando para este serviço, e a busca/filtro da Midiateca já foi migrada para ele. `getArtigos()` de `lib/strapi.ts` permanece disponível para outros usos (não busca).
+| `GET /artigos` (mesmo domínio do Strapi, roteado por path) | Busca de artigos com full-text search, filtro por tags e paginação. Shape confirmado: `{ hasMore, limit, offset, results: [...] }` |
 
 ## 4. Variáveis de ambiente necessárias (Next.js)
 
 ```
 STRAPI_API_URL=
 OMLPI_API_URL=
-CMS_SEARCH_API_URL=
+# CMS_SEARCH_API_URL removida (15/07/2026) — /artigos é roteado por path
+# dentro do mesmo domínio de STRAPI_API_URL, não precisa de variável própria
 # se usar Resend para o formulário de contato:
 RESEND_API_KEY=
 CONTACT_EMAIL_TO=

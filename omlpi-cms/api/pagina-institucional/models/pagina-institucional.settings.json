@@ -1,0 +1,40 @@
+{
+  "kind": "collectionType",
+  "collectionName": "paginas_institucionais",
+  "info": {
+    "name": "pagina-institucional",
+    "description": ""
+  },
+  "options": {
+    "increments": true,
+    "timestamps": true,
+    "draftAndPublish": true
+  },
+  "attributes": {
+    "titulo": {
+      "type": "string",
+      "required": true
+    },
+    "slug": {
+      "type": "uid",
+      "targetField": "titulo",
+      "required": true
+    },
+    "conteudo": {
+      "type": "richtext",
+      "required": true
+    },
+    "capa": {
+      "model": "file",
+      "via": "related",
+      "allowedTypes": ["images"],
+      "plugin": "upload"
+    },
+    "seo_meta_titulo": {
+      "type": "string"
+    },
+    "seo_meta_descricao": {
+      "type": "text"
+    }
+  }
+}
