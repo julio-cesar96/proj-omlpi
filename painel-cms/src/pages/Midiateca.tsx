@@ -4,6 +4,7 @@ import { useMediaFiles } from '../hooks/midiateca/useMediaFiles';
 import { useMediaCounts } from '../hooks/midiateca/useMediaCounts';
 import { useMediaUpload } from '../hooks/midiateca/useMediaUpload';
 import { useMediaDelete } from '../hooks/midiateca/useMediaDelete';
+import { useMediaBulkPublishAll } from '../hooks/midiateca/useMediaBulkPublishAll';
 import { MediaDropzone } from '../components/midiateca/MediaDropzone';
 import { UploadProgressPanel } from '../components/midiateca/UploadProgressPanel';
 import { MediaFilterBar } from '../components/midiateca/MediaFilterBar';
@@ -12,12 +13,22 @@ import { Toast } from '../components/ui/Toast';
 import { ConfirmDialog } from '../components/ui/ConfirmDialog';
 import type { MediaFilterKey, MediaSortKey } from '../lib/strapi';
 
+/** Texto legível do filtro ativo, para usar na mensagem do ConfirmDialog */
+function filterLabel(f: MediaFilterKey): string {
+  if (f === 'pdf') return 'PDFs';
+  if (f === 'img') return 'Imagens';
+  if (f === 'video') return 'Vídeos';
+  if (f === 'doc') return 'Documentos';
+  return 'Todos os arquivos';
+}
+
 export const Midiateca: React.FC = () => {
   const [activeFilter, setActiveFilter] = useState<MediaFilterKey>('all');
   const [activeSort, setActiveSort] = useState<MediaSortKey>('recent');
   const [currentPage, setCurrentPage] = useState(1);
   const [toastMessage, setToastMessage] = useState<string | null>(null);
   const [deleteTarget, setDeleteTarget] = useState<{ id: number; name: string; relatedCount: number } | null>(null);
+  const [bulkPublishPending, setBulkPublishPending] = useState(false);
 
   const LIMIT = 25;
 
@@ -45,6 +56,12 @@ export const Midiateca: React.FC = () => {
   const { counts } = useMediaCounts();
   const { uploads, uploadFiles, clearCompleted } = useMediaUpload();
   const deleteMutation = useMediaDelete();
+
+  const bulkPublishMutation = useMediaBulkPublishAll({
+    onSuccess: (count) => {
+      showToast(`${count} arquivo(s) atualizado(s).`);
+    },
+  });
 
   // Handle file deletion
   const handleDelete = (id: number, name: string, relatedCount: number) => {
@@ -116,6 +133,7 @@ export const Midiateca: React.FC = () => {
         onFilter={handleFilter}
         activeSort={activeSort}
         onSort={handleSort}
+        onBulkPublish={() => setBulkPublishPending(true)}
       />
 
       {/* Media Grid */}
@@ -187,7 +205,7 @@ export const Midiateca: React.FC = () => {
         </div>
       )}
 
-      {/* Confirm Dialog */}
+      {/* Confirm Dialog — exclusão individual */}
       <ConfirmDialog
         open={deleteTarget !== null}
         onOpenChange={(open) => {
@@ -215,6 +233,30 @@ export const Midiateca: React.FC = () => {
             },
           });
           setDeleteTarget(null);
+        }}
+      />
+
+      {/* Confirm Dialog — publicação em massa */}
+      <ConfirmDialog
+        open={bulkPublishPending}
+        onOpenChange={(open) => {
+          if (!open) setBulkPublishPending(false);
+        }}
+        title="Publicar todos"
+        description={`Isso vai tornar TODOS os arquivos (${filterLabel(activeFilter)}) públicos. Continuar?`}
+        confirmLabel="Publicar todos"
+        cancelLabel="Cancelar"
+        variant="destructive"
+        onConfirm={() => {
+          setBulkPublishPending(false);
+          bulkPublishMutation.mutate(
+            { filter: activeFilter, is_public: true },
+            {
+              onError: (err) => {
+                showToast(err.message || 'Erro ao publicar arquivos.');
+              },
+            }
+          );
         }}
       />
 

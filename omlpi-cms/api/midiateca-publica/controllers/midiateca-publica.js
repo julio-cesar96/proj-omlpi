@@ -58,12 +58,24 @@ module.exports = {
   },
 
   async bulkUpdate(ctx) {
-    const { ids, is_public } = ctx.request.body;
-    if (!Array.isArray(ids) || ids.length === 0) {
-      return ctx.badRequest('ids deve ser um array não vazio.');
+    const { ids, filter, is_public } = ctx.request.body;
+    let targetIds = ids;
+
+    // Modo novo: buscar todos os arquivos que combinam com o filtro
+    if (!targetIds && filter) {
+      const matches = await strapi.query('file', 'upload').find({
+        ...filter,
+        _limit: -1,
+      });
+      targetIds = matches.map(f => f.id);
     }
+
+    if (!Array.isArray(targetIds) || targetIds.length === 0) {
+      return ctx.badRequest('Nenhum arquivo encontrado para atualizar.');
+    }
+
     const updated = await Promise.all(
-      ids.map(id => strapi.query('file', 'upload').update({ id }, { is_public: !!is_public }))
+      targetIds.map(id => strapi.query('file', 'upload').update({ id }, { is_public: !!is_public }))
     );
     ctx.body = { updated: updated.length };
   },

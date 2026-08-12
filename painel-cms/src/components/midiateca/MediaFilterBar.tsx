@@ -1,4 +1,5 @@
 import React from 'react';
+import { Globe } from 'lucide-react';
 import type { MediaFilterKey, MediaSortKey } from '../../lib/strapi';
 import type { MediaCounts } from '../../hooks/midiateca/useMediaCounts';
 
@@ -8,6 +9,8 @@ interface MediaFilterBarProps {
   onFilter: (filter: MediaFilterKey) => void;
   activeSort: MediaSortKey;
   onSort: (sort: MediaSortKey) => void;
+  /** Chamado quando o usuário clica em "Publicar todos" */
+  onBulkPublish?: () => void;
 }
 
 export const MediaFilterBar: React.FC<MediaFilterBarProps> = ({
@@ -16,6 +19,7 @@ export const MediaFilterBar: React.FC<MediaFilterBarProps> = ({
   onFilter,
   activeSort,
   onSort,
+  onBulkPublish,
 }) => {
   const filterOptions: { key: MediaFilterKey; label: string; count: number }[] = [
     { key: 'all', label: 'Todos', count: counts.all },
@@ -89,6 +93,33 @@ export const MediaFilterBar: React.FC<MediaFilterBarProps> = ({
           <option value="name">Nome (A–Z)</option>
           <option value="size">Tamanho</option>
         </select>
+
+        {onBulkPublish && (
+          <button
+            type="button"
+            onClick={onBulkPublish}
+            title="Publicar todos os arquivos do filtro atual"
+            style={{
+              display: 'flex',
+              alignItems: 'center',
+              gap: '6px',
+              height: '36px',
+              padding: '0 14px',
+              borderRadius: '10px',
+              fontSize: '13px',
+              fontWeight: 700,
+              border: '1px solid var(--border)',
+              background: 'var(--card)',
+              color: 'var(--text)',
+              cursor: 'pointer',
+              transition: 'all 0.2s ease',
+              whiteSpace: 'nowrap',
+            }}
+          >
+            <Globe size={15} />
+            Publicar todos
+          </button>
+        )}
       </div>
     </div>
   );

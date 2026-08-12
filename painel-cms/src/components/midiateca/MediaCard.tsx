@@ -1,5 +1,5 @@
 import React, { useState, useRef, useEffect } from 'react';
-import { MoreVertical, Image as ImageIcon, Download, Trash2, Globe, Lock, CheckSquare } from 'lucide-react';
+import { MoreVertical, Image as ImageIcon, Download, Trash2, Globe, Lock } from 'lucide-react';
 import type { StrapiFile } from '../../lib/strapi';
 import { getMediaType, formatFileSize, MEDIA_TYPE_CONFIG } from '../../lib/media';
 import { useMediaTogglePublic } from '../../hooks/midiateca/useMediaTogglePublic';
