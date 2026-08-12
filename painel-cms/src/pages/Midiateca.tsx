@@ -119,7 +119,7 @@ export const Midiateca: React.FC = () => {
       />
 
       {/* Media Grid */}
-      <MediaGrid files={files || []} isLoading={isLoading} onDelete={handleDelete} />
+      <MediaGrid files={files || []} isLoading={isLoading} onDelete={handleDelete} onToast={showToast} />
 
       {/* Pagination Footer */}
       {!isLoading && files && files.length > 0 && (

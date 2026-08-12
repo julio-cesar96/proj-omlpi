@@ -48,10 +48,11 @@ export async function Pnipi() {
           className="text-[30px] lg:text-[40px] font-black text-foreground mb-3"
           style={{ fontFamily: "var(--font-heading)" }}
         >
-          Programa Nacional Integrado
+          Planos pela Primeira Infância
         </h2>
         <p className="text-muted-foreground mb-8 text-[15px]">
-          pela Primeira Infância
+          Os Planos pela Primeira Infância são importantes ferramentas para a formulação das políticas públicas prioritárias para a população de 0 a 6 anos. O Observa coleta os Planos já elaborados, tendo analisado 100 Planos pela Primeira Infância
+          Planos Municipais das diferentes regiões do Brasil. Verifique os Planos disponibilizados, envie o Plano de sua localidade e consulte os resultados de nosso estudo.
         </p>
 
         <PnipiClient guias={guias} faqs={faqs} planos={planos} />

@@ -16,7 +16,7 @@ export const Sidebar: React.FC = () => {
     { to: '/dashboard', label: 'Dashboard', icon: LayoutGrid },
     { to: '/planos', label: 'Planos', icon: FileText, badge: '128' },
     { to: '/midiateca', label: 'Midiateca', icon: FolderOpen },
-    { to: '/faqs', label: 'FAQs', icon: HelpCircle },
+    { to: '/faqs', label: 'Perguntas Frequentes', icon: HelpCircle },
     { to: '/textos', label: 'Textos Institucionais', icon: FileCode },
   ];
 

@@ -342,7 +342,7 @@ export function getGuias(params?: StrapiQueryParams): Promise<StrapiGuia[]> {
   return strapiGet<StrapiGuia[]>("guias", params);
 }
 
-/** Tags de artigos (Midiateca — se biblioteca de artigos for mantida) */
+/** Tags de artigos (mantida para uso futuro; não mais usada na Midiateca após remoção da aba Artigos) */
 export function getTags(params?: StrapiQueryParams): Promise<StrapiTag[]> {
   return strapiGet<StrapiTag[]>("tags", params);
 }
@@ -351,14 +351,49 @@ export function getTags(params?: StrapiQueryParams): Promise<StrapiTag[]> {
  * Artigos da collection `artigos` do Strapi.
  *
  * ⚠️  NÃO usar para o fluxo de busca/filtro/paginação da Midiateca.
- *     O Strapi não tem full-text search nativo. A Midiateca usa
+ *     O Strapi não tem full-text search nativo. A Midiateca usava
  *     `searchArtigos()` de `lib/cms-search.ts` (omlpi-cms-search).
- *     Ver docs/API_CONTRACTS.md §3.
- *
- * Mantida aqui para eventuais usos futuros que não dependam de busca textual.
+ *     A aba Artigos foi removida da Midiateca. Mantida aqui para
+ *     eventuais usos futuros que não dependam de busca textual.
  */
 export function getArtigos(params?: StrapiQueryParams): Promise<StrapiArtigo[]> {
   return strapiGet<StrapiArtigo[]>("artigos", params);
+}
+
+/** Arquivo retornado pelo endpoint público /midiateca-publica */
+export interface StrapiMidiaPublica {
+  id: number;
+  name: string;
+  url: string;
+  mime: string;
+  ext: string;
+  /** Tamanho em KB (float) */
+  size: number;
+  alternativeText?: string | null;
+  caption?: string | null;
+  width?: number | null;
+  height?: number | null;
+  formats?: Record<string, unknown> | null;
+  created_at: string;
+  [key: string]: unknown;
+}
+
+export interface MidiatecaPublicaResponse {
+  results: StrapiMidiaPublica[];
+  /** Total de arquivos públicos (para calcular hasMore na paginação) */
+  count: number;
+}
+
+/**
+ * Arquivos públicos da Midiateca via endpoint customizado /midiateca-publica.
+ * Nunca expõe /upload/files inteiro — só os marcados como is_public: true.
+ *
+ * Parâmetros aceitos: _start, _limit, _sort, name_contains, mime_contains.
+ */
+export function getMidiaPublica(
+  params?: StrapiQueryParams & { name_contains?: string; mime_contains?: string }
+): Promise<MidiatecaPublicaResponse> {
+  return strapiGet<MidiatecaPublicaResponse>('midiateca-publica', params as StrapiQueryParams);
 }
 
 

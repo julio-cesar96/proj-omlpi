@@ -28,6 +28,8 @@ export interface StrapiFile {
   provider: string;
   provider_metadata?: unknown | null;
   related?: unknown[];
+  /** Campo customizado — true = visível em /midiateca-publica (endpoint público). */
+  is_public?: boolean;
   created_at: string;
   updated_at: string;
 }

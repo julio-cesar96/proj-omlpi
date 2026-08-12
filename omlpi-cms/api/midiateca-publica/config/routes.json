@@ -1,0 +1,24 @@
+{
+  "routes": [
+    {
+      "method": "GET",
+      "path": "/midiateca-publica",
+      "handler": "midiateca-publica.find",
+      "config": {
+        "policies": []
+      }
+    },
+    {
+      "method": "PUT",
+      "path": "/midiateca-publica/bulk",
+      "handler": "midiateca-publica.bulkUpdate",
+      "config": { "policies": [] }
+    },
+    {
+      "method": "PUT",
+      "path": "/midiateca-publica/:id",
+      "handler": "midiateca-publica.update",
+      "config": { "policies": [] }
+    }
+  ]
+}

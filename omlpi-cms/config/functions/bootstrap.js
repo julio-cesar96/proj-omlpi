@@ -212,6 +212,86 @@ async function setupCustomRoles() {
 }
 
 /**
+ * Habilita permissão pública (role Public) de find no endpoint /midiateca-publica.
+ * Nunca abre /upload/files para o Public — apenas o endpoint customizado.
+ * Idempotente: cria se não existe, habilita se existir desabilitada.
+ */
+async function enableMidiatecaPublicaPermission() {
+  const publicRole = await strapi
+    .query('role', 'users-permissions')
+    .findOne({ type: 'public' });
+
+  if (!publicRole) {
+    strapi.log.warn('[bootstrap] Role "public" não encontrado — abortando midiateca-publica permission.');
+    return;
+  }
+
+  const existing = await strapi
+    .query('permission', 'users-permissions')
+    .findOne({ type: 'application', controller: 'midiateca-publica', action: 'find', role: publicRole.id });
+
+  if (!existing) {
+    await strapi.query('permission', 'users-permissions').create({
+      type: 'application',
+      controller: 'midiateca-publica',
+      action: 'find',
+      enabled: true,
+      policy: '',
+      role: publicRole.id,
+    });
+    strapi.log.info('[bootstrap] Permissão criada: midiateca-publica.find (Public)');
+  } else if (!existing.enabled) {
+    await strapi
+      .query('permission', 'users-permissions')
+      .update({ id: existing.id }, { enabled: true });
+    strapi.log.info('[bootstrap] Permissão habilitada: midiateca-publica.find (Public)');
+  } else {
+    strapi.log.debug('[bootstrap] Permissão já ativa: midiateca-publica.find (Public)');
+  }
+}
+
+/**
+ * Habilita permissões de update e bulkUpdate do endpoint /midiateca-publica
+ * para o role Authenticated (somente quem está logado pode alterar visibilidade).
+ * Idempotente: cria se não existe, habilita se existir desabilitada.
+ */
+async function enableMidiatecaAuthenticatedPermissions() {
+  const authRole = await strapi
+    .query('role', 'users-permissions')
+    .findOne({ type: 'authenticated' });
+
+  if (!authRole) {
+    strapi.log.warn('[bootstrap] Role "authenticated" não encontrado — abortando midiateca-publica auth permissions.');
+    return;
+  }
+
+  for (const action of ['update', 'bulkupdate']) {
+    const existing = await strapi
+      .query('permission', 'users-permissions')
+      .findOne({ type: 'application', controller: 'midiateca-publica', action, role: authRole.id });
+
+    if (!existing) {
+      await strapi.query('permission', 'users-permissions').create({
+        type: 'application',
+        controller: 'midiateca-publica',
+        action,
+        enabled: true,
+        policy: '',
+        role: authRole.id,
+      });
+      strapi.log.info(`[bootstrap] Permissão criada: midiateca-publica.${action} (Authenticated)`);
+    } else if (!existing.enabled) {
+      await strapi
+        .query('permission', 'users-permissions')
+        .update({ id: existing.id }, { enabled: true });
+      strapi.log.info(`[bootstrap] Permissão habilitada: midiateca-publica.${action} (Authenticated)`);
+    } else {
+      strapi.log.debug(`[bootstrap] Permissão já ativa: midiateca-publica.${action} (Authenticated)`);
+    }
+  }
+}
+
+/**
  * Habilita permissões de find e update do endpoint /cms-config
  * para o role Authenticated.
  * Idempotente: cria se não existe, habilita se existir desabilitada.
@@ -258,6 +338,8 @@ module.exports = async () => {
     await enablePublicPermissions();
     await setupCustomRoles();
     await enableCmsConfigPermissions();
+    await enableMidiatecaPublicaPermission();
+    await enableMidiatecaAuthenticatedPermissions();
   } catch (err) {
     strapi.log.error('[bootstrap] Erro ao configurar permissões:', err);
   }

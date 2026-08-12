@@ -438,7 +438,7 @@ export const Configuracoes: React.FC = () => {
       <Toast
         message={toast.message}
         visible={toast.visible}
-        onHide={() => setToast({ visible: false, message: '' })}
+        onClose={() => setToast({ visible: false, message: '' })}
       />
     </div>
   );

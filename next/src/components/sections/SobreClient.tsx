@@ -41,7 +41,16 @@ export function SobreClient({ abas }: Props) {
   if (abas.length === 0) {
     return (
       <p className="text-muted-foreground">
-        Conteúdo institucional em breve.
+        O Observa – Observatório do Marco Legal da Primeira Infância é uma iniciativa da Rede Nacional Primeira Infância – RNPI que foi desenvolvida sob coordenação da ANDI – Comunicação e Direitos, entidade que desempenhou a função de secretaria executiva da rede para o período 2018-2021. Atualmente, a Plataforma é gerida pela União Nacional dos Conselhos Municipais de Educação - UNCME.
+        <br />
+        <br />
+        Formada em 2007, a RNPI é a principal articulação de alcance nacional a ter como missão o fomento de políticas públicas voltadas à garantia dos direitos das crianças de 0 a 6 anos de idade. Sua composição é democrática e plural, acolhendo hoje mais de 200 instituições de diferentes dimensões e perfis.
+
+        <br />
+        <br />
+        Histórico
+
+        Deverá apresentar a trajetória da criação da plataforma, marcos relevantes e apoiadores/parceiros anteriores.
       </p>
     );
   }

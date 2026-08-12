@@ -45,7 +45,7 @@ export async function Sobre() {
           className="text-[30px] lg:text-[40px] font-black text-foreground mb-10"
           style={{ fontFamily: "var(--font-heading)" }}
         >
-          Conheça a plataforma
+          Quem somos
         </h2>
 
         <SobreClient abas={abas} />

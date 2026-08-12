@@ -5,6 +5,7 @@ import { Header } from "@/components/layout/Header";
 import { Footer } from "@/components/layout/Footer";
 import { CookieBanner } from "@/components/layout/CookieBanner";
 import { AnalyticsScripts } from "@/components/layout/AnalyticsScripts";
+import { BackToTopButton } from "@/components/ui/BackToTopButton";
 
 // ─── Fontes ──────────────────────────────────────────────────────────────────
 // Nunito: títulos (headings)
@@ -110,6 +111,7 @@ export default function RootLayout({
         <main className="flex-1">{children}</main>
         <Footer />
         <CookieBanner />
+        <BackToTopButton />
         <AnalyticsScripts />
       </body>
     </html>

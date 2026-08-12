@@ -13,6 +13,7 @@
 "use client";
 
 import { useState } from "react";
+import Image from "next/image";
 import { submitContactForm, validateContactForm, ContactFormData } from "@/lib/contact";
 
 // ─── Dados estáticos ──────────────────────────────────────────────────────────
@@ -165,20 +166,16 @@ export function Contato() {
 
             {/* Imagem decorativa */}
             <div
-              className="rounded-[2rem] overflow-hidden shadow-md"
-              style={{ aspectRatio: "16/9", background: "#e8f5ee" }}
+              className="relative rounded-[2rem] overflow-hidden shadow-md"
+              style={{ aspectRatio: "16/9" }}
             >
-              <div className="w-full h-full flex items-center justify-center">
-                <svg
-                  viewBox="0 0 240 135"
-                  className="w-32 opacity-20"
-                  aria-hidden="true"
-                >
-                  <circle cx="60" cy="67" r="40" fill="#17a649" />
-                  <circle cx="180" cy="67" r="40" fill="#f25d27" />
-                  <circle cx="120" cy="40" r="28" fill="#444525" />
-                </svg>
-              </div>
+              <Image
+                src="/images/contato-dominio.png"
+                alt="Ilustração decorativa de peças de dominó"
+                fill
+                className="object-cover"
+                sizes="(max-width: 1024px) 100vw, 50vw"
+              />
             </div>
           </div>
 

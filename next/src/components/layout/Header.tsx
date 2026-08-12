@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import Image from "next/image";
 import { Menu, X } from "lucide-react";
 
 /**
@@ -28,18 +29,52 @@ export function Header() {
       <div className="mx-auto flex h-16 max-w-7xl items-center justify-between px-4 sm:px-6 lg:px-8">
         {/* Logo (Esquerda) */}
         <div className="flex-1 flex justify-start">
+          {/*
+           * OPÇÃO A — Ícone (logo-icon.png) + texto "Observa." ao lado
+           * Ativa agora. Para trocar para a Opção B, comentar este bloco e
+           * descomentar o bloco OPÇÃO B abaixo.
+           */}
           <a
             href="#inicio"
             aria-label="Observa — ir para o início"
             className="flex items-center gap-2 font-heading tracking-tight"
           >
-            <div className="bg-[#F25D27] rounded-full w-9 h-9 flex items-center justify-center">
-              <span className="text-white font-bold text-sm">Ob</span>
-            </div>
+            <Image
+              src="/logo-icon.png"
+              alt=""
+              aria-hidden="true"
+              width={38}
+              height={38}
+              className="object-contain"
+              priority
+            />
             <span className="font-black text-foreground text-xl">
               Observa<span className="text-[#F25D27]">.</span>
             </span>
           </a>
+
+          {/*
+           * OPÇÃO B — Logo completa (logo-observa-completa.png) sem texto ao lado.
+           * Para ativar: comentar o bloco OPÇÃO A acima e descomentar este.
+           *
+           * Nota: a logo completa é mais larga (~160px); em telas menores
+           * pode competir com o menu. Avaliar visualmente antes de confirmar.
+           *
+          <a
+            href="#inicio"
+            aria-label="Observa — ir para o início"
+            className="flex items-center font-heading tracking-tight"
+          >
+            <Image
+              src="/logo-observa-completa.png"
+              alt="Observa"
+              width={160}
+              height={38}
+              className="object-contain h-9 w-auto"
+              priority
+            />
+          </a>
+          */}
         </div>
 
         {/* Navegação principal (Centro) */}

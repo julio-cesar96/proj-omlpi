@@ -12,6 +12,7 @@
  * Fase 2 — seção Início.
  */
 
+import Image from "next/image";
 import { getBanner, getEixos, StrapiBanner, StrapiEixo } from "@/lib/strapi";
 
 // ─── Stats (placeholder) ─────────────────────────────────────────────────────
@@ -48,21 +49,18 @@ function BannerImage() {
   return (
     <div className="relative">
       <div
-        className="rounded-[2rem] overflow-hidden shadow-lg"
-        style={{ aspectRatio: "4/3", background: "#e8f5ee" }}
+        className="relative rounded-[2rem] overflow-hidden shadow-lg"
+        style={{ aspectRatio: "4/3" }}
       >
-        {/* SVG decorativo — não existe campo `image` no schema real de banners */}
-        <div className="w-full h-full flex items-center justify-center">
-          <svg
-            viewBox="0 0 200 150"
-            className="w-40 opacity-30"
-            aria-hidden="true"
-          >
-            <circle cx="60" cy="75" r="40" fill="#17a649" />
-            <circle cx="140" cy="75" r="30" fill="#f25d27" />
-            <circle cx="100" cy="55" r="20" fill="#444525" />
-          </svg>
-        </div>
+        {/* Imagem real — hero-bebe-cubos.png (decorativa, sem campo image no schema banners) */}
+        <Image
+          src="/images/hero-bebe-cubos.png"
+          alt="Ilustração de criança brincando com blocos coloridos"
+          fill
+          className="object-cover"
+          priority
+          sizes="(max-width: 768px) 100vw, 50vw"
+        />
       </div>
       {/* Floating stat badges */}
       <div className="absolute -bottom-5 -left-5 bg-white rounded-2xl shadow-lg px-5 py-4 border border-border">
@@ -167,14 +165,14 @@ export async function Hero() {
           <div className="grid lg:grid-cols-2 gap-12 lg:gap-20 items-center">
             {/* Copy */}
             <div>
-              <SectionLabel>Plataforma Observa</SectionLabel>
+              <SectionLabel>Plataforma</SectionLabel>
               <h1
                 className="text-[40px] lg:text-[58px] leading-[1.08] font-black text-foreground mb-6"
                 style={{ fontFamily: "var(--font-heading)" }}
               >
                 Planos pela{" "}
                 <span className="text-primary">Primeira</span>{" "}
-                <span className="text-secondary">Infância</span>{" "}
+                <span className="text-primary">Infância</span>{" "}
                 no Brasil
               </h1>
               <p className="text-[17px] text-muted-foreground leading-[1.75] mb-9 max-w-xl">
