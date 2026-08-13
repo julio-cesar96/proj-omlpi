@@ -131,7 +131,28 @@ export const TextoEditor: React.FC<TextoEditorProps> = ({
               flexWrap: 'wrap',
             }}
           >
-            <span>observarnpi.org.br/</span>
+            {(() => {
+              const siteUrl = import.meta.env.VITE_SITE_URL as string | undefined;
+              const prefix = siteUrl
+                ? `${siteUrl.replace(/\/$/, '')}/paginas/`
+                : '/paginas/';
+              if (siteUrl && slug && !isEditingSlugInline) {
+                const fullUrl = `${siteUrl.replace(/\/$/, '')}/paginas/${slug}`;
+                return (
+                  <a
+                    href={fullUrl}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    style={{ color: 'var(--text-soft)', textDecoration: 'none' }}
+                    onMouseEnter={(e) => { (e.currentTarget as HTMLAnchorElement).style.textDecoration = 'underline'; }}
+                    onMouseLeave={(e) => { (e.currentTarget as HTMLAnchorElement).style.textDecoration = 'none'; }}
+                  >
+                    {prefix}
+                  </a>
+                );
+              }
+              return <span>{prefix}</span>;
+            })()}
             
             {isEditingSlugInline ? (
               <div style={{ display: 'flex', alignItems: 'center', gap: '4px' }}>

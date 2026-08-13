@@ -94,7 +94,30 @@ export const TextoCard: React.FC<TextoCardProps> = ({ pagina, onClick }) => {
             whiteSpace: 'nowrap',
           }}
         >
-          observarnpi.org.br/{pagina.slug} · Atualizado em {formattedDate}
+          {(() => {
+            const siteUrl = import.meta.env.VITE_SITE_URL as string | undefined;
+            const pagePath = `/paginas/${pagina.slug}`;
+            if (siteUrl) {
+              const fullUrl = `${siteUrl.replace(/\/$/, '')}${pagePath}`;
+              return (
+                <>
+                  <a
+                    href={fullUrl}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    onClick={(e) => e.stopPropagation()}
+                    style={{ color: 'var(--primary)', textDecoration: 'none' }}
+                    onMouseEnter={(e) => { (e.currentTarget as HTMLAnchorElement).style.textDecoration = 'underline'; }}
+                    onMouseLeave={(e) => { (e.currentTarget as HTMLAnchorElement).style.textDecoration = 'none'; }}
+                  >
+                    {fullUrl}
+                  </a>
+                  {' '}· Atualizado em {formattedDate}
+                </>
+              );
+            }
+            return <>{pagePath} · Atualizado em {formattedDate}</>;
+          })()}
         </div>
       </div>
 

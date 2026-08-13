@@ -166,14 +166,15 @@ export async function Hero() {
             {/* Copy */}
             <div>
               <SectionLabel>Plataforma</SectionLabel>
-              <h1
-                className="text-[40px] lg:text-[58px] leading-[1.08] font-black text-foreground mb-6"
-                style={{ fontFamily: "var(--font-heading)" }}
-              >
-                Planos pela{" "}
-                <span className="text-primary">Primeira</span>{" "}
-                <span className="text-primary">Infância</span>{" "}
-                no Brasil
+              <h1 className="mb-6">
+                <Image
+                  src="/logo-observa-completa.png"
+                  alt="Observa — Observatório do Marco Legal da Primeira Infância"
+                  width={420}
+                  height={120}
+                  priority
+                  className="w-[280px] sm:w-[340px] lg:w-[420px] max-w-full h-auto"
+                />
               </h1>
               <p className="text-[17px] text-muted-foreground leading-[1.75] mb-9 max-w-xl">
                 {banner?.text ??
