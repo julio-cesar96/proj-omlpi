@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../hooks/useAuth';
-import { Eye, Lock, Mail } from 'lucide-react';
+import { Lock, Mail } from 'lucide-react';
 
 export const Login: React.FC = () => {
   const [identifier, setIdentifier] = useState('');
@@ -76,7 +76,7 @@ export const Login: React.FC = () => {
               marginBottom: '16px',
             }}
           >
-            <Eye size={26} color="#FFFFFF" strokeWidth={2.4} />
+            <img src="/logo-icon.png" alt="Observa" style={{ width: '30px', height: '30px', objectFit: 'contain' }} />
           </div>
           <h1 style={{ fontSize: '24px', fontWeight: 800, letterSpacing: '-.4px' }}>
             Observa RNPI
