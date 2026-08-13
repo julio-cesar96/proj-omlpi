@@ -44,13 +44,18 @@ function SectionLabel({ children }: { children: React.ReactNode }) {
  * ⚠️ O schema real de `banners` (singleType) não tem campo `image`.
  * A imagem é decorativa (SVG hardcoded). O campo `image` não existe
  * no schema real de `banners` (singleType: apenas `title` e `text`).
+ *
+ * 📐 PADRÃO DE DESIGN PARA NOVAS IMAGENS ILUSTRATIVAS:
+ * Para qualquer nova imagem ilustrativa adicionada no site, use sempre:
+ * - aspectRatio: "16/9"
+ * - rounded-2xl (cantos mais suaves)
  */
 function BannerImage() {
   return (
     <div className="relative">
       <div
-        className="relative rounded-[2rem] overflow-hidden shadow-lg"
-        style={{ aspectRatio: "4/3" }}
+        className="relative rounded-2xl overflow-hidden shadow-lg"
+        style={{ aspectRatio: "16/9" }}
       >
         {/* Imagem real — hero-bebe-cubos.png (decorativa, sem campo image no schema banners) */}
         <Image
@@ -63,9 +68,9 @@ function BannerImage() {
         />
       </div>
       {/* Floating stat badges */}
-      <div className="absolute -bottom-5 -left-5 bg-white rounded-2xl shadow-lg px-5 py-4 border border-border">
+      <div className="absolute -bottom-5 -left-5 bg-[var(--muted-bg-subtle)] backdrop-blur-md rounded-xl shadow-lg px-4 py-3 border border-border">
         <div
-          className="text-2xl font-black text-primary"
+          className="text-xl font-black text-primary"
           style={{ fontFamily: "var(--font-heading)" }}
         >
           {STATS_PLACEHOLDER[2].value}
@@ -74,9 +79,9 @@ function BannerImage() {
           {STATS_PLACEHOLDER[2].label}
         </div>
       </div>
-      <div className="absolute -top-5 -right-3 bg-white rounded-2xl shadow-lg px-5 py-4 border border-border">
+      <div className="absolute -top-5 -right-3 bg-[var(--muted-bg-subtle)] backdrop-blur-md rounded-xl shadow-lg px-4 py-3 border border-border">
         <div
-          className="text-2xl font-black text-secondary"
+          className="text-xl font-black text-secondary"
           style={{ fontFamily: "var(--font-heading)" }}
         >
           {STATS_PLACEHOLDER[1].value}
@@ -219,7 +224,7 @@ export async function Hero() {
       {/* ── Stats strip ── */}
       <div
         className="py-12"
-        style={{ background: "var(--foreground)" }}
+        style={{ background: "#A49A87" }}
         aria-label="Números do levantamento"
       >
         <div className="max-w-7xl mx-auto px-5 lg:px-10">
@@ -227,12 +232,12 @@ export async function Hero() {
             {STATS_PLACEHOLDER.map(({ value, label }) => (
               <div key={label} className="text-center">
                 <div
-                  className="text-3xl lg:text-[38px] font-black text-primary mb-1.5"
+                  className="text-3xl lg:text-[38px] font-black text-foreground mb-1.5"
                   style={{ fontFamily: "var(--font-heading)" }}
                 >
                   {value}
                 </div>
-                <div className="text-sm text-muted-foreground">{label}</div>
+                <div className="text-sm text-foreground">{label}</div>
               </div>
             ))}
           </div>

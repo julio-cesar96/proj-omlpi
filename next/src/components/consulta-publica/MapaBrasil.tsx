@@ -145,13 +145,13 @@ export function MapaBrasil({ locales }: MapaBrasilProps) {
 
                 chart.hideLoading();
                 chart.addSeriesAsDrilldown(e.point, {
-                  name: String(point["name"]),
+                  name: stateLocale?.name ?? stateAbbr ?? "",
                   data: cityMapData,
                   joinBy: "id",
                 });
 
                 chart.setTitle(null, {
-                  text: String(point["name"]),
+                  text: stateLocale?.name ?? stateAbbr ?? "",
                   align: "right",
                   style: {
                     fontSize: "1rem",

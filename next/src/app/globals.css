@@ -26,7 +26,8 @@
   --secondary: #17a649;
   --secondary-foreground: #ffffff;
   --muted: #f5f5e8;
-  --muted-foreground: #a49a87;
+  --muted-foreground: #444525;
+  --muted-bg-subtle: rgba(164, 154, 135, 0.12);
   --accent: #e8f5ee;
   --accent-foreground: #444525;
   --destructive: #d4183d;
@@ -75,6 +76,7 @@
   --color-secondary-foreground: var(--secondary-foreground);
   --color-muted: var(--muted);
   --color-muted-foreground: var(--muted-foreground);
+  --color-muted-bg-subtle: var(--muted-bg-subtle);
   --color-accent: var(--accent);
   --color-accent-foreground: var(--accent-foreground);
   --color-destructive: var(--destructive);
