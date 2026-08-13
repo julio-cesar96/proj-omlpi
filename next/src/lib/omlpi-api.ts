@@ -133,6 +133,11 @@ export interface OmlpiLocaleData {
   indicators: OmlpiIndicatorWithSubindicator[];
 }
 
+/** Envelope real da resposta de GET /data — o objeto locale vem embrulhado. */
+interface OmlpiLocaleDataResponse {
+  locale: OmlpiLocaleData;
+}
+
 /**
  * Localidade retornada pelo GET /locales (lista completa para mapa e busca).
  *
@@ -301,15 +306,16 @@ export async function getAreas(): Promise<OmlpiArea[]> {
  * Dados do dashboard de uma localidade.
  * CONFIRMADO openapi.yaml: locale_id obrigatório, area_id e year opcionais.
  */
-export function getLocaleData(
+export async function getLocaleData(
   localeId: number,
   params?: { area_id?: number; year?: 2017 | 2018 | 2019 }
 ): Promise<OmlpiLocaleData> {
-  return omlpiGet<OmlpiLocaleData>("data", {
+  const response = await omlpiGet<OmlpiLocaleDataResponse>("data", {
     locale_id: localeId,
     area_id: params?.area_id,
     year: params?.year,
   });
+  return response.locale;
 }
 
 /**

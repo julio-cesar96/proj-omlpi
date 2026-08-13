@@ -127,6 +127,7 @@ export async function PainelMunicipal({
   const matchedLocale = locales.find((l) => l.id === locationId);
   const codIbge = matchedLocale?.cod_ibge;
 
+
   const [data, areas] = await Promise.all([
     codIbge
       ? getLocaleData(Number(codIbge), { area_id: areaId }).catch(() => null)
@@ -144,6 +145,7 @@ export async function PainelMunicipal({
   }
 
   const indicators = data.indicators ?? [];
+
 
   return (
     <div className="space-y-6">
