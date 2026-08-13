@@ -124,8 +124,13 @@ export async function PainelMunicipal({
   areaId,
   locales,
 }: PainelMunicipalProps) {
+  const matchedLocale = locales.find((l) => l.id === locationId);
+  const codIbge = matchedLocale?.cod_ibge;
+
   const [data, areas] = await Promise.all([
-    getLocaleData(locationId, { area_id: areaId }).catch(() => null),
+    codIbge
+      ? getLocaleData(Number(codIbge), { area_id: areaId }).catch(() => null)
+      : Promise.resolve(null),
     getAreas().catch(() => [] as Awaited<ReturnType<typeof getAreas>>),
   ]);
 
