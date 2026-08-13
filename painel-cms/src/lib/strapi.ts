@@ -199,6 +199,38 @@ export interface UsuariosListParams {
   _start?: number;
 }
 
+// ── Banner (singleType) ─────────────────────────────────────────────────────────
+
+/**
+ * Banner da página inicial, editável via painel-cms.
+ *
+ * `banners` é um singleType no Strapi — GET e PUT em `/banners` sem id.
+ * Campos do schema: `title` (string) e `text` (richtext — renderizado como
+ * texto puro no Hero.tsx, portanto editado com <textarea> simples no painel).
+ *
+ * ⚠️ draftAndPublish ativo: `published_at` deve ser sempre reenviado no PUT.
+ */
+export interface Banner {
+  id?: number;
+  title?: string;
+  text?: string;
+  /** CRÍTICO: manter ao fazer PUT (draftAndPublish ativo) — nunca omitir */
+  published_at?: string | null;
+  created_at?: string;
+  updated_at?: string;
+}
+
+export interface BannerPayload {
+  title: string;
+  text: string;
+  /**
+   * CRÍTICO: nunca omitir — repassar exatamente o published_at lido do GET.
+   * Omitir ou enviar undefined aciona o bug de auto-publicação do Strapi v3.
+   * Nunca enviar null (viraria rascunho).
+   */
+  published_at: string | null;
+}
+
 // ── Configurações ─────────────────────────────────────────────────────────────
 
 /**

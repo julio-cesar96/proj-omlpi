@@ -2,6 +2,7 @@ import React from 'react';
 import { NavLink } from 'react-router-dom';
 import {
   LayoutGrid,
+  Home,
   FileText,
   FolderOpen,
   HelpCircle,
@@ -13,6 +14,7 @@ import {
 export const Sidebar: React.FC = () => {
   const navPrincipal = [
     { to: '/dashboard', label: 'Dashboard', icon: LayoutGrid },
+    { to: '/inicio', label: 'Início', icon: Home },
     { to: '/planos', label: 'Planos', icon: FileText, badge: '128' },
     { to: '/midiateca', label: 'Midiateca', icon: FolderOpen },
     { to: '/faqs', label: 'Perguntas Frequentes', icon: HelpCircle },
