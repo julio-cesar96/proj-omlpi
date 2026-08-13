@@ -10,6 +10,7 @@
  * padrão correto do App Router (server pode importar client components como filhos).
  */
 
+import Image from "next/image";
 import { getPrivacyPolicy } from "@/lib/strapi";
 import { PrivacyPolicyModal } from "@/components/sections/PrivacyPolicyModal";
 
@@ -41,20 +42,17 @@ export async function Footer() {
         <div className="grid sm:grid-cols-3 gap-8 mb-10">
           {/* Logo + descrição */}
           <div>
-            <div className="flex items-center gap-2.5 mb-4">
-              <div className="w-9 h-9 rounded-full bg-primary flex items-center justify-center">
-                <span
-                  className="text-white text-[11px] font-black"
-                  style={{ fontFamily: "var(--font-heading)" }}
-                >
-                  Ob
-                </span>
-              </div>
-              <span
-                className="font-black text-xl text-white"
-                style={{ fontFamily: "var(--font-heading)" }}
-              >
-                Observa<span className="text-primary">.</span>
+            <div className="flex items-center gap-2 mb-4">
+              <Image
+                src="/logo-icon.png"
+                alt=""
+                aria-hidden="true"
+                width={38}
+                height={38}
+                className="object-contain"
+              />
+              <span className="font-black text-white text-xl" style={{ fontFamily: "var(--font-heading)" }}>
+                Observa<span className="text-[#F25D27]">.</span>
               </span>
             </div>
             <p className="text-sm text-muted-foreground leading-[1.7]">

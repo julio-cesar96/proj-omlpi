@@ -8,7 +8,6 @@ import {
   FileCode,
   Users,
   Settings,
-  Eye,
 } from 'lucide-react';
 
 export const Sidebar: React.FC = () => {
@@ -73,7 +72,11 @@ export const Sidebar: React.FC = () => {
             boxShadow: 'var(--shadow-btn)',
           }}
         >
-          <Eye size={22} color="#FFFFFF" strokeWidth={2.4} />
+          <img
+            src="/logo-icon.png"
+            alt="Observa RNPI"
+            style={{ width: '26px', height: '26px', objectFit: 'contain' }}
+          />
         </div>
         <div style={{ lineHeight: 1.1 }}>
           <div
