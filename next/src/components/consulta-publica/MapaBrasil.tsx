@@ -13,7 +13,7 @@ import type { StrapiLocale } from "@/lib/strapi";
  *   - Cor por status do plano estadual (3 categorias fixas do design)
  *   - Tooltip: nome + contagem de planos municipais + link PDF estadual (se houver)
  * Nível cidade (drilldown):
- *   - Fetch de /api/maps/br-XX ao clicar num estado
+ *   - Fetch de /maps/br-XX.json ao clicar num estado
  *   - Cor por status do plano municipal
  *   - Tooltip: nome + link "Baixar Plano" (se houver)
  *   - URL do PDF: plan.url DIRETAMENTE — sem concatenar base URL
@@ -127,7 +127,7 @@ export function MapaBrasil({ locales }: MapaBrasilProps) {
 
             (chart as { showLoading: (s: string) => void }).showLoading("Carregando...");
 
-            fetch(`/api/maps/${stateKey}`)
+            fetch(`/maps/${stateKey}.json`)
               .then((r) => r.json())
               .then((json) => {
                 const cityMapData: Record<string, unknown>[] = json.mapData ?? [];
