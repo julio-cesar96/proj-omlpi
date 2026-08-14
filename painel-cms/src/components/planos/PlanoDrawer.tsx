@@ -59,20 +59,16 @@ export const PlanoDrawer: React.FC<PlanoDrawerProps> = ({
     setError(null);
   }, [plano, isOpen, setError]);
 
-  if (!isOpen) return null;
-
   const currentStatus: EditorialState = plano?.estado_editorial || 'rascunho';
   const isNew = !plano || !plano.id;
 
   // ─── Autosave ──────────────────────────────────────────────────────────────
   // Payload memoizado: só inclui campos do formulário — NUNCA altera
   // estado_editorial nem published_at (apenas o usuário faz isso explicitamente).
-  // eslint-disable-next-line react-hooks/rules-of-hooks
   const autosaveDraft = useMemo(() => ({
     titulo, descricao, categoriaId, selectedTagIds, fileId: file?.id ?? null,
   }), [titulo, descricao, categoriaId, selectedTagIds, file]);
 
-  // eslint-disable-next-line react-hooks/rules-of-hooks
   const { cancelTimer: cancelAutosaveTimer } = useAutosave({
     data: autosaveDraft,
     isEditing: !isNew,
@@ -186,6 +182,8 @@ export const PlanoDrawer: React.FC<PlanoDrawerProps> = ({
       setSelectedTagIds([...selectedTagIds, tagId]);
     }
   };
+
+  if (!isOpen) return null;
 
   return (
     <>
