@@ -10,12 +10,15 @@ import {
   Users,
   Settings,
 } from 'lucide-react';
+import { usePlanosCount } from '../../hooks/planos/usePlanosCount';
 
 export const Sidebar: React.FC = () => {
+  const { counts } = usePlanosCount();
+
   const navPrincipal = [
     { to: '/dashboard', label: 'Dashboard', icon: LayoutGrid },
     { to: '/inicio', label: 'Início', icon: Home },
-    { to: '/planos', label: 'Planos', icon: FileText, badge: '128' },
+    { to: '/planos', label: 'Planos', icon: FileText, badge: String(counts.all) },
     { to: '/midiateca', label: 'Midiateca', icon: FolderOpen },
     { to: '/faqs', label: 'Perguntas Frequentes', icon: HelpCircle },
     { to: '/textos', label: 'Textos Institucionais', icon: FileCode },

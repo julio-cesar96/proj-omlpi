@@ -1,14 +1,13 @@
 import React from 'react';
-import { Download, Plus, LogOut } from 'lucide-react';
+import { Download, LogOut } from 'lucide-react';
 import { useAuth } from '../../hooks/useAuth';
 import { Avatar } from '../ui/Avatar';
 
 interface TopbarProps {
   onImportClick?: () => void;
-  onCreateClick?: () => void;
 }
 
-export const Topbar: React.FC<TopbarProps> = ({ onImportClick, onCreateClick }) => {
+export const Topbar: React.FC<TopbarProps> = ({ onImportClick }) => {
   const { user, logout } = useAuth();
 
   const userName = user?.username || user?.email?.split('@')[0] || 'Usuário';
@@ -51,28 +50,6 @@ export const Topbar: React.FC<TopbarProps> = ({ onImportClick, onCreateClick }) 
         >
           <Download size={16} strokeWidth={2} />
           Importar
-        </button>
-
-        {/* Botão Criar */}
-        <button
-          onClick={onCreateClick}
-          style={{
-            display: 'flex',
-            alignItems: 'center',
-            gap: '7px',
-            height: '38px',
-            padding: '0 16px',
-            borderRadius: '10px',
-            background: 'var(--primary)',
-            color: '#FFFFFF',
-            fontSize: '13px',
-            fontWeight: 700,
-            boxShadow: 'var(--shadow-btn)',
-            transition: 'background 0.15s ease',
-          }}
-        >
-          <Plus size={16} strokeWidth={2.4} />
-          Criar
         </button>
 
         <div style={{ width: '1px', height: '26px', background: 'var(--border)', margin: '0 4px' }} />
