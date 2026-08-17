@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useRef, useEffect } from 'react';
 import { Search, Paperclip, Edit3, Copy, ChevronLeft, ChevronRight } from 'lucide-react';
 import { StatusBadge } from '../ui/StatusBadge';
 import type { Plano } from '../../lib/strapi';
@@ -15,6 +15,9 @@ interface PlanoTableProps {
   totalCount: number;
   onPageChange: (page: number) => void;
   onExport?: () => void;
+  selectedIds?: number[];
+  onSelectAll?: (checked: boolean) => void;
+  onSelectRow?: (id: number, checked: boolean) => void;
 }
 
 export const PlanoTable: React.FC<PlanoTableProps> = ({
@@ -29,7 +32,21 @@ export const PlanoTable: React.FC<PlanoTableProps> = ({
   totalCount,
   onPageChange,
   onExport,
+  selectedIds = [],
+  onSelectAll,
+  onSelectRow,
 }) => {
+  const headerCheckboxRef = useRef<HTMLInputElement>(null);
+
+  const allSelected = planos.length > 0 && planos.every((p) => selectedIds.includes(p.id));
+  const someSelected = planos.some((p) => selectedIds.includes(p.id));
+
+  useEffect(() => {
+    if (headerCheckboxRef.current) {
+      headerCheckboxRef.current.indeterminate = someSelected && !allSelected;
+    }
+  }, [someSelected, allSelected]);
+
   const formatDate = (dateStr?: string) => {
     if (!dateStr) return '—';
     try {
@@ -47,6 +64,12 @@ export const PlanoTable: React.FC<PlanoTableProps> = ({
   const startRecord = totalCount === 0 ? 0 : (page - 1) * limit + 1;
   const endRecord = Math.min(page * limit, totalCount);
   const totalPages = Math.ceil(totalCount / limit) || 1;
+
+  const handleHeaderCheckboxChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    if (onSelectAll) {
+      onSelectAll(e.target.checked);
+    }
+  };
 
   return (
     <div
@@ -134,7 +157,14 @@ export const PlanoTable: React.FC<PlanoTableProps> = ({
               }}
             >
               <th style={{ width: '40px', padding: '12px 16px' }}>
-                <input type="checkbox" disabled style={{ width: '16px', height: '16px' }} />
+                <input
+                  ref={headerCheckboxRef}
+                  type="checkbox"
+                  checked={allSelected}
+                  disabled={isLoading || planos.length === 0}
+                  onChange={handleHeaderCheckboxChange}
+                  style={{ width: '16px', height: '16px', cursor: 'pointer' }}
+                />
               </th>
               <th style={{ padding: '12px 16px' }}>Título</th>
               <th style={{ padding: '12px 16px', width: '180px' }}>Categoria</th>
@@ -157,128 +187,137 @@ export const PlanoTable: React.FC<PlanoTableProps> = ({
                 </td>
               </tr>
             ) : (
-              planos.map((plano) => (
-                <tr
-                  key={plano.id}
-                  style={{
-                    borderBottom: '1px solid var(--border)',
-                    transition: 'background 0.15s ease',
-                  }}
-                >
-                  <td style={{ padding: '14px 16px' }}>
-                    <input type="checkbox" disabled style={{ width: '16px', height: '16px' }} />
-                  </td>
-                  <td style={{ padding: '14px 16px' }}>
-                    <div style={{ fontSize: '14px', fontWeight: 700, color: 'var(--text)' }}>
-                      {plano.titulo}
-                    </div>
-                    <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginTop: '4px', flexWrap: 'wrap' }}>
-                      {plano.documento && (
-                        <span
+              planos.map((plano) => {
+                const isSelected = selectedIds.includes(plano.id);
+                return (
+                  <tr
+                    key={plano.id}
+                    style={{
+                      borderBottom: '1px solid var(--border)',
+                      background: isSelected ? '#FFF7F3' : 'transparent',
+                      transition: 'background 0.15s ease',
+                    }}
+                  >
+                    <td style={{ padding: '14px 16px' }}>
+                      <input
+                        type="checkbox"
+                        checked={isSelected}
+                        onChange={(e) => onSelectRow?.(plano.id, e.target.checked)}
+                        style={{ width: '16px', height: '16px', cursor: 'pointer' }}
+                      />
+                    </td>
+                    <td style={{ padding: '14px 16px' }}>
+                      <div style={{ fontSize: '14px', fontWeight: 700, color: 'var(--text)' }}>
+                        {plano.titulo}
+                      </div>
+                      <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginTop: '4px', flexWrap: 'wrap' }}>
+                        {plano.documento && (
+                          <span
+                            style={{
+                              display: 'inline-flex',
+                              alignItems: 'center',
+                              gap: '4px',
+                              fontSize: '11px',
+                              fontWeight: 700,
+                              color: 'var(--primary)',
+                              background: '#FDE7DE',
+                              padding: '2px 8px',
+                              borderRadius: '6px',
+                            }}
+                          >
+                            <Paperclip size={12} />
+                            1 PDF
+                          </span>
+                        )}
+                        {plano.tags && plano.tags.length > 0 && (
+                          <div style={{ display: 'flex', gap: '4px' }}>
+                            {plano.tags.slice(0, 2).map((t) => (
+                              <span
+                                key={t.id}
+                                style={{
+                                  fontSize: '11px',
+                                  fontWeight: 600,
+                                  color: 'var(--text-soft)',
+                                  background: 'var(--muted)',
+                                  padding: '2px 8px',
+                                  borderRadius: '6px',
+                                }}
+                              >
+                                {t.name}
+                              </span>
+                            ))}
+                            {plano.tags.length > 2 && (
+                              <span
+                                style={{
+                                  fontSize: '11px',
+                                  fontWeight: 600,
+                                  color: 'var(--text-soft)',
+                                  background: 'var(--muted)',
+                                  padding: '2px 6px',
+                                  borderRadius: '6px',
+                                }}
+                              >
+                                +{plano.tags.length - 2}
+                              </span>
+                            )}
+                          </div>
+                        )}
+                      </div>
+                    </td>
+                    <td style={{ padding: '14px 16px', fontSize: '13px', fontWeight: 600, color: 'var(--text-soft)' }}>
+                      {plano.categoria?.nome || '—'}
+                    </td>
+                    <td style={{ padding: '14px 16px' }}>
+                      <StatusBadge status={plano.estado_editorial} />
+                    </td>
+                    <td style={{ padding: '14px 16px', fontSize: '13px', fontWeight: 600, color: 'var(--text-soft)' }}>
+                      {formatDate(plano.updated_at)}
+                    </td>
+                    <td style={{ padding: '14px 16px', textAlign: 'right' }}>
+                      <div style={{ display: 'flex', gap: '6px', justifyContent: 'flex-end' }}>
+                        <button
+                          type="button"
+                          onClick={() => onEdit(plano)}
                           style={{
-                            display: 'inline-flex',
+                            width: '32px',
+                            height: '32px',
+                            borderRadius: '8px',
+                            border: 'none',
+                            background: 'transparent',
+                            color: 'var(--text-soft)',
+                            display: 'flex',
                             alignItems: 'center',
-                            gap: '4px',
-                            fontSize: '11px',
-                            fontWeight: 700,
-                            color: 'var(--primary)',
-                            background: '#FDE7DE',
-                            padding: '2px 8px',
-                            borderRadius: '6px',
+                            justifyContent: 'center',
+                            cursor: 'pointer',
                           }}
+                          title="Editar plano"
                         >
-                          <Paperclip size={12} />
-                          1 PDF
-                        </span>
-                      )}
-                      {plano.tags && plano.tags.length > 0 && (
-                        <div style={{ display: 'flex', gap: '4px' }}>
-                          {plano.tags.slice(0, 2).map((t) => (
-                            <span
-                              key={t.id}
-                              style={{
-                                fontSize: '11px',
-                                fontWeight: 600,
-                                color: 'var(--text-soft)',
-                                background: 'var(--muted)',
-                                padding: '2px 8px',
-                                borderRadius: '6px',
-                              }}
-                            >
-                              {t.name}
-                            </span>
-                          ))}
-                          {plano.tags.length > 2 && (
-                            <span
-                              style={{
-                                fontSize: '11px',
-                                fontWeight: 600,
-                                color: 'var(--text-soft)',
-                                background: 'var(--muted)',
-                                padding: '2px 6px',
-                                borderRadius: '6px',
-                              }}
-                            >
-                              +{plano.tags.length - 2}
-                            </span>
-                          )}
-                        </div>
-                      )}
-                    </div>
-                  </td>
-                  <td style={{ padding: '14px 16px', fontSize: '13px', fontWeight: 600, color: 'var(--text-soft)' }}>
-                    {plano.categoria?.nome || '—'}
-                  </td>
-                  <td style={{ padding: '14px 16px' }}>
-                    <StatusBadge status={plano.estado_editorial} />
-                  </td>
-                  <td style={{ padding: '14px 16px', fontSize: '13px', fontWeight: 600, color: 'var(--text-soft)' }}>
-                    {formatDate(plano.updated_at)}
-                  </td>
-                  <td style={{ padding: '14px 16px', textAlign: 'right' }}>
-                    <div style={{ display: 'flex', gap: '6px', justifyContent: 'flex-end' }}>
-                      <button
-                        type="button"
-                        onClick={() => onEdit(plano)}
-                        style={{
-                          width: '32px',
-                          height: '32px',
-                          borderRadius: '8px',
-                          border: 'none',
-                          background: 'transparent',
-                          color: 'var(--text-soft)',
-                          display: 'flex',
-                          alignItems: 'center',
-                          justifyContent: 'center',
-                          cursor: 'pointer',
-                        }}
-                        title="Editar plano"
-                      >
-                        <Edit3 size={16} />
-                      </button>
-                      <button
-                        type="button"
-                        onClick={() => onDuplicate(plano)}
-                        style={{
-                          width: '32px',
-                          height: '32px',
-                          borderRadius: '8px',
-                          border: 'none',
-                          background: 'transparent',
-                          color: 'var(--text-soft)',
-                          display: 'flex',
-                          alignItems: 'center',
-                          justifyContent: 'center',
-                          cursor: 'pointer',
-                        }}
-                        title="Duplicar plano"
-                      >
-                        <Copy size={16} />
-                      </button>
-                    </div>
-                  </td>
-                </tr>
-              ))
+                          <Edit3 size={16} />
+                        </button>
+                        <button
+                          type="button"
+                          onClick={() => onDuplicate(plano)}
+                          style={{
+                            width: '32px',
+                            height: '32px',
+                            borderRadius: '8px',
+                            border: 'none',
+                            background: 'transparent',
+                            color: 'var(--text-soft)',
+                            display: 'flex',
+                            alignItems: 'center',
+                            justifyContent: 'center',
+                            cursor: 'pointer',
+                          }}
+                          title="Duplicar plano"
+                        >
+                          <Copy size={16} />
+                        </button>
+                      </div>
+                    </td>
+                  </tr>
+                );
+              })
             )}
           </tbody>
         </table>

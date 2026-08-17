@@ -3,10 +3,13 @@ import { Plus } from 'lucide-react';
 import { PlanoTabBar } from '../components/planos/PlanoTabBar';
 import { PlanoTable } from '../components/planos/PlanoTable';
 import { PlanoDrawer } from '../components/planos/PlanoDrawer';
+import { PlanoBatchToolbar } from '../components/planos/PlanoBatchToolbar';
+import { ConfirmDialog } from '../components/ui/ConfirmDialog';
 import { Toast } from '../components/ui/Toast';
 import { usePlanos } from '../hooks/planos/usePlanos';
 import { usePlanosCount } from '../hooks/planos/usePlanosCount';
 import { usePlanoMutations } from '../hooks/planos/usePlanoMutations';
+import { usePlanoBatchActions } from '../hooks/planos/usePlanoBatchActions';
 import { exportToExcel } from '../lib/excelParser';
 import { planosImportConfig } from '../hooks/planos/usePlanosImportConfig';
 import type { EditorialState, Plano, PlanoPayload } from '../lib/strapi';
@@ -22,6 +25,15 @@ export const Planos: React.FC = () => {
   const [selectedPlano, setSelectedPlano] = useState<Plano | null>(null);
   const [toastMessage, setToastMessage] = useState<string | null>(null);
 
+  // Selection & Batch Actions
+  const [selectedIds, setSelectedIds] = useState<number[]>([]);
+  const [pendingBatchAction, setPendingBatchAction] = useState<{
+    targetState: EditorialState;
+    ids: number[];
+  } | null>(null);
+
+  const { executeBatchStatusChange, isProcessing: isBatchProcessing } = usePlanoBatchActions();
+
   // Debounce search input (400ms)
   useEffect(() => {
     const handler = setTimeout(() => {
@@ -31,6 +43,11 @@ export const Planos: React.FC = () => {
 
     return () => clearTimeout(handler);
   }, [searchInput]);
+
+  // Clean selection whenever tab, page, or search query changes
+  useEffect(() => {
+    setSelectedIds([]);
+  }, [currentTab, page, debouncedSearch]);
 
   const showToast = (msg: string) => {
     setToastMessage(msg);
@@ -124,6 +141,70 @@ export const Planos: React.FC = () => {
     showToast(`${exportRows.length} plano(s) exportado(s) com sucesso.`);
   };
 
+  // Selection handlers
+  const handleSelectAll = (checked: boolean) => {
+    const currentPageIds = planos.map((p) => p.id);
+    if (checked) {
+      const newSelected = Array.from(new Set([...selectedIds, ...currentPageIds]));
+      setSelectedIds(newSelected);
+    } else {
+      setSelectedIds(selectedIds.filter((id) => !currentPageIds.includes(id)));
+    }
+  };
+
+  const handleSelectRow = (id: number, checked: boolean) => {
+    if (checked) {
+      setSelectedIds((prev) => [...prev, id]);
+    } else {
+      setSelectedIds((prev) => prev.filter((item) => item !== id));
+    }
+  };
+
+  // Batch action trigger
+  const handleBatchActionClick = (targetState: EditorialState) => {
+    if (selectedIds.length === 0) return;
+    setPendingBatchAction({
+      targetState,
+      ids: [...selectedIds],
+    });
+  };
+
+  const handleConfirmBatchAction = async () => {
+    if (!pendingBatchAction) return;
+
+    const { ids, targetState } = pendingBatchAction;
+    setPendingBatchAction(null);
+
+    const result = await executeBatchStatusChange(ids, targetState);
+
+    const stateLabels: Record<EditorialState, string> = {
+      publicado: 'publicado(s)',
+      revisao: 'enviado(s) para revisão',
+      arquivado: 'arquivado(s)',
+      rascunho: 'movido(s) para rascunho',
+    };
+
+    const actionLabel = stateLabels[targetState] || 'atualizado(s)';
+
+    if (result.failed === 0) {
+      showToast(`${result.succeeded} plano(s) ${actionLabel} com sucesso.`);
+    } else {
+      showToast(`${result.succeeded} plano(s) ${actionLabel}, ${result.failed} falhou(aram).`);
+    }
+
+    setSelectedIds([]);
+  };
+
+  const getStateLabel = (state?: EditorialState) => {
+    switch (state) {
+      case 'publicado': return 'Publicado';
+      case 'revisao': return 'Em revisão';
+      case 'arquivado': return 'Arquivado';
+      case 'rascunho': return 'Rascunho';
+      default: return '';
+    }
+  };
+
   return (
     <div style={{ animation: 'fadeIn .3s ease' }}>
       {/* Header */}
@@ -171,6 +252,14 @@ export const Planos: React.FC = () => {
       {/* Tabs */}
       <PlanoTabBar currentTab={currentTab} counts={counts} onTabChange={handleTabChange} />
 
+      {/* Batch Toolbar (rendered when items selected) */}
+      <PlanoBatchToolbar
+        selectedCount={selectedIds.length}
+        isProcessing={isBatchProcessing}
+        onActionClick={handleBatchActionClick}
+        onClearSelection={() => setSelectedIds([])}
+      />
+
       {/* Table */}
       <PlanoTable
         planos={planos}
@@ -184,6 +273,9 @@ export const Planos: React.FC = () => {
         totalCount={currentTotal}
         onPageChange={setPage}
         onExport={handleExport}
+        selectedIds={selectedIds}
+        onSelectAll={handleSelectAll}
+        onSelectRow={handleSelectRow}
       />
 
       {/* Drawer */}
@@ -196,6 +288,19 @@ export const Planos: React.FC = () => {
         onPublish={handlePublish}
         onArchive={handleArchive}
         onDuplicate={handleDuplicate}
+      />
+
+      {/* Confirm Dialog for Batch Actions */}
+      <ConfirmDialog
+        open={Boolean(pendingBatchAction)}
+        onOpenChange={(open) => {
+          if (!open) setPendingBatchAction(null);
+        }}
+        title="Confirmar ação em lote"
+        description={`Tem certeza que deseja alterar o status de ${pendingBatchAction?.ids.length || 0} plano(s) selecionado(s) para "${getStateLabel(pendingBatchAction?.targetState)}"?`}
+        confirmLabel="Confirmar"
+        cancelLabel="Cancelar"
+        onConfirm={handleConfirmBatchAction}
       />
 
       {/* Toast */}
