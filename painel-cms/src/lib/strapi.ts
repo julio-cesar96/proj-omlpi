@@ -255,3 +255,38 @@ export interface CmsConfig {
 }
 
 export type CmsConfigPayload = Partial<CmsConfig>;
+
+// ── Localidades ──────────────────────────────────────────────────────────────
+
+export interface Locale {
+  id: number;
+  name: string;
+  state?: string | null;
+  region?: string | null;
+  type: 'country' | 'region' | 'state' | 'city';
+  is_capital?: boolean | null;
+  cod_ibge?: number | string | null;
+  is_law?: boolean | null;
+  hide_plan?: boolean | null;
+  plan?: StrapiFile | null;
+  plano_origem?: Plano | number | null;
+  created_at?: string;
+  updated_at?: string;
+}
+
+export interface LocaleUpdatePayload {
+  is_law?: boolean | null;
+  hide_plan?: boolean | null;
+  plan?: number | null;
+  plano_origem?: number | null;
+}
+
+export interface LocalesListParams {
+  _start?: number;
+  _limit?: number;
+  _sort?: string;
+  _q?: string;
+  state?: string;
+  type?: 'country' | 'region' | 'state' | 'city';
+}
+

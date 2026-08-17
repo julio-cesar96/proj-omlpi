@@ -92,6 +92,9 @@
     },
     "hide_plan": {
       "type": "boolean"
+    },
+    "plano_origem": {
+      "model": "plano"
     }
   }
 }

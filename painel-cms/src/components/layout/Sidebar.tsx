@@ -4,6 +4,7 @@ import {
   LayoutGrid,
   Home,
   FileText,
+  MapPin,
   FolderOpen,
   HelpCircle,
   FileCode,
@@ -19,10 +20,12 @@ export const Sidebar: React.FC = () => {
     { to: '/dashboard', label: 'Dashboard', icon: LayoutGrid },
     { to: '/inicio', label: 'Início', icon: Home },
     { to: '/planos', label: 'Planos', icon: FileText, badge: String(counts.all) },
+    { to: '/localidades', label: 'Localidades', icon: MapPin },
     { to: '/midiateca', label: 'Midiateca', icon: FolderOpen },
     { to: '/faqs', label: 'Perguntas Frequentes', icon: HelpCircle },
     { to: '/textos', label: 'Textos Institucionais', icon: FileCode },
   ];
+
 
   const navAdmin = [
     { to: '/usuarios', label: 'Usuários', icon: Users },

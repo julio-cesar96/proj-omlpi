@@ -10,6 +10,7 @@ import { Login } from '../pages/Login';
 // Páginas carregadas de forma lazy (geram chunks separados no build)
 const Dashboard     = React.lazy(() => import('../pages/Dashboard').then(m => ({ default: m.Dashboard })));
 const Planos        = React.lazy(() => import('../pages/Planos').then(m => ({ default: m.Planos })));
+const Localidades   = React.lazy(() => import('../pages/Localidades').then(m => ({ default: m.Localidades })));
 const Midiateca     = React.lazy(() => import('../pages/Midiateca').then(m => ({ default: m.Midiateca })));
 const Faqs          = React.lazy(() => import('../pages/Faqs').then(m => ({ default: m.Faqs })));
 const TextosList    = React.lazy(() => import('../pages/TextosList').then(m => ({ default: m.TextosList })));
@@ -17,6 +18,7 @@ const TextosEditor  = React.lazy(() => import('../pages/TextosEditor').then(m =>
 const Usuarios      = React.lazy(() => import('../pages/Usuarios').then(m => ({ default: m.Usuarios })));
 const Configuracoes = React.lazy(() => import('../pages/Configuracoes').then(m => ({ default: m.Configuracoes })));
 const Inicio        = React.lazy(() => import('../pages/Inicio').then(m => ({ default: m.Inicio })));
+
 
 /** Fallback minimalista exibido enquanto o chunk da página carrega */
 const PageLoader: React.FC = () => (
@@ -82,7 +84,9 @@ export const AppRouter: React.FC = () => {
             <Route path="/dashboard"      element={<Dashboard />} />
             <Route path="/inicio"         element={<Inicio />} />
             <Route path="/planos"         element={<Planos />} />
+            <Route path="/localidades"    element={<Localidades />} />
             <Route path="/midiateca"      element={<Midiateca />} />
+
             <Route path="/faqs"           element={<Faqs />} />
             <Route path="/textos"         element={<TextosList />} />
             <Route path="/textos/novo"    element={<TextosEditor />} />
