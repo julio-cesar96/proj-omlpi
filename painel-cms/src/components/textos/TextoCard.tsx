@@ -1,5 +1,6 @@
 import React from 'react';
 import type { PaginaInstitucional } from '../../lib/strapi';
+import { EditorialBadge } from '../ui/EditorialBadge';
 
 interface TextoCardProps {
   pagina: PaginaInstitucional;
@@ -7,7 +8,6 @@ interface TextoCardProps {
 }
 
 export const TextoCard: React.FC<TextoCardProps> = ({ pagina, onClick }) => {
-  const isPublished = pagina.published_at !== null && pagina.published_at !== undefined;
 
   const formattedDate = new Date(pagina.updated_at).toLocaleDateString('pt-BR', {
     day: '2-digit',
@@ -121,20 +121,7 @@ export const TextoCard: React.FC<TextoCardProps> = ({ pagina, onClick }) => {
         </div>
       </div>
 
-      <span
-        style={{
-          fontSize: '11.5px',
-          fontWeight: 700,
-          color: isPublished ? '#17A649' : '#7a7663',
-          background: isPublished ? 'var(--accent)' : 'var(--muted)',
-          padding: '4px 11px',
-          borderRadius: '20px',
-          whiteSpace: 'nowrap',
-          flexShrink: 0,
-        }}
-      >
-        {isPublished ? 'Publicado' : 'Rascunho'}
-      </span>
+      <EditorialBadge status={pagina.estado_editorial} publishedAt={pagina.published_at} size="sm" />
 
       <svg
         width="18"

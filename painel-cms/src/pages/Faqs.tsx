@@ -143,6 +143,19 @@ export const Faqs: React.FC = () => {
       .catch((err: Error) => showToast(err.message));
   };
 
+  const handleSubmitReview = (payload: FaqPayload) => {
+    const mutation = modalState.faq
+      ? updateFaq.mutateAsync({ id: modalState.faq.id, payload })
+      : createFaq.mutateAsync({ payload, faqsAtuais: localFaqs });
+
+    mutation
+      .then(() => {
+        closeModal();
+        showToast('FAQ enviada para revisão.');
+      })
+      .catch((err: Error) => showToast(err.message));
+  };
+
   const isSaving = createFaq.isPending || updateFaq.isPending;
 
   // ─── Handler de exclusão ──────────────────────────────────────────────────
@@ -483,6 +496,7 @@ export const Faqs: React.FC = () => {
         faq={modalState.faq}
         onClose={closeModal}
         onSaveDraft={handleSaveDraft}
+        onSubmitReview={handleSubmitReview}
         onPublish={handlePublish}
         isSaving={isSaving}
       />

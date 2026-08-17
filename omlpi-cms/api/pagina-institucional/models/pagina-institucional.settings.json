@@ -35,6 +35,17 @@
     },
     "seo_meta_descricao": {
       "type": "text"
+    },
+    "estado_editorial": {
+      "type": "enumeration",
+      "enum": [
+        "rascunho",
+        "revisao",
+        "publicado",
+        "arquivado"
+      ],
+      "default": "rascunho",
+      "required": true
     }
   }
 }

@@ -5,8 +5,10 @@ import { useTexto } from '../hooks/textos/useTexto';
 import { useTextoMutations } from '../hooks/textos/useTextoMutations';
 import { TextoEditor, slugify } from '../components/textos/TextoEditor';
 import { Toast } from '../components/ui/Toast';
-import type { PaginaInstitucionalPayload, StrapiFile } from '../lib/strapi';
+import type { PaginaInstitucionalPayload, StrapiFile, EditorialState } from '../lib/strapi';
 import { useAutosave } from '../hooks/configuracoes/useAutosave';
+import { useConfiguracoes } from '../hooks/configuracoes/useConfiguracoes';
+import { EditorialBadge } from '../components/ui/EditorialBadge';
 
 export const TextosEditor: React.FC = () => {
   const { id: routeId } = useParams<{ id?: string }>();
@@ -18,6 +20,13 @@ export const TextosEditor: React.FC = () => {
   // Queries e Mutations
   const { data: pagina, isLoading } = useTexto(id);
   const { createTexto, updateTexto } = useTextoMutations();
+  const { config } = useConfiguracoes();
+
+  const currentStatus: EditorialState =
+    pagina?.estado_editorial || (pagina?.published_at ? 'publicado' : 'rascunho');
+
+  const requireReview = config?.require_review ?? false;
+  const isPublishBlocked = requireReview && currentStatus !== 'revisao';
 
   // Estados locais do formulário
   const [titulo, setTitulo] = useState('');
@@ -46,7 +55,7 @@ export const TextosEditor: React.FC = () => {
     data: autosaveDraft,
     isEditing: isEditing,
     onSave: async (_draft) => {
-      if (!id) return; // guard explícito (isEditing já garante isso)
+      if (!id) return;
       await updateTexto.mutateAsync({
         id,
         payload: {
@@ -56,7 +65,7 @@ export const TextosEditor: React.FC = () => {
           capa: _draft.capaId,
           seo_meta_titulo: _draft.seoTitulo.trim() || null,
           seo_meta_descricao: _draft.seoDescricao.trim() || null,
-          // NUNCA altera published_at — preserva o estado de publicação atual
+          estado_editorial: pagina?.estado_editorial || currentStatus,
           published_at: pagina?.published_at ?? null,
         },
       });
@@ -73,7 +82,7 @@ export const TextosEditor: React.FC = () => {
       setCapa(pagina.capa || null);
       setSeoTitulo(pagina.seo_meta_titulo || '');
       setSeoDescricao(pagina.seo_meta_descricao || '');
-      setSlugEditadoManualmente(false); // Reinicia como false a cada recarregamento de página
+      setSlugEditadoManualmente(false);
     } else if (!isEditing) {
       setTitulo('');
       setSlug('');
@@ -81,30 +90,30 @@ export const TextosEditor: React.FC = () => {
       setCapa(null);
       setSeoTitulo('');
       setSeoDescricao('');
-      setSlugEditadoManualmente(false); // Começa como false para nova página
+      setSlugEditadoManualmente(false);
     }
   }, [isEditing, pagina]);
 
-  const handleSave = async (publish: boolean) => {
-    cancelAutosaveTimer(); // cancela timer pendente antes da ação manual
+  const handleSave = async (targetState: 'rascunho' | 'revisao' | 'publicado') => {
+    cancelAutosaveTimer();
     if (!titulo.trim()) {
       showToast('O título é obrigatório.');
       return;
     }
 
+    if (targetState === 'publicado' && isPublishBlocked) {
+      showToast('A trava de revisão está ativa em Configurações. O conteúdo precisa estar no estado "Em revisão" antes de ser publicado.');
+      return;
+    }
+
     const finalSlug = slug.trim() || slugify(titulo);
-    
-    // Mitigação de URL: se a página já estava publicada e o slug mudou, alertar.
     const wasPublished = isEditing && pagina?.published_at !== null && pagina?.published_at !== undefined;
     const slugChanged = wasPublished && finalSlug !== pagina.slug;
 
-    // Determinar published_at
     let publishedAt: string | null = null;
-    if (publish) {
-      // Se já estava publicado, manter o published_at original (ou usar novo se null)
+    if (targetState === 'publicado') {
       publishedAt = isEditing && pagina?.published_at ? pagina.published_at : new Date().toISOString();
     } else {
-      // Salvar rascunho
       publishedAt = null;
     }
 
@@ -115,22 +124,31 @@ export const TextosEditor: React.FC = () => {
       capa: capa ? capa.id : null,
       seo_meta_titulo: seoTitulo.trim() || null,
       seo_meta_descricao: seoDescricao.trim() || null,
+      estado_editorial: targetState,
       published_at: publishedAt,
     };
 
     try {
       if (isEditing) {
         await updateTexto.mutateAsync({ id, payload });
-        
         if (slugChanged) {
           showToast(`A URL desta página mudou de /${pagina.slug} para /${finalSlug} — links externos antigos deixarão de funcionar.`);
         } else {
-          showToast(publish ? 'Página publicada com sucesso.' : 'Rascunho atualizado.');
+          const labelMap = {
+            rascunho: 'Rascunho atualizado.',
+            revisao: 'Página enviada para revisão.',
+            publicado: 'Página publicada com sucesso.',
+          };
+          showToast(labelMap[targetState]);
         }
       } else {
         const created = await createTexto.mutateAsync(payload);
-        showToast(publish ? 'Página criada e publicada.' : 'Rascunho criado com sucesso.');
-        // Navegar para edição do recém-criado
+        const labelMap = {
+          rascunho: 'Rascunho criado com sucesso.',
+          revisao: 'Página criada e enviada para revisão.',
+          publicado: 'Página criada e publicada.',
+        };
+        showToast(labelMap[targetState]);
         navigate(`/textos/${created.id}`, { replace: true });
       }
     } catch (err: any) {
@@ -188,16 +206,19 @@ export const TextosEditor: React.FC = () => {
               Textos Institucionais
             </Link>
           </div>
-          <h1 style={{ fontSize: '22px', fontWeight: 800, letterSpacing: '-.4px', margin: 0 }}>
-            {isEditing ? 'Editar página' : 'Nova página'}
-          </h1>
+          <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
+            <h1 style={{ fontSize: '22px', fontWeight: 800, letterSpacing: '-.4px', margin: 0 }}>
+              {isEditing ? 'Editar página' : 'Nova página'}
+            </h1>
+            {isEditing && <EditorialBadge status={pagina?.estado_editorial} publishedAt={pagina?.published_at} />}
+          </div>
         </div>
 
         {/* Header Action Buttons */}
         <button
           type="button"
           disabled={isSaving}
-          onClick={() => handleSave(false)}
+          onClick={() => handleSave('rascunho')}
           style={{
             height: '40px',
             padding: '0 16px',
@@ -218,22 +239,44 @@ export const TextosEditor: React.FC = () => {
         <button
           type="button"
           disabled={isSaving}
-          onClick={() => handleSave(true)}
+          onClick={() => handleSave('revisao')}
+          style={{
+            height: '40px',
+            padding: '0 16px',
+            borderRadius: '11px',
+            border: 'none',
+            background: 'var(--muted)',
+            color: 'var(--text)',
+            fontSize: '13px',
+            fontWeight: 700,
+            cursor: isSaving ? 'not-allowed' : 'pointer',
+            transition: 'background .15s ease',
+          }}
+        >
+          Enviar p/ revisão
+        </button>
+
+        <button
+          type="button"
+          disabled={isSaving || isPublishBlocked}
+          onClick={() => handleSave('publicado')}
+          title={isPublishBlocked ? 'A trava de revisão está ativa. Envie o conteúdo para revisão antes de publicar.' : undefined}
           style={{
             height: '40px',
             padding: '0 18px',
             borderRadius: '11px',
-            background: 'var(--primary)',
-            color: '#fff',
+            background: isPublishBlocked ? 'var(--muted)' : 'var(--primary)',
+            color: isPublishBlocked ? 'var(--text-soft)' : '#fff',
             fontSize: '13px',
             fontWeight: 800,
-            boxShadow: '0 4px 12px rgba(242,93,39,.28)',
+            boxShadow: isPublishBlocked ? 'none' : '0 4px 12px rgba(242,93,39,.28)',
             border: 'none',
-            cursor: isSaving ? 'not-allowed' : 'pointer',
+            cursor: isSaving || isPublishBlocked ? 'not-allowed' : 'pointer',
+            opacity: isPublishBlocked ? 0.6 : 1,
             transition: 'background .15s ease',
           }}
-          onMouseEnter={(e) => { if (!isSaving) e.currentTarget.style.background = '#e0521f'; }}
-          onMouseLeave={(e) => { if (!isSaving) e.currentTarget.style.background = 'var(--primary)'; }}
+          onMouseEnter={(e) => { if (!isSaving && !isPublishBlocked) e.currentTarget.style.background = '#e0521f'; }}
+          onMouseLeave={(e) => { if (!isPublishBlocked) e.currentTarget.style.background = 'var(--primary)'; }}
         >
           {pagina?.published_at ? 'Atualizar' : 'Publicar'}
         </button>

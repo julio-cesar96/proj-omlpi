@@ -1,6 +1,7 @@
 import React from 'react';
 import type { DraggableProvided, DraggableStateSnapshot } from '@hello-pangea/dnd';
 import type { Faq } from '../../lib/strapi';
+import { EditorialBadge } from '../ui/EditorialBadge';
 
 interface FaqCardProps {
   faq: Faq;
@@ -19,7 +20,6 @@ export const FaqCard: React.FC<FaqCardProps> = ({
   onEdit,
   onDelete,
 }) => {
-  const isPublished = faq.published_at !== null && faq.published_at !== undefined;
 
   return (
     <div
@@ -123,21 +123,8 @@ export const FaqCard: React.FC<FaqCardProps> = ({
         )}
       </div>
 
-      {/* Badge de publicação */}
-      <span
-        style={{
-          fontSize: '11.5px',
-          fontWeight: 700,
-          color: isPublished ? '#17A649' : 'var(--text-soft)',
-          background: isPublished ? 'var(--accent)' : 'var(--muted)',
-          padding: '4px 11px',
-          borderRadius: '20px',
-          whiteSpace: 'nowrap',
-          flexShrink: 0,
-        }}
-      >
-        {isPublished ? 'Publicada' : 'Rascunho'}
-      </span>
+      {/* Badge de estado editorial */}
+      <EditorialBadge status={faq.estado_editorial} publishedAt={faq.published_at} size="sm" />
 
       {/* Botão editar */}
       <button

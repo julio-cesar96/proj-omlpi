@@ -1,13 +1,16 @@
 import React, { useEffect, useState } from 'react';
-import type { Faq, FaqPayload } from '../../lib/strapi';
+import type { Faq, FaqPayload, EditorialState } from '../../lib/strapi';
 import { useCategorias } from '../../hooks/planos/useCategorias';
 import { useAutosave } from '../../hooks/configuracoes/useAutosave';
+import { useConfiguracoes } from '../../hooks/configuracoes/useConfiguracoes';
+import { EditorialBadge } from '../ui/EditorialBadge';
 
 interface FaqModalProps {
   open: boolean;
   faq: Faq | null; // null = modo criação; Faq = modo edição
   onClose: () => void;
   onSaveDraft: (payload: FaqPayload) => void;
+  onSubmitReview: (payload: FaqPayload) => void;
   onPublish: (payload: FaqPayload) => void;
   isSaving: boolean;
 }
@@ -25,26 +28,30 @@ export const FaqModal: React.FC<FaqModalProps> = ({
   faq,
   onClose,
   onSaveDraft,
+  onSubmitReview,
   onPublish,
   isSaving,
 }) => {
   const [form, setForm] = useState<FormState>(EMPTY_FORM);
   const { data: categorias = [] } = useCategorias();
+  const { config } = useConfiguracoes();
+
+  const currentStatus: EditorialState =
+    faq?.estado_editorial || (faq?.published_at ? 'publicado' : 'rascunho');
+
+  const requireReview = config?.require_review ?? false;
+  const isPublishBlocked = requireReview && currentStatus !== 'revisao';
 
   // ─── Autosave ──────────────────────────────────────────────────────────────
-  // Usa `form` diretamente (sem useMemo extra — FormState é pequeno e string-only).
-  // Reutiliza buildPayload() para construir o payload, preservando published_at.
   const { cancelTimer: cancelAutosaveTimer } = useAutosave({
     data: form,
     isEditing: faq !== null && faq.id !== undefined,
     onSave: async (_form) => {
-      // buildPayload ainda não está acessível aqui (definido abaixo do hook),
-      // por isso replicamos a lógica diretamente:
       const payload: FaqPayload = {
         pergunta: _form.pergunta.trim(),
         resposta: _form.resposta.trim(),
         categoria: _form.categoriaId ? Number(_form.categoriaId) : null,
-        // Preserva o published_at ATUAL — nunca altera o estado de publicação
+        estado_editorial: faq!.estado_editorial || currentStatus,
         published_at: faq!.published_at ?? null,
       };
       onSaveDraft(payload);
@@ -52,7 +59,6 @@ export const FaqModal: React.FC<FaqModalProps> = ({
   });
   // ──────────────────────────────────────────────────────────────
 
-  // Popular form ao abrir em modo edição, limpar ao abrir em modo criação
   useEffect(() => {
     if (open) {
       if (faq) {
@@ -69,32 +75,39 @@ export const FaqModal: React.FC<FaqModalProps> = ({
 
   if (!open) return null;
 
-  const buildPayload = (publishedAt: string | null): FaqPayload => ({
+  const buildPayload = (
+    publishedAt: string | null,
+    estadoEditorial: EditorialState
+  ): FaqPayload => ({
     pergunta: form.pergunta.trim(),
     resposta: form.resposta.trim(),
     categoria: form.categoriaId ? Number(form.categoriaId) : null,
-    // published_at nunca omitido — evita o bug de auto-publicação do Strapi v3
+    estado_editorial: estadoEditorial,
     published_at: publishedAt,
   });
 
   const isValid = form.pergunta.trim().length > 0 && form.resposta.trim().length > 0;
 
   const handleSaveDraft = () => {
-    cancelAutosaveTimer(); // cancela timer pendente antes da ação manual
+    cancelAutosaveTimer();
     if (!isValid) return;
-    onSaveDraft(buildPayload(null));
+    onSaveDraft(buildPayload(null, 'rascunho'));
+  };
+
+  const handleReview = () => {
+    cancelAutosaveTimer();
+    if (!isValid) return;
+    onSubmitReview(buildPayload(null, 'revisao'));
   };
 
   const handlePublish = () => {
-    cancelAutosaveTimer(); // cancela timer pendente antes da ação manual
-    if (!isValid) return;
-    // Em modo edição de FAQ já publicada, preserva o published_at original;
-    // caso contrário, define agora.
+    cancelAutosaveTimer();
+    if (!isValid || isPublishBlocked) return;
     const publishedAt =
       faq?.published_at && faq.published_at !== null
         ? faq.published_at
         : new Date().toISOString();
-    onPublish(buildPayload(publishedAt));
+    onPublish(buildPayload(publishedAt, 'publicado'));
   };
 
   const isEditingPublished = faq !== null && faq.published_at !== null;
@@ -142,18 +155,21 @@ export const FaqModal: React.FC<FaqModalProps> = ({
             padding: '20px 24px 0',
           }}
         >
-          <h2
-            style={{
-              fontFamily: 'var(--font-heading)',
-              fontSize: '18px',
-              fontWeight: 800,
-              color: 'var(--text-h)',
-              margin: 0,
-              letterSpacing: '-.3px',
-            }}
-          >
-            {faq ? 'Editar FAQ' : 'Nova FAQ'}
-          </h2>
+          <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
+            <h2
+              style={{
+                fontFamily: 'var(--font-heading)',
+                fontSize: '18px',
+                fontWeight: 800,
+                color: 'var(--text-h)',
+                margin: 0,
+                letterSpacing: '-.3px',
+              }}
+            >
+              {faq ? 'Editar FAQ' : 'Nova FAQ'}
+            </h2>
+            {faq && <EditorialBadge status={faq.estado_editorial} publishedAt={faq.published_at} />}
+          </div>
           <button
             type="button"
             onClick={onClose}
@@ -300,7 +316,7 @@ export const FaqModal: React.FC<FaqModalProps> = ({
           </div>
         </div>
 
-        {/* Footer — D1: dois botões */}
+        {/* Footer */}
         <div
           style={{
             display: 'flex',
@@ -361,29 +377,54 @@ export const FaqModal: React.FC<FaqModalProps> = ({
             Salvar rascunho
           </button>
 
+          {/* Enviar p/ revisão */}
+          <button
+            type="button"
+            onClick={handleReview}
+            disabled={!isValid || isSaving}
+            style={{
+              height: '42px',
+              padding: '0 18px',
+              borderRadius: '11px',
+              border: 'none',
+              background: 'var(--muted)',
+              color: 'var(--text)',
+              fontSize: '13.5px',
+              fontWeight: 700,
+              cursor: !isValid || isSaving ? 'not-allowed' : 'pointer',
+              opacity: !isValid || isSaving ? 0.5 : 1,
+              transition: 'background .15s ease',
+            }}
+          >
+            Enviar p/ revisão
+          </button>
+
           {/* Publicar */}
           <button
             type="button"
             onClick={handlePublish}
-            disabled={!isValid || isSaving}
+            disabled={!isValid || isSaving || isPublishBlocked}
+            title={isPublishBlocked ? 'A trava de revisão está ativa. Envie o conteúdo para revisão antes de publicar.' : undefined}
             style={{
               height: '42px',
               padding: '0 20px',
               borderRadius: '11px',
               border: 'none',
-              background: 'var(--primary)',
-              color: '#fff',
+              background: isPublishBlocked ? 'var(--muted)' : 'var(--primary)',
+              color: isPublishBlocked ? 'var(--text-soft)' : '#fff',
               fontSize: '13.5px',
               fontWeight: 800,
-              boxShadow: '0 4px 12px rgba(242,93,39,.28)',
-              cursor: !isValid || isSaving ? 'not-allowed' : 'pointer',
-              opacity: !isValid || isSaving ? 0.5 : 1,
+              boxShadow: isPublishBlocked ? 'none' : '0 4px 12px rgba(242,93,39,.28)',
+              cursor: !isValid || isSaving || isPublishBlocked ? 'not-allowed' : 'pointer',
+              opacity: !isValid || isSaving || isPublishBlocked ? 0.5 : 1,
               transition: 'background .15s ease',
             }}
             onMouseEnter={(e) => {
-              if (isValid && !isSaving) e.currentTarget.style.background = '#e0521f';
+              if (isValid && !isSaving && !isPublishBlocked) e.currentTarget.style.background = '#e0521f';
             }}
-            onMouseLeave={(e) => { e.currentTarget.style.background = 'var(--primary)'; }}
+            onMouseLeave={(e) => {
+              if (!isPublishBlocked) e.currentTarget.style.background = 'var(--primary)';
+            }}
           >
             {isSaving
               ? 'Salvando…'

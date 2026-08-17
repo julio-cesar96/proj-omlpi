@@ -7,6 +7,7 @@ import { useCategorias } from '../../hooks/planos/useCategorias';
 import { useTags } from '../../hooks/planos/useTags';
 import type { Plano, PlanoPayload, StrapiFile, EditorialState } from '../../lib/strapi';
 import { useAutosave } from '../../hooks/configuracoes/useAutosave';
+import { useConfiguracoes } from '../../hooks/configuracoes/useConfiguracoes';
 
 interface PlanoDrawerProps {
   isOpen: boolean;
@@ -137,8 +138,16 @@ export const PlanoDrawer: React.FC<PlanoDrawerProps> = ({
     }
   };
 
+  const { config } = useConfiguracoes();
+  const requireReview = config?.require_review ?? false;
+  const isPublishBlocked = requireReview && currentStatus !== 'revisao';
+
   const handlePublish = async () => {
     cancelAutosaveTimer();
+    if (isPublishBlocked) {
+      alert('A trava de revisão está ativa em Configurações. O conteúdo precisa estar no estado "Em revisão" antes de ser publicado.');
+      return;
+    }
     setIsSubmitting(true);
     try {
       await onPublish(getPayload('publicado'));
@@ -491,19 +500,21 @@ export const PlanoDrawer: React.FC<PlanoDrawerProps> = ({
             </button>
             <button
               type="button"
-              disabled={isSubmitting}
+              disabled={isSubmitting || isPublishBlocked}
               onClick={handlePublish}
+              title={isPublishBlocked ? 'A trava de revisão está ativa. Envie o conteúdo para revisão antes de publicar.' : undefined}
               style={{
                 height: '42px',
                 padding: '0 20px',
                 borderRadius: '11px',
-                background: 'var(--primary)',
-                color: '#FFFFFF',
+                background: isPublishBlocked ? 'var(--muted)' : 'var(--primary)',
+                color: isPublishBlocked ? 'var(--text-soft)' : '#FFFFFF',
                 fontSize: '13px',
                 fontWeight: 800,
-                boxShadow: '0 4px 12px rgba(242,93,39,.28)',
+                boxShadow: isPublishBlocked ? 'none' : '0 4px 12px rgba(242,93,39,.28)',
                 border: 'none',
-                cursor: isSubmitting ? 'not-allowed' : 'pointer',
+                cursor: isSubmitting || isPublishBlocked ? 'not-allowed' : 'pointer',
+                opacity: isPublishBlocked ? 0.6 : 1,
               }}
             >
               Publicar

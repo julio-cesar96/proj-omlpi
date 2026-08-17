@@ -98,6 +98,7 @@ export interface Faq {
   resposta: string;
   categoria?: Categoria;
   ordem?: number;
+  estado_editorial?: EditorialState;
   published_at?: string | null;
   created_at: string;
   updated_at: string;
@@ -108,6 +109,7 @@ export interface FaqPayload {
   resposta: string;
   categoria?: number | null;
   ordem?: number | null;
+  estado_editorial?: EditorialState;
   // CRÍTICO: nunca omitir — null = rascunho, ISOString = publicada.
   // Omitir aciona o bug de auto-publicação do Strapi v3 (documentado em fase-2-planos.md):
   // o Strapi preenche published_at com o timestamp atual se o campo for undefined/ausente.
@@ -119,6 +121,7 @@ export interface FaqsListParams {
   _limit?: number;
   _sort?: string;
   _q?: string;
+  estado_editorial?: EditorialState;
 }
 
 export interface PaginaInstitucional {
@@ -129,6 +132,7 @@ export interface PaginaInstitucional {
   capa?: StrapiFile | null;
   seo_meta_titulo?: string | null;
   seo_meta_descricao?: string | null;
+  estado_editorial?: EditorialState;
   published_at?: string | null;
   created_at: string;
   updated_at: string;
@@ -141,6 +145,7 @@ export interface PaginaInstitucionalPayload {
   capa?: number | null; // ID do arquivo de upload no Strapi
   seo_meta_titulo?: string | null;
   seo_meta_descricao?: string | null;
+  estado_editorial?: EditorialState;
   published_at: string | null; // CRÍTICO: nunca omitir (bug auto-publicação Strapi v3)
 }
 
@@ -149,6 +154,7 @@ export interface TextosListParams {
   _limit?: number;
   _sort?: string;
   _q?: string;
+  estado_editorial?: EditorialState;
 }
 
 // ── Usuários ─────────────────────────────────────────────────────────────────
