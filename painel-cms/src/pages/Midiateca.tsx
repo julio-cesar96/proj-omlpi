@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { ChevronLeft, ChevronRight } from 'lucide-react';
 import { useMediaFiles } from '../hooks/midiateca/useMediaFiles';
 import { useMediaCounts } from '../hooks/midiateca/useMediaCounts';
+import { useStorageUsage } from '../hooks/midiateca/useStorageUsage';
 import { useMediaUpload } from '../hooks/midiateca/useMediaUpload';
 import { useMediaDelete } from '../hooks/midiateca/useMediaDelete';
 import { useMediaBulkPublishAll } from '../hooks/midiateca/useMediaBulkPublishAll';
@@ -54,6 +55,7 @@ export const Midiateca: React.FC = () => {
   });
 
   const { counts } = useMediaCounts();
+  const { data: storageData, isLoading: isStorageLoading, isError: isStorageError } = useStorageUsage();
   const { uploads, uploadFiles, clearCompleted } = useMediaUpload();
   const deleteMutation = useMediaDelete();
 
@@ -113,7 +115,11 @@ export const Midiateca: React.FC = () => {
               borderRadius: '11px',
             }}
           >
-            6,4 GB de 20 GB usados
+            {isStorageLoading
+              ? 'Carregando...'
+              : isStorageError || !storageData
+              ? '—'
+              : `${storageData.formattedGb} GB de mídia`}
           </div>
         </div>
       </div>

@@ -7,6 +7,8 @@ import { Toast } from '../components/ui/Toast';
 import { usePlanos } from '../hooks/planos/usePlanos';
 import { usePlanosCount } from '../hooks/planos/usePlanosCount';
 import { usePlanoMutations } from '../hooks/planos/usePlanoMutations';
+import { exportToExcel } from '../lib/excelParser';
+import { planosImportConfig } from '../hooks/planos/usePlanosImportConfig';
 import type { EditorialState, Plano, PlanoPayload } from '../lib/strapi';
 
 export const Planos: React.FC = () => {
@@ -104,6 +106,24 @@ export const Planos: React.FC = () => {
     showToast(`Conteúdo duplicado: ${plano.titulo}`);
   };
 
+  const handleExport = () => {
+    if (!planos || planos.length === 0) return;
+
+    const exportRows = planos.map((plano) => ({
+      titulo: plano.titulo || '',
+      descricao: plano.descricao || '',
+      categoria: plano.categoria?.nome || '',
+      tags: plano.tags ? plano.tags.map((t) => t.name).join(', ') : '',
+      estado_editorial: plano.estado_editorial || 'rascunho',
+    }));
+
+    const dateStr = new Date().toISOString().split('T')[0];
+    const filename = `planos-exportados-${dateStr}.xlsx`;
+
+    exportToExcel(filename, planosImportConfig.templateHeaders, exportRows, 'Planos');
+    showToast(`${exportRows.length} plano(s) exportado(s) com sucesso.`);
+  };
+
   return (
     <div style={{ animation: 'fadeIn .3s ease' }}>
       {/* Header */}
@@ -163,6 +183,7 @@ export const Planos: React.FC = () => {
         limit={limit}
         totalCount={currentTotal}
         onPageChange={setPage}
+        onExport={handleExport}
       />
 
       {/* Drawer */}

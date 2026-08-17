@@ -48,3 +48,28 @@ export function downloadTemplateFile(
 
   XLSX.writeFile(workbook, filename);
 }
+
+/**
+ * Exporta um array de objetos para um arquivo .xlsx com os cabeçalhos especificados,
+ * disparando o download no navegador.
+ */
+export function exportToExcel(
+  filename: string,
+  headers: string[],
+  rows: Record<string, any>[],
+  sheetName: string = 'Planos'
+): void {
+  const data: string[][] = [headers];
+
+  rows.forEach((row) => {
+    const rowValues = headers.map((header) => row[header] ?? '');
+    data.push(rowValues);
+  });
+
+  const worksheet = XLSX.utils.aoa_to_sheet(data);
+  const workbook = XLSX.utils.book_new();
+  XLSX.utils.book_append_sheet(workbook, worksheet, sheetName);
+
+  XLSX.writeFile(workbook, filename);
+}
+

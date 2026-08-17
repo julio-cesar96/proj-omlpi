@@ -12,9 +12,17 @@ import {
   Settings,
 } from 'lucide-react';
 import { usePlanosCount } from '../../hooks/planos/usePlanosCount';
+import { useStorageUsage } from '../../hooks/midiateca/useStorageUsage';
 
 export const Sidebar: React.FC = () => {
   const { counts } = usePlanosCount();
+  const { data: storageData, isLoading: isStorageLoading, isError: isStorageError } = useStorageUsage();
+
+  const storageText = isStorageLoading
+    ? '...'
+    : isStorageError || !storageData
+    ? '—'
+    : `${storageData.formattedGb} GB de mídia`;
 
   const navPrincipal = [
     { to: '/dashboard', label: 'Dashboard', icon: LayoutGrid },
@@ -189,30 +197,12 @@ export const Sidebar: React.FC = () => {
               display: 'flex',
               justifyContent: 'space-between',
               alignItems: 'center',
-              marginBottom: '8px',
             }}
           >
             <span style={{ fontSize: '12px', fontWeight: 700 }}>Armazenamento</span>
             <span style={{ fontSize: '12px', color: 'var(--text-soft)', fontWeight: 600 }}>
-              6,4 / 20 GB
+              {storageText}
             </span>
-          </div>
-          <div
-            style={{
-              height: '7px',
-              background: 'rgba(164,154,135,.25)',
-              borderRadius: '20px',
-              overflow: 'hidden',
-            }}
-          >
-            <div
-              style={{
-                height: '100%',
-                width: '32%',
-                background: 'var(--primary)',
-                borderRadius: '20px',
-              }}
-            />
           </div>
         </div>
       </div>

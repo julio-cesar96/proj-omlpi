@@ -14,6 +14,7 @@ interface PlanoTableProps {
   limit: number;
   totalCount: number;
   onPageChange: (page: number) => void;
+  onExport?: () => void;
 }
 
 export const PlanoTable: React.FC<PlanoTableProps> = ({
@@ -27,6 +28,7 @@ export const PlanoTable: React.FC<PlanoTableProps> = ({
   limit,
   totalCount,
   onPageChange,
+  onExport,
 }) => {
   const formatDate = (dateStr?: string) => {
     if (!dateStr) return '—';
@@ -94,19 +96,21 @@ export const PlanoTable: React.FC<PlanoTableProps> = ({
         <div style={{ display: 'flex', gap: '8px' }}>
           <button
             type="button"
-            disabled
-            title="Exportação de base em lote (Fase 4)"
+            onClick={onExport}
+            disabled={!onExport || planos.length === 0 || isLoading}
+            title="Exportar planos visíveis para planilha Excel (.xlsx)"
             style={{
               height: '40px',
               padding: '0 16px',
               borderRadius: '10px',
               border: '1px solid var(--border)',
               background: 'var(--bg)',
-              color: 'var(--text-soft)',
+              color: 'var(--text)',
               fontSize: '13px',
               fontWeight: 700,
-              cursor: 'not-allowed',
-              opacity: 0.6,
+              cursor: !onExport || planos.length === 0 || isLoading ? 'not-allowed' : 'pointer',
+              opacity: !onExport || planos.length === 0 || isLoading ? 0.6 : 1,
+              transition: 'all 0.15s ease',
             }}
           >
             Exportar
