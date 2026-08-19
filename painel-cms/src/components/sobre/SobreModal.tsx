@@ -186,6 +186,7 @@ export const SobreModal: React.FC<SobreModalProps> = ({
           display: 'flex',
           flexDirection: 'column',
           maxHeight: '92vh',
+          overflow: 'hidden',
           animation: 'slideIn .25s ease',
         }}
         onClick={(e) => e.stopPropagation()}
