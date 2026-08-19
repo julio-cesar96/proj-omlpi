@@ -455,7 +455,7 @@ export const SobreModal: React.FC<SobreModalProps> = ({
             style={{
               borderRadius: '11px',
               border: '1px solid var(--border)',
-              overflow: 'hidden',
+              overflow: 'visible',
             }}
           >
             <button
@@ -474,6 +474,7 @@ export const SobreModal: React.FC<SobreModalProps> = ({
                 fontWeight: 700,
                 color: 'var(--text)',
                 fontFamily: 'var(--font-body)',
+                borderRadius: linksExpanded ? '11px 11px 0 0' : '11px',
               }}
             >
               <span>Links opcionais</span>
@@ -514,6 +515,7 @@ export const SobreModal: React.FC<SobreModalProps> = ({
                   flexDirection: 'column',
                   gap: '14px',
                   background: 'var(--card)',
+                  borderRadius: '0 0 11px 11px',
                 }}
               >
                 {/* Link 1 */}
