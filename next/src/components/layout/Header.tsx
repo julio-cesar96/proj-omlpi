@@ -95,12 +95,6 @@ export function Header() {
 
         {/* CTA e Botão Mobile (Direita) */}
         <div className="flex-1 flex justify-end items-center gap-4">
-          <a
-            href="#contato"
-            className="hidden md:flex bg-[#F25D27] text-white rounded-full px-5 py-2 text-sm font-medium transition-opacity hover:opacity-90"
-          >
-            Fale conosco
-          </a>
 
           {/* Botão Mobile */}
           <button
