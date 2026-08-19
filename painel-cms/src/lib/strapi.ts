@@ -296,3 +296,39 @@ export interface LocalesListParams {
   type?: 'country' | 'region' | 'state' | 'city';
 }
 
+// ── Sobres (Quem Somos) ───────────────────────────────────────────────────────
+
+export interface Sobre {
+  id: number;
+  title?: string | null;
+  text?: string | null;
+  image?: StrapiFile | null;
+  link?: string | null;
+  link_title?: string | null;
+  link2?: string | null;
+  link2_title?: string | null;
+  published_at?: string | null;
+  created_at: string;
+  updated_at: string;
+}
+
+export interface SobrePayload {
+  title: string;
+  text?: string | null;
+  image?: number | null; // ID do StrapiFile
+  link?: string | null;
+  link_title?: string | null;
+  link2?: string | null;
+  link2_title?: string | null;
+  /**
+   * CRÍTICO: nunca omitir — null = rascunho, ISOString = publicado.
+   * Omitir aciona o bug de auto-publicação do Strapi v3.
+   */
+  published_at: string | null;
+}
+
+export interface SobresListParams {
+  _start?: number;
+  _limit?: number;
+  _sort?: string;
+}

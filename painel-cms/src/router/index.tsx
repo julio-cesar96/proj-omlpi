@@ -18,6 +18,7 @@ const TextosEditor  = React.lazy(() => import('../pages/TextosEditor').then(m =>
 const Usuarios      = React.lazy(() => import('../pages/Usuarios').then(m => ({ default: m.Usuarios })));
 const Configuracoes = React.lazy(() => import('../pages/Configuracoes').then(m => ({ default: m.Configuracoes })));
 const Inicio        = React.lazy(() => import('../pages/Inicio').then(m => ({ default: m.Inicio })));
+const Sobre         = React.lazy(() => import('../pages/Sobre').then(m => ({ default: m.Sobre })));
 
 
 /** Fallback minimalista exibido enquanto o chunk da página carrega */
@@ -91,6 +92,7 @@ export const AppRouter: React.FC = () => {
             <Route path="/textos"         element={<TextosList />} />
             <Route path="/textos/novo"    element={<TextosEditor />} />
             <Route path="/textos/:id"     element={<TextosEditor />} />
+            <Route path="/sobre"          element={<Sobre />} />
             <Route path="/usuarios"       element={<Usuarios />} />
             <Route path="/configuracoes"  element={<Configuracoes />} />
           </Route>

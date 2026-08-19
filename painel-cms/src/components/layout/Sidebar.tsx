@@ -7,6 +7,7 @@ import {
   MapPin,
   FolderOpen,
   HelpCircle,
+  Info,
   FileCode,
   Users,
   Settings,
@@ -31,6 +32,7 @@ export const Sidebar: React.FC = () => {
     { to: '/localidades', label: 'Localidades', icon: MapPin },
     { to: '/midiateca', label: 'Midiateca', icon: FolderOpen },
     { to: '/faqs', label: 'Perguntas Frequentes', icon: HelpCircle },
+    { to: '/sobre', label: 'Quem Somos', icon: Info },
     { to: '/textos', label: 'Textos Institucionais', icon: FileCode },
   ];
 
