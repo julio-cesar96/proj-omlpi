@@ -27,6 +27,9 @@
       ],
       "plugin": "upload",
       "required": true
+    },
+    "category": {
+      "type": "string"
     }
   }
 }

@@ -19,6 +19,7 @@ const Usuarios      = React.lazy(() => import('../pages/Usuarios').then(m => ({ 
 const Configuracoes = React.lazy(() => import('../pages/Configuracoes').then(m => ({ default: m.Configuracoes })));
 const Inicio        = React.lazy(() => import('../pages/Inicio').then(m => ({ default: m.Inicio })));
 const Sobre         = React.lazy(() => import('../pages/Sobre').then(m => ({ default: m.Sobre })));
+const Guias         = React.lazy(() => import('../pages/Guias').then(m => ({ default: m.Guias })));
 
 
 /** Fallback minimalista exibido enquanto o chunk da página carrega */
@@ -87,6 +88,7 @@ export const AppRouter: React.FC = () => {
             <Route path="/planos"         element={<Planos />} />
             <Route path="/localidades"    element={<Localidades />} />
             <Route path="/midiateca"      element={<Midiateca />} />
+            <Route path="/guias"          element={<Guias />} />
 
             <Route path="/faqs"           element={<Faqs />} />
             <Route path="/textos"         element={<TextosList />} />

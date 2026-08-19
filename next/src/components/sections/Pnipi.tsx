@@ -29,7 +29,7 @@ export async function Pnipi() {
 
   try {
     const [fetchedGuias, fetchedFaqs, fetchedPlanos] = await Promise.all([
-      getGuias({ _sort: "order:asc" }).catch(() => []),
+      getGuias({ _sort: "created_at:desc" }).catch(() => []),
       getFaqs({ _sort: "ordem:asc" }).catch(() => []),
       getPlanos({ _sort: "titulo:asc" }).catch(() => []),
     ]);

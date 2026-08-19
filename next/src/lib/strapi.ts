@@ -339,7 +339,7 @@ export function getTextoIndicador(): Promise<StrapiTextoIndicador> {
 
 /** Guias / documentos de referência (Midiateca / PNIPI) */
 export function getGuias(params?: StrapiQueryParams): Promise<StrapiGuia[]> {
-  return strapiGet<StrapiGuia[]>("guias", params);
+  return strapiGet<StrapiGuia[]>("guias", { _sort: "created_at:desc", ...params });
 }
 
 /** Tags de artigos (mantida para uso futuro; não mais usada na Midiateca após remoção da aba Artigos) */

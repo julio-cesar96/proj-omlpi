@@ -36,7 +36,7 @@ export async function Midiateca() {
 
   try {
     const [guiasResult, midiasResult] = await Promise.all([
-      getGuias({ _sort: 'published_at:desc' }),
+      getGuias({ _sort: 'created_at:desc' }),
       getMidiaPublica({ _limit: 20, _start: 0 } as Parameters<typeof getMidiaPublica>[0]),
     ]);
     guias = guiasResult;

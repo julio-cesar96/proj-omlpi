@@ -11,12 +11,15 @@ import {
   FileCode,
   Users,
   Settings,
+  BookOpen,
 } from 'lucide-react';
 import { usePlanosCount } from '../../hooks/planos/usePlanosCount';
 import { useStorageUsage } from '../../hooks/midiateca/useStorageUsage';
+import { useGuiasCount } from '../../hooks/guias/useGuiasCount';
 
 export const Sidebar: React.FC = () => {
   const { counts } = usePlanosCount();
+  const { count: guiasCount } = useGuiasCount();
   const { data: storageData, isLoading: isStorageLoading, isError: isStorageError } = useStorageUsage();
 
   const storageText = isStorageLoading
@@ -31,6 +34,7 @@ export const Sidebar: React.FC = () => {
     { to: '/planos', label: 'Planos', icon: FileText, badge: String(counts.all) },
     { to: '/localidades', label: 'Localidades', icon: MapPin },
     { to: '/midiateca', label: 'Midiateca', icon: FolderOpen },
+    { to: '/guias', label: 'Guias / Documentos', icon: BookOpen, badge: String(guiasCount) },
     { to: '/faqs', label: 'Perguntas Frequentes', icon: HelpCircle },
     { to: '/sobre', label: 'Quem Somos', icon: Info },
     { to: '/textos', label: 'Textos Institucionais', icon: FileCode },

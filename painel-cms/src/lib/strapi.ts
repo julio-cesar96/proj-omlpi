@@ -332,3 +332,30 @@ export interface SobresListParams {
   _limit?: number;
   _sort?: string;
 }
+
+// ── Guias (Documentos de referência) ────────────────────────────────────────
+
+export interface Guia {
+  id: number;
+  title: string;
+  description?: string | null;
+  file?: StrapiFile | null;
+  category?: string | null;
+  created_at: string;
+  updated_at: string;
+}
+
+export interface GuiaPayload {
+  title: string;
+  description?: string | null;
+  file: number; // ID do StrapiFile
+  category?: string | null;
+}
+
+export interface GuiasListParams {
+  _start?: number;
+  _limit?: number;
+  _sort?: string;
+  _q?: string;
+}
+
