@@ -2,8 +2,7 @@
  * Hero — Server Component (seção Início)
  *
  * Dados:
- *   getBanners({ _sort: "order:asc" })  — banner principal
- *   getEixos({ _sort: "order:asc" })    — blocos de eixo temático
+ *   getBanner()  — banner principal
  *
  * Stats strip: valores placeholder com TODO para conectar ao endpoint real
  * (data/resume/ ou similar — pendência da Fase 2, confirmada para encaixar
@@ -13,7 +12,7 @@
  */
 
 import Image from "next/image";
-import { getBanner, getEixos, StrapiBanner, StrapiEixo } from "@/lib/strapi";
+import { getBanner, StrapiBanner } from "@/lib/strapi";
 
 // ─── Stats (placeholder) ─────────────────────────────────────────────────────
 // TODO: substituir pelos dados reais do endpoint omlpi-api `data/resume/` quando confirmado.
@@ -94,48 +93,13 @@ function BannerImage() {
   );
 }
 
-function EixoCard({ eixo }: { eixo: StrapiEixo }) {
-  return (
-    <div className="flex items-start gap-3 bg-white rounded-2xl p-4 border border-border hover:shadow-md transition-shadow">
-      {eixo.icon?.url && (
-        // eslint-disable-next-line @next/next/no-img-element
-        <img
-          src={eixo.icon.url}
-          alt=""
-          aria-hidden="true"
-          className="w-10 h-10 object-contain flex-shrink-0"
-        />
-      )}
-      <div>
-        {eixo.title && (
-          <div
-            className="font-bold text-foreground text-sm mb-1"
-            style={{ fontFamily: "var(--font-heading)" }}
-          >
-            {eixo.title}
-          </div>
-        )}
-        {eixo.description && (
-          <div className="text-xs text-muted-foreground leading-relaxed">
-            {eixo.description}
-          </div>
-        )}
-      </div>
-    </div>
-  );
-}
-
 // ─── Main ────────────────────────────────────────────────────────────────────
 
 export async function Hero() {
   let banner: StrapiBanner | null = null;
-  let eixos: StrapiEixo[] = [];
 
   try {
-    [banner, eixos] = await Promise.all([
-      getBanner(),
-      getEixos({ _sort: "order:asc" }),
-    ]);
+    banner = await getBanner();
   } catch {
     // Sem API configurada (dev local sem .env): renderiza com fallback gracioso
   }
@@ -243,25 +207,7 @@ export async function Hero() {
           </div>
         </div>
       </div>
-
-      {/* ── Eixos temáticos ── */}
-      {eixos.length > 0 && (
-        <div className="py-14 lg:py-20">
-          <div className="max-w-7xl mx-auto px-5 lg:px-10">
-            <h2
-              className="text-xl font-black text-foreground mb-8 text-center"
-              style={{ fontFamily: "var(--font-heading)" }}
-            >
-              Eixos temáticos
-            </h2>
-            <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-4">
-              {eixos.map((eixo) => (
-                <EixoCard key={eixo.id} eixo={eixo} />
-              ))}
-            </div>
-          </div>
-        </div>
-      )}
     </>
   );
 }
+
