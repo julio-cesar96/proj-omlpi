@@ -67,7 +67,7 @@ function BannerImage() {
         />
       </div>
       {/* Floating stat badges */}
-      <div className="absolute -bottom-5 -left-5 bg-[var(--muted-bg-subtle)] backdrop-blur-md rounded-xl shadow-lg px-4 py-3 border border-border">
+      <div className="absolute -bottom-5 -left-5 bg-white backdrop-blur-md rounded-xl shadow-lg px-4 py-3 border border-border">
         <div
           className="text-xl font-black text-primary"
           style={{ fontFamily: "var(--font-heading)" }}
@@ -78,7 +78,7 @@ function BannerImage() {
           {STATS_PLACEHOLDER[2].label}
         </div>
       </div>
-      <div className="absolute -top-5 -right-3 bg-[var(--muted-bg-subtle)] backdrop-blur-md rounded-xl shadow-lg px-4 py-3 border border-border">
+      <div className="absolute -top-5 -right-3 bg-white backdrop-blur-md rounded-xl shadow-lg px-4 py-3 border border-border">
         <div
           className="text-xl font-black text-secondary"
           style={{ fontFamily: "var(--font-heading)" }}
@@ -188,7 +188,7 @@ export async function Hero() {
       {/* ── Stats strip ── */}
       <div
         className="py-12"
-        style={{ background: "#A49A87" }}
+        style={{ background: "#F5F0E8" }}
         aria-label="Números do levantamento"
       >
         <div className="max-w-7xl mx-auto px-5 lg:px-10">
@@ -201,7 +201,7 @@ export async function Hero() {
                 >
                   {value}
                 </div>
-                <div className="text-sm text-foreground">{label}</div>
+                <div className="text-sm text-muted-foreground">{label}</div>
               </div>
             ))}
           </div>

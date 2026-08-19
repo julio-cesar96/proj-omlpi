@@ -34,7 +34,7 @@ function IndicatorCard({ indicator }: { indicator: OmlpiIndicatorWithSubindicato
   const latestValue = values.sort((a, b) => b.year - a.year)[0];
 
   return (
-    <div className="bg-[var(--muted-bg-subtle)] border border-border rounded-xl p-5 space-y-3">
+    <div className="bg-white border border-border rounded-xl p-5 space-y-3">
       <div>
         <span className="text-xs font-medium text-primary uppercase tracking-wide">
           {indicator.area.name}

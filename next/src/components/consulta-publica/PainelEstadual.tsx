@@ -120,7 +120,7 @@ export async function PainelEstadual({
               <article
                 key={locale.id}
                 className={[
-                  "group relative bg-[var(--muted-bg-subtle)] border border-border rounded-xl p-4",
+                  "group relative bg-white border border-border rounded-xl p-4",
                   "hover:border-primary/40 hover:shadow-sm transition-all",
                 ].join(" ")}
               >

@@ -55,7 +55,7 @@ export async function Footer() {
                 Observa<span className="text-[#F25D27]">.</span>
               </span>
             </div>
-            <p className="text-sm text-muted-foreground leading-[1.7]">
+            <p className="text-sm text-white/70 leading-[1.7]">
               Monitorando planos pela Primeira Infância em todo o Brasil com
               dados abertos e acessíveis.
             </p>
@@ -75,7 +75,7 @@ export async function Footer() {
                   <li key={href}>
                     <a
                       href={href}
-                      className="text-sm text-muted-foreground hover:text-white transition-colors"
+                      className="text-sm text-white/70 hover:text-white transition-colors"
                     >
                       {label}
                     </a>
@@ -93,12 +93,12 @@ export async function Footer() {
             >
               Uma iniciativa da
             </div>
-            <p className="text-sm text-muted-foreground leading-[1.7] mb-4">
+            <p className="text-sm text-white/70 leading-[1.7] mb-4">
               Rede Nacional Primeira Infância (RNPI), com o apoio de parceiros
               institucionais comprometidos com os direitos das crianças de 0 a 6
               anos.
             </p>
-            <div className="text-sm text-muted-foreground">
+            <div className="text-sm text-white/70">
               observa@rnpi.org.br
             </div>
           </div>
@@ -106,7 +106,7 @@ export async function Footer() {
 
         {/* Rodapé inferior */}
         <div
-          className="border-t pt-6 flex flex-col sm:flex-row items-center justify-between gap-3 text-xs text-muted-foreground"
+          className="border-t pt-6 flex flex-col sm:flex-row items-center justify-between gap-3 text-xs text-white/70"
           style={{ borderColor: "rgba(255,255,255,0.1)" }}
         >
           <p>
