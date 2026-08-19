@@ -188,7 +188,10 @@ export async function Hero() {
       {/* ── Stats strip ── */}
       <div
         className="py-12"
-        style={{ background: "#F5F0E8" }}
+        style={{
+          background: "#F5F0E8",
+          borderTop: "3px solid var(--primary)",
+        }}
         aria-label="Números do levantamento"
       >
         <div className="max-w-7xl mx-auto px-5 lg:px-10">
