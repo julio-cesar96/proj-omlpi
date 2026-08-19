@@ -261,6 +261,8 @@ export const SobreModal: React.FC<SobreModalProps> = ({
             flexDirection: 'column',
             gap: '18px',
             overflowY: 'auto',
+            flex: 1,
+            minHeight: 0,
           }}
         >
           {/* Título */}

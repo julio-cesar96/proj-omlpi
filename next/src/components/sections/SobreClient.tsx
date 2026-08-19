@@ -129,8 +129,8 @@ export function SobreClient({ abas }: Props) {
             : null;
 
         return (
-          <div key={aba.id} className="max-w-3xl">
-            {aba.title && (
+          <div key={aba.id} className="max-w-none">
+            {aba.title && abas.length > 1 && (
               <h3
                 className="text-2xl font-black text-foreground mb-6"
                 style={{ fontFamily: "var(--font-heading)" }}
