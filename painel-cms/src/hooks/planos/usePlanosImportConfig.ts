@@ -18,7 +18,7 @@ export interface PlanosImportRawRow {
 
 const VALID_EDITORIAL_STATES: EditorialState[] = ['rascunho', 'revisao', 'publicado', 'arquivado'];
 
-function normalizeText(text: string): string {
+export function normalizeText(text: string): string {
   return text
     .normalize('NFD')
     .replace(/[\u0300-\u036f]/g, '')
@@ -26,7 +26,7 @@ function normalizeText(text: string): string {
     .trim();
 }
 
-function slugify(text: string): string {
+export function slugify(text: string): string {
   return normalizeText(text)
     .replace(/\s+/g, '-')
     .replace(/[^\w-]+/g, '')
