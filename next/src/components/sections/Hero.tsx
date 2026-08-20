@@ -13,6 +13,7 @@
 
 import Image from "next/image";
 import { getBanner, StrapiBanner } from "@/lib/strapi";
+import { StatCard } from "./StatCard";
 
 // ─── Stats (placeholder) ─────────────────────────────────────────────────────
 // TODO: substituir pelos dados reais do endpoint omlpi-api `data/resume/` quando confirmado.
@@ -213,56 +214,13 @@ export async function Hero() {
         <div className="max-w-7xl mx-auto px-5 lg:px-10">
           <div className="grid grid-cols-2 lg:grid-cols-4 gap-6 lg:gap-12">
             {STATS_PLACEHOLDER.map(({ value, label, tooltip }) => (
-              <div key={label} className="relative group text-center cursor-default">
-                <div
-                  className="text-3xl lg:text-[38px] font-black text-foreground mb-1.5"
-                  style={{ fontFamily: "var(--font-heading)" }}
-                >
-                  {value}
-                </div>
-                <div className="text-sm text-muted-foreground">{label}</div>
-
-                {/* Tooltip desktop (só aparece no hover, só se tiver tooltip) */}
-                {tooltip && (
-                  <div className="
-                    absolute bottom-full left-1/2 -translate-x-1/2 mb-2 z-10
-                    w-64 bg-foreground text-white text-xs leading-[1.6]
-                    rounded-lg px-3 py-2.5 shadow-lg
-                    opacity-0 group-hover:opacity-100
-                    pointer-events-none
-                    transition-opacity duration-200
-                    hidden lg:block
-                  ">
-                    {tooltip}
-                    {/* seta apontando pra baixo */}
-                    <span className="absolute top-full left-1/2 -translate-x-1/2
-                      border-4 border-transparent border-t-foreground" />
-                  </div>
-                )}
-              </div>
+              <StatCard
+                key={label}
+                value={value}
+                label={label}
+                tooltip={tooltip}
+              />
             ))}
-          </div>
-
-          {/* Fallback mobile — só aparece em telas menores que lg */}
-          <div className="mt-6 lg:hidden">
-            <details className="group">
-              <summary className="
-                text-xs font-semibold text-foreground/70 cursor-pointer
-                list-none flex items-center gap-1.5
-                hover:text-foreground transition-colors
-              ">
-                <span className="group-open:rotate-90 transition-transform inline-block">▶</span>
-                Saiba mais sobre os dados
-              </summary>
-              <ul className="mt-3 space-y-3 text-xs text-muted-foreground leading-[1.7]">
-                {STATS_PLACEHOLDER.filter(s => s.tooltip).map(({ label, tooltip }) => (
-                  <li key={label}>
-                    <span className="font-semibold text-foreground">{label}:</span>{" "}
-                    {tooltip}
-                  </li>
-                ))}
-              </ul>
-            </details>
           </div>
         </div>
       </div>
