@@ -20,7 +20,7 @@ import { StatCard } from "./StatCard";
 // Ver pendência em docs/progresso/fase-1-fundacao.md §9 item 3.
 const STATS_PLACEHOLDER = [
   {
-    value: "5.570",
+    value: "5.106",
     label: "Municípios mapeados",
     tooltip: "5.106 municípios responderam ao formulário, o que corresponde a 91% do total de 5.570 municípios brasileiros."
   },
@@ -30,7 +30,7 @@ const STATS_PLACEHOLDER = [
     tooltip: "Planos Municipais em vigência ou com vigência vencida."
   },
   {
-    value: "7",
+    value: "19",
     label: "Planos Estaduais em vigência",
     tooltip: "Dos 26 estados e o Distrito Federal, 22 responderam ao levantamento. 12 informaram possuir PEPI em vigência, 7 estão com plano em elaboração e 3 não possuem PEPI."
   },
