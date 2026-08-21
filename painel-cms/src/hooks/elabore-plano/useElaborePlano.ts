@@ -15,7 +15,7 @@ export function useElaborePlano() {
   const query = useQuery<ElaborePlano>({
     queryKey: ELABORE_PLANO_QUERY_KEY,
     queryFn: async () => {
-      const res = await apiFetch('/elabore-planos');
+      const res = await apiFetch('/elabore-planos?_publicationState=preview');
       if (!res.ok) throw new Error('Erro ao carregar os dados de Elabore o Plano.');
       return res.json();
     },
@@ -24,22 +24,10 @@ export function useElaborePlano() {
 
   const mutation = useMutation<ElaborePlano, Error, ElaborePlanoPayload>({
     mutationFn: async (payload) => {
-      // Se o registro já existe no Strapi (tem id), usa PUT. Se for nulo/vazio, usa POST.
-      const initialMethod = query.data?.id ? 'PUT' : 'POST';
-
-      let res = await apiFetch('/elabore-planos', {
-        method: initialMethod,
+      const res = await apiFetch('/elabore-planos', {
+        method: 'PUT',
         body: JSON.stringify(payload),
       });
-
-      // Se tentou PUT ou POST e retornou 404 (entry.notFound do singleType não instanciado), tenta o método oposto
-      if (!res.ok && res.status === 404) {
-        const fallbackMethod = initialMethod === 'PUT' ? 'POST' : 'PUT';
-        res = await apiFetch('/elabore-planos', {
-          method: fallbackMethod,
-          body: JSON.stringify(payload),
-        });
-      }
 
       if (!res.ok) {
         const err = await res.json().catch(() => ({}));
@@ -53,6 +41,7 @@ export function useElaborePlano() {
       queryClient.setQueryData(ELABORE_PLANO_QUERY_KEY, data);
     },
   });
+
 
 
   return {

@@ -157,7 +157,7 @@ export function SobreClient({ abas }: Props) {
                   [&_h3]:text-foreground [&_h3]:font-semibold [&_h3]:mt-5 [&_h3]:mb-2
                   [&_strong]:text-foreground
                   [&_ul]:list-disc [&_ul]:pl-5 [&_li]:mb-1
-                  [&_a]:text-primary [&_a]:underline [&_a]:underline-offset-2
+                  [&_a]:text-primary [&_a]:underline [&_a]:font-medium [&_a]:hover:text-primary/80 [&_a]:transition-colors
                   [&_img]:w-full [&_img]:rounded-2xl [&_img]:my-7"
                 dangerouslySetInnerHTML={{ __html: html }}
               />

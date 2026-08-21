@@ -123,7 +123,7 @@ export default async function PaginaInstitucionalPage({ params }: Props) {
 
         {/* Conteúdo HTML Puro */}
         <div
-          className="prose prose-sm max-w-none text-muted-foreground leading-[1.8] [&_h1]:text-foreground [&_h1]:font-black [&_h1]:text-2xl [&_h1]:mb-4 [&_h1]:mt-8 [&_h2]:text-foreground [&_h2]:font-bold [&_h2]:text-xl [&_h2]:mt-6 [&_h2]:mb-3 [&_h3]:text-foreground [&_h3]:font-semibold [&_h3]:mt-4 [&_h3]:mb-2 [&_p]:mb-4 [&_strong]:text-foreground [&_ul]:list-disc [&_ul]:pl-5 [&_ol]:list-decimal [&_ol]:pl-5 [&_li]:mb-1.5 [&_a]:text-primary [&_a]:underline"
+          className="prose prose-sm max-w-none text-muted-foreground leading-[1.8] [&_h1]:text-foreground [&_h1]:font-black [&_h1]:text-2xl [&_h1]:mb-4 [&_h1]:mt-8 [&_h2]:text-foreground [&_h2]:font-bold [&_h2]:text-xl [&_h2]:mt-6 [&_h2]:mb-3 [&_h3]:text-foreground [&_h3]:font-semibold [&_h3]:mt-4 [&_h3]:mb-2 [&_p]:mb-4 [&_strong]:text-foreground [&_ul]:list-disc [&_ul]:pl-5 [&_ol]:list-decimal [&_ol]:pl-5 [&_li]:mb-1.5 [&_a]:text-primary [&_a]:underline [&_a]:font-medium [&_a]:hover:text-primary/80 [&_a]:transition-colors"
           dangerouslySetInnerHTML={{ __html: pagina.conteudo }}
         />
       </div>

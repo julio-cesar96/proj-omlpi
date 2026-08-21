@@ -24,6 +24,13 @@ function renderMarkdown(md: string): string {
     .replace(/^# (.+)$/gm, "<h1>$1</h1>")
     .replace(/\*\*(.+?)\*\*/g, "<strong>$1</strong>")
     .replace(/\*(.+?)\*/g, "<em>$1</em>")
+    .replace(
+      /\[([^\]]+)\]\(([^)\s"]+)(?:\s+"([^"]*)")?\)/g,
+      (_, text, href, title) =>
+        title
+          ? `<a href="${href}" title="${title}" target="_blank" rel="noopener noreferrer">${text}</a>`
+          : `<a href="${href}" target="_blank" rel="noopener noreferrer">${text}</a>`
+    )
     .replace(/^- (.+)$/gm, "<li>$1</li>")
     .replace(/(<li>.*<\/li>\n?)+/g, (m) => `<ul>${m}</ul>`)
     .replace(/\n\n/g, "</p><p>")
@@ -134,7 +141,7 @@ export function PrivacyPolicyModal({ content }: Props) {
             <div className="overflow-y-auto px-8 py-6 flex-1">
               {content ? (
                 <div
-                  className="prose prose-sm max-w-none text-muted-foreground leading-[1.8] [&_h1]:text-foreground [&_h1]:font-black [&_h1]:text-xl [&_h1]:mb-4 [&_h2]:text-foreground [&_h2]:font-bold [&_h2]:text-lg [&_h2]:mt-6 [&_h2]:mb-3 [&_h3]:text-foreground [&_h3]:font-semibold [&_h3]:mt-4 [&_h3]:mb-2 [&_p]:mb-4 [&_strong]:text-foreground [&_ul]:list-disc [&_ul]:pl-5 [&_li]:mb-1.5"
+                  className="prose prose-sm max-w-none text-muted-foreground leading-[1.8] [&_h1]:text-foreground [&_h1]:font-black [&_h1]:text-xl [&_h1]:mb-4 [&_h2]:text-foreground [&_h2]:font-bold [&_h2]:text-lg [&_h2]:mt-6 [&_h2]:mb-3 [&_h3]:text-foreground [&_h3]:font-semibold [&_h3]:mt-4 [&_h3]:mb-2 [&_p]:mb-4 [&_strong]:text-foreground [&_ul]:list-disc [&_ul]:pl-5 [&_li]:mb-1.5 [&_a]:text-primary [&_a]:underline [&_a]:font-medium [&_a]:hover:text-primary/80 [&_a]:transition-colors"
                   dangerouslySetInnerHTML={{ __html: renderMarkdown(content) }}
                 />
               ) : (

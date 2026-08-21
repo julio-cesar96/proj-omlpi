@@ -98,7 +98,9 @@ export const ElaborePlanoPage: React.FC = () => {
       descricao: descricao.trim() || null,
       capa: capaFile ? capaFile.id : null,
       arquivo: arquivoFile ? arquivoFile.id : null,
+      published_at: data?.published_at || new Date().toISOString(),
     };
+
 
     try {
       await saveElaborePlano(payload);
