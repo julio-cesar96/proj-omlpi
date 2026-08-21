@@ -287,6 +287,17 @@ export interface StrapiPaginaInstitucional {
   [key: string]: unknown;
 }
 
+/** Conteúdo editorial da seção "Elabore o plano do seu município" */
+export interface StrapiElaborePlano {
+  id?: number;
+  titulo_secao?: string | null;
+  titulo_guia?: string | null;
+  descricao?: string | null;
+  capa?: StrapiFile | null;
+  arquivo?: StrapiFile | null;
+}
+
+
 // ─── Funções públicas ─────────────────────────────────────────────────────────
 
 /**
@@ -432,3 +443,9 @@ export async function getPaginaInstitucional(slug: string): Promise<StrapiPagina
   });
   return paginas.length > 0 ? paginas[0] : null;
 }
+
+/** Conteúdo da seção Elabore o Plano */
+export function getElaborePlano(): Promise<StrapiElaborePlano> {
+  return strapiGet<StrapiElaborePlano>("elabore-planos");
+}
+

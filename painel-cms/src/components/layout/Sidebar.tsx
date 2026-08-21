@@ -12,6 +12,7 @@ import {
   Users,
   Settings,
   BookOpen,
+  FileEdit,
 } from 'lucide-react';
 import { usePlanosCount } from '../../hooks/planos/usePlanosCount';
 import { useStorageUsage } from '../../hooks/midiateca/useStorageUsage';
@@ -37,8 +38,10 @@ export const Sidebar: React.FC = () => {
     { to: '/guias', label: 'Guias / Documentos', icon: BookOpen, badge: String(guiasCount) },
     { to: '/faqs', label: 'Perguntas Frequentes', icon: HelpCircle },
     { to: '/sobre', label: 'Quem Somos', icon: Info },
+    { to: '/elabore-plano', label: 'Elabore o Plano', icon: FileEdit },
     { to: '/textos', label: 'Textos Institucionais', icon: FileCode },
   ];
+
 
 
   const navAdmin = [

@@ -359,3 +359,25 @@ export interface GuiasListParams {
   _q?: string;
 }
 
+// ── Elabore o Plano (singleType) ─────────────────────────────────────────────
+
+export interface ElaborePlano {
+  id?: number;
+  titulo_secao?: string | null;
+  titulo_guia?: string | null;
+  descricao?: string | null;
+  capa?: StrapiFile | null;
+  arquivo?: StrapiFile | null;
+  created_at?: string;
+  updated_at?: string;
+}
+
+export interface ElaborePlanoPayload {
+  titulo_secao?: string | null;
+  titulo_guia?: string | null;
+  descricao?: string | null;
+  capa?: number | null; // ID do StrapiFile
+  arquivo?: number | null; // ID do StrapiFile
+}
+
+
