@@ -154,7 +154,7 @@ export async function Hero() {
               <SectionLabel>Plataforma</SectionLabel>
               <h1 className="mb-6">
                 <Image
-                  src="/logo-observa-completa.png"
+                  src="/logo-observa.png"
                   alt="Observa — Observatório do Marco Legal da Primeira Infância"
                   width={420}
                   height={120}

@@ -54,7 +54,7 @@ export function Header() {
           </a>
 
           {/*
-           * OPÇÃO B — Logo completa (logo-observa-completa.png) sem texto ao lado.
+           * OPÇÃO B — Logo completa (logo-observa.png) sem texto ao lado.
            * Para ativar: comentar o bloco OPÇÃO A acima e descomentar este.
            *
            * Nota: a logo completa é mais larga (~160px); em telas menores
@@ -66,7 +66,7 @@ export function Header() {
             className="flex items-center font-heading tracking-tight"
           >
             <Image
-              src="/logo-observa-completa.png"
+              src="/logo-observa.png"
               alt="Observa"
               width={160}
               height={38}
