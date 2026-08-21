@@ -59,9 +59,6 @@ export async function Pnipi() {
           O Observa convida municípios e demais instituições responsáveis pelos Planos pela Primeira Infância a compartilhar seus documentos, ampliando o acervo e fortalecendo a memória das políticas públicas para a primeira infância no Brasil.
           <br />
           Consulte os planos disponíveis, envie o de sua localidade e conheça os resultados dos estudos realizados pelo Observa.
-          <br />
-          <span style={{color: '#F25D27'}} className="text-[18px]">Elabore aqui o Plano do seu município</span>
-
         </p>
 
         <PnipiClient guiasIniciais={guias} totalGuias={totalGuias} faqs={faqs} planos={planos} />
