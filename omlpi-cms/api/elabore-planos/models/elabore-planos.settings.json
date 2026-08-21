@@ -1,0 +1,37 @@
+{
+  "kind": "singleType",
+  "collectionName": "elabore_planos",
+  "info": {
+    "name": "elaboreplanos"
+  },
+  "options": {
+    "increments": true,
+    "timestamps": true,
+    "draftAndPublish": true
+  },
+  "attributes": {
+    "titulo_secao": {
+      "type": "string"
+    },
+    "titulo_guia": {
+      "type": "string"
+    },
+    "descricao": {
+      "type": "richtext"
+    },
+    "capa": {
+      "model": "file",
+      "via": "related",
+      "allowedTypes": ["images", "files", "videos"],
+      "plugin": "upload",
+      "required": false
+    },
+    "arquivo": {
+      "model": "file",
+      "via": "related",
+      "allowedTypes": ["images", "files", "videos"],
+      "plugin": "upload",
+      "required": false
+    }
+  }
+}

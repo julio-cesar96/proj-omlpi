@@ -1,0 +1,21 @@
+{
+  "routes": [
+    {
+      "method": "GET",
+      "path": "/elabore-planos",
+      "handler": "elabore-planos.find",
+      "config": {
+        "policies": [],
+        "auth": false
+      }
+    },
+    {
+      "method": "PUT",
+      "path": "/elabore-planos",
+      "handler": "elabore-planos.update",
+      "config": {
+        "policies": []
+      }
+    }
+  ]
+}
