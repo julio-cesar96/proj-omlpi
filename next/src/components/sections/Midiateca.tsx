@@ -15,7 +15,7 @@
  * Referência: docs/API_CONTRACTS.md §1 — CMS (Strapi)
  */
 
-import { getGuias, getMidiaPublica, StrapiGuia, StrapiMidiaPublica } from '@/lib/strapi';
+import { getGuias, getGuiasCount, getMidiaPublica, StrapiGuia, StrapiMidiaPublica } from '@/lib/strapi';
 import { MidiatecaClient } from './MidiatecaClient';
 
 function SectionLabel({ children }: { children: React.ReactNode }) {
@@ -31,15 +31,18 @@ function SectionLabel({ children }: { children: React.ReactNode }) {
 
 export async function Midiateca() {
   let guias: StrapiGuia[] = [];
+  let totalGuias = 0;
   let midias: StrapiMidiaPublica[] = [];
   let totalMidias = 0;
 
   try {
-    const [guiasResult, midiasResult] = await Promise.all([
-      getGuias({ _sort: 'created_at:desc' }),
+    const [guiasResult, guiasCountResult, midiasResult] = await Promise.all([
+      getGuias({ _limit: 6, _sort: 'created_at:desc' }),
+      getGuiasCount(),
       getMidiaPublica({ _limit: 20, _start: 0 } as Parameters<typeof getMidiaPublica>[0]),
     ]);
     guias = guiasResult;
+    totalGuias = guiasCountResult;
     midias = midiasResult.results;
     totalMidias = midiasResult.count;
   } catch {
@@ -62,7 +65,8 @@ export async function Midiateca() {
         </h2>
 
         <MidiatecaClient
-          guias={guias}
+          guiasIniciais={guias}
+          totalGuias={totalGuias}
           midias={midias}
           totalMidias={totalMidias}
         />

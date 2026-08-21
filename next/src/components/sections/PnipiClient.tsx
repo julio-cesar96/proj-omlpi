@@ -131,7 +131,9 @@ function FaqAccordion({ items }: { items: StrapiFaq[] }) {
 // ─── Main ─────────────────────────────────────────────────────────────────────
 
 interface Props {
-  guias: StrapiGuia[];
+  guiasIniciais?: StrapiGuia[];
+  guias?: StrapiGuia[];
+  totalGuias: number;
   planos: StrapiPlano[];
   faqs: StrapiFaq[];
 }
@@ -144,8 +146,33 @@ const TAB_LABELS: Record<PnipiTab, string> = {
   faq: "Dúvidas frequentes",
 };
 
-export function PnipiClient({ guias, planos, faqs }: Props) {
+export function PnipiClient({ guiasIniciais, guias: guiasProp, totalGuias, planos, faqs }: Props) {
+  const initialGuias = guiasIniciais ?? guiasProp ?? [];
   const [activeTab, setActiveTab] = useState<PnipiTab>("leis");
+  const [guias, setGuias] = useState<StrapiGuia[]>(initialGuias);
+  const [page, setPage] = useState(1);
+  const [loading, setLoading] = useState(false);
+
+  const hasMore = guias.length < totalGuias;
+
+  const handleLoadMore = async () => {
+    setLoading(true);
+    try {
+      const STRAPI_URL = process.env.NEXT_PUBLIC_STRAPI_URL || "https://omlpi-strapi.rnpiobserva.org.br";
+      const start = page * 6;
+      const res = await fetch(`${STRAPI_URL}/guias?_limit=6&_start=${start}&_sort=created_at:desc`);
+      if (!res.ok) throw new Error("Erro ao carregar mais guias");
+      const data: StrapiGuia[] = await res.json();
+      if (Array.isArray(data)) {
+        setGuias((prev) => [...prev, ...data]);
+        setPage((prev) => prev + 1);
+      }
+    } catch (err) {
+      console.error("[PnipiClient] erro ao carregar guias:", err);
+    } finally {
+      setLoading(false);
+    }
+  };
 
   return (
     <>
@@ -170,13 +197,53 @@ export function PnipiClient({ guias, planos, faqs }: Props) {
 
       {/* Leis e decretos */}
       {activeTab === "leis" && (
-        <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-5 max-w-4xl">
-          {guias.length > 0 ? (
-            guias.map((guia) => <GuiaCard key={guia.id} guia={guia} />)
-          ) : (
-            <p className="col-span-full text-sm text-muted-foreground">
-              Documentos em breve.
-            </p>
+        <div className="max-w-4xl">
+          <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-5">
+            {guias.length > 0 ? (
+              guias.map((guia) => <GuiaCard key={guia.id} guia={guia} />)
+            ) : (
+              <p className="col-span-full text-sm text-muted-foreground">
+                Documentos em breve.
+              </p>
+            )}
+          </div>
+          {hasMore && (
+            <div className="mt-8 text-center">
+              <button
+                type="button"
+                onClick={handleLoadMore}
+                disabled={loading}
+                className="px-8 py-3 border-2 border-border text-foreground text-sm font-semibold rounded-full hover:border-primary hover:text-primary transition-colors disabled:opacity-60 inline-flex items-center gap-2"
+              >
+                {loading ? (
+                  <>
+                    <svg
+                      className="animate-spin h-4 w-4 text-primary"
+                      xmlns="http://www.w3.org/2000/svg"
+                      fill="none"
+                      viewBox="0 0 24 24"
+                    >
+                      <circle
+                        className="opacity-25"
+                        cx="12"
+                        cy="12"
+                        r="10"
+                        stroke="currentColor"
+                        strokeWidth="4"
+                      />
+                      <path
+                        className="opacity-75"
+                        fill="currentColor"
+                        d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
+                      />
+                    </svg>
+                    <span>Carregando...</span>
+                  </>
+                ) : (
+                  "Carregar mais"
+                )}
+              </button>
+            </div>
           )}
         </div>
       )}

@@ -342,6 +342,11 @@ export function getGuias(params?: StrapiQueryParams): Promise<StrapiGuia[]> {
   return strapiGet<StrapiGuia[]>("guias", { _sort: "created_at:desc", ...params });
 }
 
+/** Total de guias / documentos de referência */
+export function getGuiasCount(params?: StrapiQueryParams): Promise<number> {
+  return strapiGet<number>("guias/count", params);
+}
+
 /** Tags de artigos (mantida para uso futuro; não mais usada na Midiateca após remoção da aba Artigos) */
 export function getTags(params?: StrapiQueryParams): Promise<StrapiTag[]> {
   return strapiGet<StrapiTag[]>("tags", params);
