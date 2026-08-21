@@ -51,14 +51,16 @@ export async function Pnipi() {
           className="text-[30px] lg:text-[40px] font-black text-foreground mb-3"
           style={{ fontFamily: "var(--font-heading)" }}
         >
-          Planos pela Primeira Infância
+          Planos Intersetoriais pela Primeira Infância
         </h2>
         <p className="text-muted-foreground mb-8 text-[15px]">
-          Na plataforma, é possível consultar os planos cadastrados a partir de levantamento realizado pela Subsecretaria da Política Nacional Integrada pela Primeira Infância (SNPPI/MEC) em 2026, conhecer experiências de diferentes localidades e acompanhar informações sobre sua elaboração e implementação.
+          Na plataforma, é possível consultar os planos cadastrados a partir de levantamento realizado pela Subsecretaria da Política Nacional Integrada pela Primeira Infância (SNPPI/MEC) em 2026, conhecer experiências de diferentes localidades e acompanhar informações sobre sua elaboração e implementação. 
           <br />
           O Observa convida municípios e demais instituições responsáveis pelos Planos pela Primeira Infância a compartilhar seus documentos, ampliando o acervo e fortalecendo a memória das políticas públicas para a primeira infância no Brasil.
           <br />
-          Consulte os planos disponíveis, envie o de sua localidade e conheça os resultados dos estudos realizados pelo Observa
+          Consulte os planos disponíveis, envie o de sua localidade e conheça os resultados dos estudos realizados pelo Observa.
+          <br />
+          <span style={{color: '#F25D27'}} className="text-[18px]">Elabore aqui o Plano do seu município</span>
 
         </p>
 
