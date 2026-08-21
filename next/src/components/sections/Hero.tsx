@@ -171,7 +171,7 @@ export async function Hero() {
                   href="#consulta-publica"
                   className="inline-flex items-center gap-2 px-7 py-3.5 bg-primary text-white font-semibold rounded-full hover:bg-[#e04d18] transition-colors shadow-sm text-[15px]"
                 >
-                  Explorar o mapa
+                  Explore o mapa
                   <svg
                     xmlns="http://www.w3.org/2000/svg"
                     width="16"

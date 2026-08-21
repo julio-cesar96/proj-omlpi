@@ -79,7 +79,7 @@ export async function ElaborePlano() {
       className="py-16 lg:py-24 bg-white border-t border-border/40"
     >
       <div className="max-w-7xl mx-auto px-5 lg:px-10">
-        <SectionLabel>PNIPI</SectionLabel>
+        <SectionLabel>Guia para elaboração de planos</SectionLabel>
         <h2
           className="text-[30px] lg:text-[40px] font-black text-foreground mb-8"
           style={{ fontFamily: "var(--font-heading)" }}

@@ -56,7 +56,7 @@ export async function Midiateca() {
       className="py-20 lg:py-28 bg-white"
     >
       <div className="max-w-7xl mx-auto px-5 lg:px-10">
-        <SectionLabel>Midiateca</SectionLabel>
+        <SectionLabel>Referências</SectionLabel>
         <h2
           className="text-[30px] lg:text-[40px] font-black text-foreground mb-8"
           style={{ fontFamily: 'var(--font-heading)' }}
