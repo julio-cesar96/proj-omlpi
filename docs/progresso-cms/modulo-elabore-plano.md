@@ -63,6 +63,7 @@
 
 - [x] Endpoint `GET /elabore-planos` tipado e integrado no `next/`.
 - [x] Seção `ElaborePlano.tsx` dinâmica com suporte a Markdown, Capa, Download e Fallback estático.
-- [x] Módulo *"Elabore o Plano"* criado no `painel-cms` com formulário completo e integração `PUT /elabore-planos`.
+- [x] Módulo *"Elabore o Plano"* criado no `painel-cms` com formulário completo e integração `PUT / POST /elabore-planos` (com fallback automático para `POST` na primeira gravação quando o registro singleType ainda não foi instanciado no banco do Strapi v3).
 - [x] Sidebar e Router atualizados no `painel-cms`.
 - [x] Compilação sem erros em ambos os repositórios.
+

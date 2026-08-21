@@ -6,10 +6,16 @@ module.exports = {
     ctx.body = entity || {};
   },
   async update(ctx) {
-    const entity = await strapi.query('elabore-planos').update(
-      { id: 1 },
-      ctx.request.body
-    );
+    const existing = await strapi.query('elabore-planos').findOne();
+    let entity;
+    if (existing) {
+      entity = await strapi.query('elabore-planos').update(
+        { id: existing.id },
+        ctx.request.body
+      );
+    } else {
+      entity = await strapi.query('elabore-planos').create(ctx.request.body);
+    }
     ctx.body = entity;
   },
 };
