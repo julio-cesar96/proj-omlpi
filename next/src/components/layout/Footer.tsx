@@ -105,11 +105,19 @@ export async function Footer() {
           </div>
         </div>
 
+        {/* Tarja de logos parceiros */}
+        <div className="mb-8 pb-8 border-b border-white/10">
+          <Image
+            src="/tarja-logos.jpeg"
+            alt="Logos dos parceiros institucionais"
+            width={1600}
+            height={234}
+            className="w-full h-auto object-contain"
+          />
+        </div>
+
         {/* Rodapé inferior */}
-        <div
-          className="border-t pt-6 flex flex-col sm:flex-row items-center justify-between gap-3 text-xs text-white/70"
-          style={{ borderColor: "rgba(255,255,255,0.1)" }}
-        >
+        <div className="flex flex-col items-center gap-3 text-xs text-white/70 text-center">
           <p>
             © {CURRENT_YEAR} Plataforma Observa · RNPI — Rede Nacional Primeira
             Infância · Dados abertos sob licença Creative Commons

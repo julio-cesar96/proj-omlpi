@@ -73,9 +73,9 @@ function BannerImage() {
         className="relative rounded-2xl overflow-hidden shadow-lg"
         style={{ aspectRatio: "16/9" }}
       >
-        {/* Imagem real — hero-bebe-cubos.png (decorativa, sem campo image no schema banners) */}
+        {/* Imagem real — bebe-ajoelhado.png (decorativa, sem campo image no schema banners) */}
         <Image
-          src="/images/hero-bebe-cubos.png"
+          src="/bebe-ajoelhado.png"
           alt="Ilustração de criança brincando com blocos coloridos"
           fill
           className="object-cover"
