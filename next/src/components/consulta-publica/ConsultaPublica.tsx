@@ -82,8 +82,9 @@ export async function ConsultaPublica({ searchParams }: ConsultaPublicaProps) {
             Planos pela Primeira Infância
           </h2>
           <p className="text-muted-foreground max-w-2xl">
-            Consulte o status dos planos municipais e estaduais, acesse dados por
-            localidade e contribua enviando o plano do seu município.
+             Consulte os planos cadastrados a partir de levantamento realizado em parceria Subsecretaria da Política Nacional Integrada pela Primeira Infância (SNPPI/MEC) em 2026, e conheça experiências de diferentes localidades. 
+          <br />
+          O Observa convida municípios e demais instituições responsáveis pelos Planos pela Primeira Infância a compartilhar seus documentos, ampliando o acervo e fortalecendo a memória das políticas públicas para a primeira infância no Brasil.
           </p>
         </div>
 
