@@ -10,7 +10,7 @@
 
 // ─── Helpers ─────────────────────────────────────────────────────────────────
 
-function getStrapiUrl(): string {
+export function getStrapiUrl(): string {
   const url = process.env.STRAPI_API_URL;
   if (!url) {
     throw new Error(
