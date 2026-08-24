@@ -105,6 +105,16 @@ function groupByCategory(guias: StrapiGuia[]): Map<string, StrapiGuia[]> {
 }
 
 function DocumentCard({ guia }: { guia: StrapiGuia }) {
+  const STRAPI_URL =
+    process.env.NEXT_PUBLIC_STRAPI_URL ||
+    'https://omlpi-strapi.rnpiobserva.org.br';
+
+  const fileUrl = guia.file?.url
+    ? guia.file.url.startsWith('http')
+      ? guia.file.url
+      : `${STRAPI_URL}${guia.file.url}`
+    : null;
+
   return (
     <div className="bg-background rounded-2xl p-5 border border-border hover:shadow-md transition-shadow flex flex-col">
       <div className="flex items-start gap-3 mb-4">
@@ -142,9 +152,9 @@ function DocumentCard({ guia }: { guia: StrapiGuia }) {
           {guia.description}
         </div>
       )}
-      {guia.file?.url ? (
+      {fileUrl ? (
         <a
-          href={guia.file.url}
+          href={fileUrl}
           target="_blank"
           rel="noopener noreferrer"
           className="mt-auto flex items-center justify-center gap-2 py-2.5 bg-foreground text-white text-xs font-semibold rounded-xl hover:bg-[#333418] transition-colors"
