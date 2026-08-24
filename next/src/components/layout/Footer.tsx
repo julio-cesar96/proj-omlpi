@@ -19,9 +19,10 @@ const CURRENT_YEAR = new Date().getFullYear();
 const NAV_LINKS = [
   { href: "#inicio", label: "Início" },
   { href: "#sobre", label: "Sobre" },
-  { href: "#pnipi", label: "PNIPI" },
-  { href: "#midiateca", label: "Midiateca" },
-  { href: "#consulta-publica", label: "Consulta pública" },
+  { href: "#historico", label: "Histórico" },
+  { href: "#consulta-publica", label: "Consulte os Planos" },
+  { href: "#pnipi", label: "Legislação" },
+  { href: "#midiateca", label: "Conteúdos e recursos" },
   { href: "#contato", label: "Contato" },
 ] as const;
 

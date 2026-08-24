@@ -91,18 +91,18 @@ export async function ElaborePlano() {
         <div className="space-y-8">
           {/* Imagem de Capa ou Placeholder */}
           {capaUrl ? (
-            <div className="relative w-full aspect-[3/2] rounded-2xl overflow-hidden shadow-sm border border-border/40">
+            <div className="relative w-full max-h-[400px] aspect-[3/2] rounded-2xl overflow-hidden shadow-sm border border-border/40 bg-muted/20 flex items-center justify-center">
               <Image
                 src={capaUrl}
                 alt={tituloGuia}
                 fill
-                className="object-cover"
+                className="object-contain"
                 sizes="(max-width: 1200px) 100vw, 1200px"
                 unoptimized
               />
             </div>
           ) : (
-            <div className="w-full aspect-[3/2] bg-[#F5F0E8] border-2 border-dashed border-muted-foreground/30 rounded-2xl overflow-hidden flex flex-col items-center justify-center p-6 text-center shadow-sm">
+            <div className="w-full max-h-[400px] aspect-[3/2] bg-[#F5F0E8] border-2 border-dashed border-muted-foreground/30 rounded-2xl overflow-hidden flex flex-col items-center justify-center p-6 text-center shadow-sm">
               <ImageIcon className="w-10 h-10 text-muted-foreground/60 mb-2" aria-hidden="true" />
               <span className="text-sm font-medium text-muted-foreground">
                 Capa do Guia — imagem a ser inserida

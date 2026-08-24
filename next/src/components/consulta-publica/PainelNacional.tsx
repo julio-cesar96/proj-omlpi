@@ -83,14 +83,14 @@ export async function PainelNacional({
     try {
       if (mode === "historico") {
         const res = await getHistoricalData(locationId, activeAreaId);
-        historicalData = res.historical?.[0] || null;
+        historicalData = res?.historical?.[0] || null;
         if (historicalData) {
           localeName = historicalData.name;
           localeType = historicalData.type;
         }
       } else {
         const res = await getCompareData(locationId);
-        compareData = res.comparison || null;
+        compareData = res?.comparison || null;
         if (compareData && compareData.length > 0) {
           const mainLoc = compareData[compareData.length - 1];
           localeName = mainLoc.name;

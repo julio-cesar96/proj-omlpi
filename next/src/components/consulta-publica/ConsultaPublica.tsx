@@ -6,8 +6,6 @@ import { TabsNav } from "./TabsNav";
 import { MapaBrasil } from "./MapaBrasil";
 import { PainelMunicipal } from "./PainelMunicipal";
 import { PainelEstadual } from "./PainelEstadual";
-import { PainelNacional } from "./PainelNacional";
-import { PainelMonitoramento } from "./PainelMonitoramento";
 import { LocalidadeBusca } from "./LocalidadeBusca";
 import { UploadPlano } from "./UploadPlano";
 
@@ -34,8 +32,8 @@ interface ConsultaPublicaProps {
 
 function parseTab(raw: string | string[] | undefined): TabId {
   const value = Array.isArray(raw) ? raw[0] : raw;
-  const valid = TABS.map((t) => t.id);
-  return (valid.includes(value as TabId) ? value : "mapa") as TabId;
+  const validIds = TABS.map((t) => t.id) as readonly string[];
+  return (validIds.includes(value as string) ? value : "mapa") as TabId;
 }
 
 function parseId(raw: string | string[] | undefined): number | undefined {
@@ -203,25 +201,6 @@ export async function ConsultaPublica({ searchParams }: ConsultaPublicaProps) {
                 allLocales={locales}
               />
             </Suspense>
-          )}
-
-          {tab === "nacional" && (
-            <Suspense
-              fallback={
-                <div className="h-96 bg-muted/30 rounded-xl animate-pulse" />
-              }
-            >
-              <PainelNacional
-                locationId={locationId}
-                areaId={areaId}
-                mode={parseMode(searchParams["mode"])}
-                locales={locales}
-              />
-            </Suspense>
-          )}
-
-          {tab === "monitoramento" && (
-            <PainelMonitoramento />
           )}
         </div>
       </div>

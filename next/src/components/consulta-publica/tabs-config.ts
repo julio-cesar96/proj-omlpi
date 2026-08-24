@@ -11,8 +11,6 @@ export const TABS = [
   { id: "mapa", label: "Mapa" },
   { id: "municipais", label: "Municipais" },
   { id: "estaduais", label: "Estaduais / Distrital" },
-  { id: "nacional", label: "Nacional" },
-  { id: "monitoramento", label: "Monitoramento" },
 ] as const;
 
-export type TabId = (typeof TABS)[number]["id"];
+export type TabId = (typeof TABS)[number]["id"] | "nacional" | "monitoramento";

@@ -37,19 +37,5 @@ export async function Sobre() {
     console.error("[Sobre] Falha ao buscar getSobres():", error);
   }
 
-  return (
-    <section id="sobre" aria-label="Sobre" className="py-20 lg:py-28">
-      <div className="max-w-7xl mx-auto px-5 lg:px-10">
-        <SectionLabel>Sobre</SectionLabel>
-        <h2
-          className="text-[30px] lg:text-[40px] font-black text-foreground mb-10"
-          style={{ fontFamily: "var(--font-heading)" }}
-        >
-          Quem somos
-        </h2>
-
-        <SobreClient abas={abas} />
-      </div>
-    </section>
-  );
+  return <SobreClient abas={abas} />;
 }

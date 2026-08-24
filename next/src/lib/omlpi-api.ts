@@ -23,23 +23,25 @@ async function omlpiGet<T>(
   path: string,
   params?: Record<string, string | number | undefined>,
   fetchOptions?: RequestInit
-): Promise<T> {
-  const base = getOmlpiUrl();
-  const qs = params
-    ? new URLSearchParams(
-        Object.entries(params)
-          .filter(([, v]) => v !== undefined && v !== null && v !== "")
-          .map(([k, v]) => [k, String(v)])
-      ).toString()
-    : "";
-  const url = `${base}/${path}${qs ? `?${qs}` : ""}`;
-  const res = await fetch(url, { cache: "no-store", ...fetchOptions });
-  if (!res.ok) {
-    throw new Error(
-      `[omlpi-api] GET /${path} falhou: ${res.status} ${res.statusText}`
-    );
+): Promise<T | null> {
+  try {
+    const base = getOmlpiUrl();
+    const qs = params
+      ? new URLSearchParams(
+          Object.entries(params)
+            .filter(([, v]) => v !== undefined && v !== null && v !== "")
+            .map(([k, v]) => [k, String(v)])
+        ).toString()
+      : "";
+    const url = `${base}/${path}${qs ? `?${qs}` : ""}`;
+    const res = await fetch(url, { cache: "no-store", ...fetchOptions });
+    if (!res.ok) {
+      return null;
+    }
+    return (await res.json()) as T;
+  } catch {
+    return null;
   }
-  return res.json() as Promise<T>;
 }
 
 async function omlpiPost<T>(
@@ -268,6 +270,7 @@ export async function getLocales(): Promise<OmlpiLocale[]> {
   const res = await omlpiGet<{ locales: OmlpiLocale[] } | OmlpiLocale[]>(
     "locales"
   );
+  if (!res) return [];
   if (Array.isArray(res)) return res;
   return (res as { locales: OmlpiLocale[] }).locales ?? [];
 }
@@ -278,7 +281,7 @@ export async function getLocales(): Promise<OmlpiLocale[]> {
  */
 export async function getStates(): Promise<OmlpiState[]> {
   const res = await omlpiGet<{ states: OmlpiState[] }>("states");
-  return res.states ?? [];
+  return res?.states ?? [];
 }
 
 /**
@@ -290,7 +293,7 @@ export async function getCities(stateId?: number): Promise<OmlpiCity[]> {
     "cities",
     stateId !== undefined ? { state_id: stateId } : undefined
   );
-  return res.cities ?? [];
+  return res?.cities ?? [];
 }
 
 /**
@@ -299,7 +302,7 @@ export async function getCities(stateId?: number): Promise<OmlpiCity[]> {
  */
 export async function getAreas(): Promise<OmlpiArea[]> {
   const res = await omlpiGet<{ areas: OmlpiArea[] }>("areas");
-  return res.areas ?? [];
+  return res?.areas ?? [];
 }
 
 /**
@@ -309,19 +312,19 @@ export async function getAreas(): Promise<OmlpiArea[]> {
 export async function getLocaleData(
   localeId: number,
   params?: { area_id?: number; year?: 2017 | 2018 | 2019 }
-): Promise<OmlpiLocaleData> {
+): Promise<OmlpiLocaleData | null> {
   const response = await omlpiGet<OmlpiLocaleDataResponse>("data", {
     locale_id: localeId,
     area_id: params?.area_id,
     year: params?.year,
   });
-  return response.locale;
+  return response?.locale ?? null;
 }
 
 /**
  * Indicador aleatório — rotator da seção Hero.
  */
-export function getRandomIndicator(): Promise<OmlpiRandomIndicator> {
+export function getRandomIndicator(): Promise<OmlpiRandomIndicator | null> {
   return omlpiGet<OmlpiRandomIndicator>("data/random_indicator");
 }
 
@@ -396,7 +399,7 @@ export function uploadPlan(
 export function getCompareData(
   localeId: number,
   year?: 2017 | 2018 | 2019
-): Promise<OmlpiCompareResponse> {
+): Promise<OmlpiCompareResponse | null> {
   return omlpiGet<OmlpiCompareResponse>("data/compare", {
     locale_id: localeId,
     year,
@@ -409,7 +412,7 @@ export function getCompareData(
 export function getHistoricalData(
   localeId: number,
   areaId?: number
-): Promise<OmlpiHistoricalResponse> {
+): Promise<OmlpiHistoricalResponse | null> {
   return omlpiGet<OmlpiHistoricalResponse>("data/historical", {
     locale_id: localeId,
     area_id: areaId,

@@ -34,10 +34,10 @@ export default async function Home({
     <>
       <Hero />
       <Sobre />
+      <ConsultaPublica searchParams={params} />
       <Pnipi />
       <ElaborePlano />
       <Midiateca />
-      <ConsultaPublica searchParams={params} />
       <Contato />
     </>
   );

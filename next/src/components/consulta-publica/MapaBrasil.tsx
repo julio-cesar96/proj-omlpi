@@ -226,7 +226,7 @@ export function MapaBrasil({ locales }: MapaBrasilProps) {
           const planUrl = point["planUrl"] as string | null;
           const isDF = Boolean(point["isDF"]);
 
-          let html = `<strong>${name}</strong><br>${total} plano${total === 1 ? "" : "s"} municipal${total === 1 ? "" : "is"}`;
+          let html = `<strong>${name}</strong><br>${total} plano${total === 1 ? "" : "s"} ${total === 1 ? "municipal" : "municipais"}`;
           if (planUrl) {
             html += `<br><a href="${planUrl}" target="_blank" rel="noopener noreferrer"
               style="color:var(--primary,#f25d27);font-weight:600;">

@@ -1,18 +1,14 @@
 /**
  * SobreClient — Client Component
  *
- * Renderiza todos os registros `sobres` em sequência (sem seletor de abas).
- * Os dados já chegam prontos como prop (buscados pelo Server Component Sobre.tsx).
+ * Renderiza o conteúdo institucional dividindo em duas seções:
+ * 1. #sobre     → "Quem somos" (tudo antes de `## Histórico`)
+ * 2. #historico  → "Histórico" (tudo a partir de `## Histórico`)
  *
  * Suporte a marcador {{imagem}} no campo `text`:
- *  - Se {{imagem}} estiver no texto E a aba tiver imagem → imagem inserida
- *    exatamente naquele ponto do fluxo do texto.
- *  - Se a aba tiver imagem mas NÃO tiver {{imagem}} no texto → imagem aparece
- *    no TOPO do bloco como fallback (compatibilidade com conteúdo antigo).
- *  - Se não houver imagem → {{imagem}} (se houver no texto) é removido silenciosamente.
- *
- * Campo real confirmado: `text` (não `content`) — ver lib/strapi.ts e
- * docs/progresso/correcao-schemas-strapi.md.
+ *  - Se {{imagem}} estiver no texto E a aba tiver imagem → imagem inserida no fluxo.
+ *  - Se tiver imagem sem marcador → imagem no TOPO do bloco como fallback.
+ *  - Se não houver imagem → marcador removido silenciosamente.
  */
 
 "use client";
@@ -23,11 +19,18 @@ const STRAPI_URL =
   process.env.NEXT_PUBLIC_STRAPI_URL ||
   "https://omlpi-strapi.rnpiobserva.org.br";
 
+function SectionLabel({ children }: { children: React.ReactNode }) {
+  return (
+    <div className="flex items-center gap-2 mb-3">
+      <span className="w-6 h-0.5 bg-primary rounded-full" />
+      <span className="text-xs font-bold uppercase tracking-widest text-primary">
+        {children}
+      </span>
+    </div>
+  );
+}
+
 // ─── renderMarkdown ────────────────────────────────────────────────────────────
-// Converte Markdown simples para HTML.
-// Suporta: ### h3, ## h2, # h1, **negrito**, *itálico*, - lista,
-// [texto](url "tooltip") links, e quebras de parágrafo \n\n.
-// O marcador {{imagem}} é tratado ANTES desta função ser chamada.
 function renderMarkdown(md: string): string {
   return md
     .replace(/^### (.+)$/gm, "<h3>$1</h3>")
@@ -35,7 +38,6 @@ function renderMarkdown(md: string): string {
     .replace(/^# (.+)$/gm, "<h1>$1</h1>")
     .replace(/\*\*(.+?)\*\*/g, "<strong>$1</strong>")
     .replace(/\*(.+?)\*/g, "<em>$1</em>")
-    // Links: [texto](url) ou [texto](url "tooltip") — ANTES da regra de parágrafo
     .replace(
       /\[([^\]]+)\]\(([^)\s"]+)(?:\s+"([^"]*)")?\)/g,
       (_, text, href, title) =>
@@ -51,7 +53,6 @@ function renderMarkdown(md: string): string {
 }
 
 // ─── buildImageTag ────────────────────────────────────────────────────────────
-// Gera a string HTML da imagem inline (substitui o marcador {{imagem}}).
 function buildImageTag(imageUrl: string, alt: string): string {
   const src = imageUrl.startsWith("http")
     ? imageUrl
@@ -60,7 +61,6 @@ function buildImageTag(imageUrl: string, alt: string): string {
 }
 
 // ─── renderText ───────────────────────────────────────────────────────────────
-// Processa o texto de uma aba, substituindo {{imagem}} quando aplicável.
 function renderText(
   text: string,
   imageUrl?: string,
@@ -87,84 +87,166 @@ function renderText(
   return { html: renderMarkdown(processed), imageFallback: hasImage };
 }
 
-// ─── Componente ───────────────────────────────────────────────────────────────
-
 interface Props {
   abas: StrapiSobre[];
 }
 
 export function SobreClient({ abas }: Props) {
-  if (abas.length === 0) {
-    return (
-      <p className="text-muted-foreground">
-        O Observa &#x2013; Observatório do Marco Legal da Primeira Infância é uma
-        iniciativa da Rede Nacional Primeira Infância &#x2013; RNPI que foi
-        desenvolvida sob coordenação da ANDI &#x2013; Comunicação e Direitos,
-        entidade que desempenhou a função de secretaria executiva da rede
-        para o período 2018-2021. Atualmente, a Plataforma é gerida pela
-        União Nacional dos Conselhos Municipais de Educação - UNCME.
-        <br />
-        <br />
-        Formada em 2007, a RNPI é a principal articulação de alcance nacional
-        a ter como missão o fomento de políticas públicas voltadas à garantia
-        dos direitos das crianças de 0 a 6 anos de idade. Sua composição é
-        democrática e plural, acolhendo hoje mais de 200 instituições de
-        diferentes dimensões e perfis.
-      </p>
-    );
+  // Extrai parte 1 (Sobre) e parte 2 (Histórico) das abas do Strapi
+  let sobreContent: { html: string; imageFallback: boolean; imageSrc: string | null; title?: string }[] = [];
+  let historicoContent: { html: string; imageFallback: boolean; imageSrc: string | null; title?: string }[] = [];
+
+  if (abas.length > 0) {
+    abas.forEach((aba) => {
+      const text = aba.text ?? "";
+      const imageSrc = aba.image?.url
+        ? aba.image.url.startsWith("http")
+          ? aba.image.url
+          : `${STRAPI_URL}${aba.image.url}`
+        : null;
+
+      const historicoMatchIndex = text.search(/^##\s*Histórico/m);
+
+      if (historicoMatchIndex !== -1) {
+        const parte1Text = text.slice(0, historicoMatchIndex).trim();
+        const parte2Text = text.slice(historicoMatchIndex).replace(/^##\s*Histórico\s*\n?/, "").trim();
+
+        if (parte1Text) {
+          const res1 = renderText(parte1Text, aba.image?.url, aba.title ?? "");
+          sobreContent.push({ ...res1, imageSrc, title: aba.title ?? undefined });
+        }
+
+        if (parte2Text) {
+          const res2 = renderText(parte2Text, aba.image?.url, aba.title ?? "");
+          historicoContent.push({ ...res2, imageSrc, title: "Histórico" });
+        }
+      } else if (aba.title?.toLowerCase().includes("histórico")) {
+        const res = renderText(text, aba.image?.url, aba.title ?? "");
+        historicoContent.push({ ...res, imageSrc, title: aba.title });
+      } else {
+        const res = renderText(text, aba.image?.url, aba.title ?? "");
+        sobreContent.push({ ...res, imageSrc, title: aba.title ?? undefined });
+      }
+    });
   }
 
   return (
-    <div className="flex flex-col gap-12">
-      {abas.map((aba) => {
-        const { html, imageFallback } = aba.text
-          ? renderText(aba.text, aba.image?.url, aba.title ?? "")
-          : { html: "", imageFallback: Boolean(aba.image?.url) };
+    <>
+      {/* ── Seção Sobre / Quem somos ── */}
+      <section id="sobre" aria-label="Sobre" className="py-20 lg:py-28">
+        <div className="max-w-7xl mx-auto px-5 lg:px-10">
+          <SectionLabel>Sobre</SectionLabel>
+          <h2
+            className="text-[30px] lg:text-[40px] font-black text-foreground mb-10"
+            style={{ fontFamily: "var(--font-heading)" }}
+          >
+            Quem somos
+          </h2>
 
-        const imageSrc =
-          aba.image?.url
-            ? aba.image.url.startsWith("http")
-              ? aba.image.url
-              : `${STRAPI_URL}${aba.image.url}`
-            : null;
+          {sobreContent.length === 0 ? (
+            <p className="text-muted-foreground leading-[1.75]">
+              O Observa &#x2013; Observatório do Marco Legal da Primeira Infância é uma
+              iniciativa da Rede Nacional Primeira Infância &#x2013; RNPI que foi
+              desenvolvida sob coordenação da ANDI &#x2013; Comunicação e Direitos,
+              entidade que desempenhou a função de secretaria executiva da rede
+              para o período 2018-2021. Atualmente, a Plataforma é gerida pela
+              União Nacional dos Conselhos Municipais de Educação - UNCME.
+              <br />
+              <br />
+              Formada em 2007, a RNPI é a principal articulação de alcance nacional
+              a ter como missão o fomento de políticas públicas voltadas à garantia
+              dos direitos das crianças de 0 a 6 anos de idade. Sua composição é
+              democrática e plural, acolhendo hoje mais de 200 instituições de
+              diferentes dimensões e perfis.
+            </p>
+          ) : (
+            <div className="flex flex-col gap-12">
+              {sobreContent.map((item, idx) => (
+                <div key={idx} className="max-w-none">
+                  {item.title && sobreContent.length > 1 && (
+                    <h3
+                      className="text-2xl font-black text-foreground mb-6"
+                      style={{ fontFamily: "var(--font-heading)" }}
+                    >
+                      {item.title}
+                    </h3>
+                  )}
+                  {item.imageFallback && item.imageSrc && (
+                    // eslint-disable-next-line @next/next/no-img-element
+                    <img
+                      src={item.imageSrc}
+                      alt={item.title ?? ""}
+                      className="w-full rounded-2xl mb-7"
+                      style={{ display: "block" }}
+                    />
+                  )}
+                  {item.html && (
+                    <div
+                      className="prose prose-sm max-w-none text-muted-foreground leading-[1.75]
+                        [&_p]:mb-4
+                        [&_h2]:text-foreground [&_h2]:font-bold [&_h2]:mt-6 [&_h2]:mb-3
+                        [&_h3]:text-foreground [&_h3]:font-semibold [&_h3]:mt-5 [&_h3]:mb-2
+                        [&_strong]:text-foreground
+                        [&_ul]:list-disc [&_ul]:pl-5 [&_li]:mb-1
+                        [&_a]:text-primary [&_a]:underline [&_a]:font-medium [&_a]:hover:text-primary/80 [&_a]:transition-colors
+                        [&_img]:w-full [&_img]:rounded-2xl [&_img]:my-7"
+                      dangerouslySetInnerHTML={{ __html: item.html }}
+                    />
+                  )}
+                </div>
+              ))}
+            </div>
+          )}
+        </div>
+      </section>
 
-        return (
-          <div key={aba.id} className="max-w-none">
-            {aba.title && abas.length > 1 && (
-              <h3
-                className="text-2xl font-black text-foreground mb-6"
-                style={{ fontFamily: "var(--font-heading)" }}
-              >
-                {aba.title}
-              </h3>
-            )}
+      {/* ── Seção Histórico (nova seção extraída) ── */}
+      <section id="historico" aria-label="Histórico" className="py-20 lg:py-28 border-t border-border/40 bg-muted/30">
+        <div className="max-w-7xl mx-auto px-5 lg:px-10">
+          <SectionLabel>Histórico</SectionLabel>
+          <h2
+            className="text-[30px] lg:text-[40px] font-black text-foreground mb-10"
+            style={{ fontFamily: "var(--font-heading)" }}
+          >
+            Histórico
+          </h2>
 
-            {imageFallback && imageSrc && (
-              // eslint-disable-next-line @next/next/no-img-element
-              <img
-                src={imageSrc}
-                alt={aba.title ?? ""}
-                className="w-full rounded-2xl mb-7"
-                style={{ display: "block" }}
-              />
-            )}
-
-            {html && (
-              <div
-                className="prose prose-sm max-w-none text-muted-foreground leading-[1.75]
-                  [&_p]:mb-4
-                  [&_h2]:text-foreground [&_h2]:font-bold [&_h2]:mt-6 [&_h2]:mb-3
-                  [&_h3]:text-foreground [&_h3]:font-semibold [&_h3]:mt-5 [&_h3]:mb-2
-                  [&_strong]:text-foreground
-                  [&_ul]:list-disc [&_ul]:pl-5 [&_li]:mb-1
-                  [&_a]:text-primary [&_a]:underline [&_a]:font-medium [&_a]:hover:text-primary/80 [&_a]:transition-colors
-                  [&_img]:w-full [&_img]:rounded-2xl [&_img]:my-7"
-                dangerouslySetInnerHTML={{ __html: html }}
-              />
-            )}
-          </div>
-        );
-      })}
-    </div>
+          {historicoContent.length === 0 ? (
+            <p className="text-muted-foreground leading-[1.75]">
+              A Rede Nacional Primeira Infância (RNPI) foi criada em 2007 como uma articulação de organizações da sociedade civil, do governo e do setor privado para promover os direitos da criança de 0 a 6 anos no Brasil. O Observa surge no âmbito desse movimento como instrumento permanente de monitoramento e transparência das políticas públicas pela primeira infância.
+            </p>
+          ) : (
+            <div className="flex flex-col gap-12">
+              {historicoContent.map((item, idx) => (
+                <div key={idx} className="max-w-none">
+                  {item.imageFallback && item.imageSrc && (
+                    // eslint-disable-next-line @next/next/no-img-element
+                    <img
+                      src={item.imageSrc}
+                      alt={item.title ?? ""}
+                      className="w-full rounded-2xl mb-7"
+                      style={{ display: "block" }}
+                    />
+                  )}
+                  {item.html && (
+                    <div
+                      className="prose prose-sm max-w-none text-muted-foreground leading-[1.75]
+                        [&_p]:mb-4
+                        [&_h2]:text-foreground [&_h2]:font-bold [&_h2]:mt-6 [&_h2]:mb-3
+                        [&_h3]:text-foreground [&_h3]:font-semibold [&_h3]:mt-5 [&_h3]:mb-2
+                        [&_strong]:text-foreground
+                        [&_ul]:list-disc [&_ul]:pl-5 [&_li]:mb-1
+                        [&_a]:text-primary [&_a]:underline [&_a]:font-medium [&_a]:hover:text-primary/80 [&_a]:transition-colors
+                        [&_img]:w-full [&_img]:rounded-2xl [&_img]:my-7"
+                      dangerouslySetInnerHTML={{ __html: item.html }}
+                    />
+                  )}
+                </div>
+              ))}
+            </div>
+          )}
+        </div>
+      </section>
+    </>
   );
 }
