@@ -61,7 +61,7 @@ export async function Midiateca() {
           className="text-[30px] lg:text-[40px] font-black text-foreground mb-8"
           style={{ fontFamily: 'var(--font-heading)' }}
         >
-          Documentos e recursos
+          Conteúdos e recursos
         </h2>
 
         <MidiatecaClient

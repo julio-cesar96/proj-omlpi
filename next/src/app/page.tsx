@@ -16,7 +16,7 @@
 
 import { Hero } from "@/components/sections/Hero";
 import { Sobre } from "@/components/sections/Sobre";
-import { Pnipi } from "@/components/sections/Pnipi";
+// import { Pnipi } from "@/components/sections/Pnipi"; // ocultada a pedido do cliente
 import { ElaborePlano } from "@/components/sections/ElaborePlano";
 import { Midiateca } from "@/components/sections/Midiateca";
 import { Contato } from "@/components/sections/Contato";
@@ -35,7 +35,7 @@ export default async function Home({
       <Hero />
       <Sobre />
       <ConsultaPublica searchParams={params} />
-      <Pnipi />
+      {/* <Pnipi /> — seção Legislação ocultada a pedido do cliente */}
       <ElaborePlano />
       <Midiateca />
       <Contato />

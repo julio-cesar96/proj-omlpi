@@ -222,6 +222,20 @@ export async function Hero() {
               />
             ))}
           </div>
+
+          {/* Fonte e link do relatório */}
+          <p className="mt-16 text-[15px] lg:text-base text-muted-foreground">
+            Levantamento nacional, junho de 2026.{" "}
+            <a
+              href="/levantamento-PEPI-PMPI-relatorio-final.pdf"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="underline font-medium hover:opacity-100 transition-opacity"
+              style={{ color: "var(--primary)" }}
+            >
+              Acesse o relatório.
+            </a>
+          </p>
         </div>
       </div>
     </>

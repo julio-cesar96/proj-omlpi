@@ -17,8 +17,7 @@ const NAV_LINKS = [
   { href: "#sobre", label: "Sobre" },
   { href: "#historico", label: "Histórico" },
   { href: "#consulta-publica", label: "Consulte os Planos" },
-  { href: "#pnipi", label: "Legislação" },
-  { href: "#midiateca", label: "Conteúdos e recursos" },
+  { href: "#midiateca", label: "Referências" },
   { href: "#contato", label: "Contato" },
 ] as const;
 

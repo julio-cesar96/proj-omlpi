@@ -21,8 +21,7 @@ const NAV_LINKS = [
   { href: "#sobre", label: "Sobre" },
   { href: "#historico", label: "Histórico" },
   { href: "#consulta-publica", label: "Consulte os Planos" },
-  { href: "#pnipi", label: "Legislação" },
-  { href: "#midiateca", label: "Conteúdos e recursos" },
+  { href: "#midiateca", label: "Referências" },
   { href: "#contato", label: "Contato" },
 ] as const;
 
@@ -37,7 +36,7 @@ export async function Footer() {
   }
 
   return (
-    <footer style={{ background: "var(--foreground)" }}>
+    <footer style={{ background: "#F5F0E8" }}>
       <div className="max-w-7xl mx-auto px-5 lg:px-10 pt-14 pb-8">
         {/* Colunas */}
         <div className="grid sm:grid-cols-3 gap-8 mb-10">
@@ -52,11 +51,11 @@ export async function Footer() {
                 height={38}
                 className="object-contain"
               />
-              <span className="font-black text-white text-xl" style={{ fontFamily: "var(--font-heading)" }}>
+              <span className="font-black text-xl" style={{ fontFamily: "var(--font-heading)", color: "var(--foreground)" }}>
                 Observa<span className="text-[#F25D27]">.</span>
               </span>
             </div>
-            <p className="text-sm text-white/70 leading-[1.7]">
+            <p className="text-sm leading-[1.7]" style={{ color: "var(--foreground)" }}>
               Monitorando planos pela Primeira Infância em todo o Brasil com
               dados abertos e acessíveis.
             </p>
@@ -65,8 +64,8 @@ export async function Footer() {
           {/* Navegação */}
           <div>
             <div
-              className="font-bold text-white text-sm mb-4"
-              style={{ fontFamily: "var(--font-heading)" }}
+              className="font-bold text-sm mb-4"
+              style={{ fontFamily: "var(--font-heading)", color: "var(--foreground)" }}
             >
               Navegação
             </div>
@@ -76,7 +75,8 @@ export async function Footer() {
                   <li key={href}>
                     <a
                       href={href}
-                      className="text-sm text-white/70 hover:text-white transition-colors"
+                      className="text-sm transition-colors hover:opacity-70"
+                      style={{ color: "var(--foreground)" }}
                     >
                       {label}
                     </a>
@@ -89,26 +89,26 @@ export async function Footer() {
           {/* Iniciativa */}
           <div>
             <div
-              className="font-bold text-white text-sm mb-4"
-              style={{ fontFamily: "var(--font-heading)" }}
+              className="font-bold text-sm mb-4"
+              style={{ fontFamily: "var(--font-heading)", color: "var(--foreground)" }}
             >
               Uma iniciativa da
             </div>
-            <p className="text-sm text-white/70 leading-[1.7] mb-4">
+            <p className="text-sm leading-[1.7] mb-4" style={{ color: "var(--foreground)" }}>
               Rede Nacional Primeira Infância (RNPI), com o apoio de parceiros
               institucionais comprometidos com os direitos das crianças de 0 a 6
               anos.
             </p>
-            <div className="text-sm text-white/70">
+            <div className="text-sm" style={{ color: "var(--foreground)" }}>
               observa@rnpi.org.br
             </div>
           </div>
         </div>
 
         {/* Tarja de logos parceiros */}
-        <div className="mb-8 pb-8 border-b border-white/10">
+        <div className="mb-8 pb-8 border-b border-black/10">
           <Image
-            src="/tarja-logos.jpeg"
+            src="/barra-logos.png"
             alt="Logos dos parceiros institucionais"
             width={1600}
             height={234}
@@ -117,7 +117,7 @@ export async function Footer() {
         </div>
 
         {/* Rodapé inferior */}
-        <div className="flex flex-col items-center gap-3 text-xs text-white/70 text-center">
+        <div className="flex flex-col items-center gap-3 text-xs text-center" style={{ color: "var(--foreground)" }}>
           <p>
             © {CURRENT_YEAR} Plataforma Observa · RNPI — Rede Nacional Primeira
             Infância · Dados abertos sob licença Creative Commons
