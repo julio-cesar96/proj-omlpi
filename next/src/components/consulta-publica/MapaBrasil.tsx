@@ -24,6 +24,18 @@ const MAP_COLORS = {
   border: "#ffffff",
 } as const;
 
+// Host do Strapi — usa variável pública (disponível no client)
+const STRAPI_BASE =
+  process.env.NEXT_PUBLIC_STRAPI_URL ||
+  "https://omlpi-strapi.rnpiobserva.org.br";
+
+/** Converte path relativo do Strapi (/uploads/...) em URL absoluta */
+function toAbsoluteUrl(url: string | null | undefined): string | null {
+  if (!url) return null;
+  return url.startsWith("http") ? url : `${STRAPI_BASE}${url}`;
+}
+
+
 declare global {
   interface Window {
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -90,7 +102,7 @@ export function MapaBrasil({ locales }: MapaBrasilProps) {
       const status = getLocaleStatus(statePlan, plansCount);
 
       item["planStatus"] = status;
-      item["planUrl"] = statePlan?.plan?.url ?? null;
+      item["planUrl"] = toAbsoluteUrl(statePlan?.plan?.url);
       item["isDF"] = stateAbbr === "DF";
       item["totalPlans"] = plansCount;
       item["totalCities"] = cities.length;
@@ -138,7 +150,7 @@ export function MapaBrasil({ locales }: MapaBrasilProps) {
 
                   city["isDrill"] = true;
                   city["humanName"] = locale?.name ?? String(city["name"]);
-                  city["planUrl"] = locale?.plan?.url ?? null;
+                  city["planUrl"] = toAbsoluteUrl(locale?.plan?.url);
                   city["isLaw"] = locale?.is_law ?? false;
                   city["value"] = hasPlan ? 100 : 0;
                 });

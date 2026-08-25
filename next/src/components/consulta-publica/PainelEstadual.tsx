@@ -1,4 +1,4 @@
-import type { StrapiLocale } from "@/lib/strapi";
+import { getStrapiUrl, type StrapiLocale } from "@/lib/strapi";
 import { LocalidadeBusca } from "./LocalidadeBusca";
 import { PainelMunicipal } from "./PainelMunicipal";
 import { DownloadPlanLink } from "./DownloadPlanLink";
@@ -161,7 +161,11 @@ export async function PainelEstadual({
                   {/* Link de download isolado em Client Component (z-10 > overlay z-0) */}
                   {locale.plan?.url && !locale.hide_plan && (
                     <DownloadPlanLink
-                      url={locale.plan.url}
+                      url={
+                        locale.plan.url.startsWith('http')
+                          ? locale.plan.url
+                          : `${getStrapiUrl()}${locale.plan.url}`
+                      }
                       label={`Baixar ${locale.is_law ? "Lei" : "Plano"}`}
                     />
                   )}
