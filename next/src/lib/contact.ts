@@ -1,17 +1,9 @@
 /**
  * lib/contact.ts — Envio do formulário de contato
  *
- * Status atual: PROVISÓRIO — ao submeter o formulário, abre uma conversa
- * no WhatsApp com a mensagem pré-preenchida.
- *
- * Substituir quando o backend confirmar um endpoint:
- *   - Se existir endpoint Perl/Strapi: criar Route Handler em
- *     app/api/contato/route.ts como proxy (mantém a chave/URL fora do client).
- *   - Se não existir: seguir Resend + Route Handler (PLANO_ONEPAGE.md §Contato).
- *
- * TODO (Fase 2 — seção Contato): confirmar número de WhatsApp definitivo e
- * substituir WHATSAPP_NUMBER abaixo, ou remover este arquivo quando o
- * endpoint de backend estiver disponível.
+ * O formulário chama o Route Handler interno /api/contato (server-side), que por
+ * sua vez repassa os dados ao Web3Forms usando a chave WEB3FORMS_KEY — variável
+ * server-only, nunca exposta no bundle do cliente.
  */
 
 export interface ContactFormData {
@@ -24,19 +16,10 @@ export interface ContactFormData {
 }
 
 /**
- * Chave de acesso pública do Web3Forms.
- */
-const WEB3FORMS_ACCESS_KEY = process.env.NEXT_PUBLIC_WEB3FORMS_KEY;
-
-/**
- * Envia os dados do formulário de contato para a API do Web3Forms.
- * Lança um erro caso a submissão falhe ou a chave de acesso não esteja configurada.
+ * Envia os dados do formulário de contato para o Route Handler /api/contato.
+ * Lança um erro caso a submissão falhe.
  */
 export async function submitContactForm(data: ContactFormData): Promise<void> {
-  if (!WEB3FORMS_ACCESS_KEY) {
-    throw new Error("Erro de configuração: Chave de acesso do formulário não encontrada.");
-  }
-
   // Se o estado estiver presente, incorpora-o à mensagem para preservá-lo,
   // já que a API do Web3Forms não possui um campo nativo para o Estado.
   const formattedMessage = data.state
@@ -44,37 +27,24 @@ export async function submitContactForm(data: ContactFormData): Promise<void> {
     : data.message;
 
   const payload = {
-    access_key: WEB3FORMS_ACCESS_KEY,
     name: data.name,
     email: data.email,
     subject: data.subject || "Contato via Observa",
     message: formattedMessage,
   };
 
-  try {
-    const response = await fetch("https://api.web3forms.com/submit", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-        Accept: "application/json",
-      },
-      body: JSON.stringify(payload),
-    });
+  const response = await fetch("/api/contato", {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify(payload),
+  });
 
-    if (!response.ok) {
-      throw new Error("Erro de rede ao enviar o formulário.");
-    }
+  const result = await response.json();
 
-    const result = await response.json();
-
-    if (!result.success) {
-      throw new Error(result.message || "Falha ao enviar a mensagem.");
-    }
-  } catch (error) {
-    if (error instanceof Error) {
-      throw error;
-    }
-    throw new Error("Ocorreu um erro inesperado ao enviar a mensagem. Tente novamente.");
+  if (!response.ok) {
+    throw new Error(result.error || "Falha ao enviar a mensagem.");
   }
 }
 
