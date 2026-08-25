@@ -56,7 +56,7 @@ export async function Footer() {
               </span>
             </div>
             <p className="text-sm leading-[1.7]" style={{ color: "var(--foreground)" }}>
-              Monitorando planos pela Primeira Infância em todo o Brasil com
+              Monitorando Planos pela Primeira Infância em todo o Brasil com
               dados abertos e acessíveis.
             </p>
           </div>

@@ -73,9 +73,12 @@ export async function ConsultaPublica({ searchParams }: ConsultaPublicaProps) {
       <div className="max-w-7xl mx-auto px-5 lg:px-10">
         {/* Cabeçalho da seção */}
         <div className="mb-8 space-y-2">
-          <span className="text-xs font-semibold uppercase tracking-widest text-primary">
-            Consulte os planos
-          </span>
+          <div className="flex items-center gap-2">
+            <span className="w-6 h-0.5 bg-primary rounded-full" />
+            <span className="text-xs font-semibold uppercase tracking-widest text-primary">
+              Consulte os planos
+            </span>
+          </div>
           <h2 className="text-3xl font-bold text-foreground">
             Planos pela Primeira Infância
           </h2>
