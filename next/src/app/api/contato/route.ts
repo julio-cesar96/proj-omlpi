@@ -66,7 +66,9 @@ export async function POST(request: NextRequest) {
     }
 
     return NextResponse.json({ success: true });
-  } catch {
+  } catch (err) {
+    // Loga o erro real no servidor (visível nos Vercel Function Logs)
+    console.error("[/api/contato] Falha ao chamar api.web3forms.com:", err);
     return NextResponse.json(
       { error: "Erro ao contactar o serviço de envio de e-mail." },
       { status: 502 }
