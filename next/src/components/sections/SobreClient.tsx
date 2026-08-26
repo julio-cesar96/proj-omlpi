@@ -203,7 +203,7 @@ export function SobreClient({ abas }: Props) {
       {/* ── Seção Histórico (nova seção extraída) ── */}
       <section id="historico" aria-label="Histórico" className="py-20 lg:py-28 border-t border-border/40 bg-muted/30">
         <div className="max-w-7xl mx-auto px-5 lg:px-10">
-          <SectionLabel>Histórico</SectionLabel>
+          <SectionLabel>Memória</SectionLabel>
           <h2
             className="text-[30px] lg:text-[40px] font-black text-foreground mb-10"
             style={{ fontFamily: "var(--font-heading)" }}
