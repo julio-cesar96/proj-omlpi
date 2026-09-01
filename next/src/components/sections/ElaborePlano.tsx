@@ -55,7 +55,7 @@ export async function ElaborePlano() {
   }
 
   const tituloSecao = data?.titulo_secao || "Elabore o plano do seu município";
-  const tituloGuia = data?.titulo_guia || "Guia para elaboração de Planos Intersetoriais para a Primeira Infância";
+  const tituloGuia = data?.titulo_guia || null;
   const descricaoMd = data?.descricao;
 
   const capaUrl = data?.capa?.url
@@ -94,7 +94,7 @@ export async function ElaborePlano() {
             <div className="relative w-full max-h-[400px] aspect-[3/2] rounded-2xl overflow-hidden shadow-sm border border-border/40 bg-muted/20 flex items-center justify-center">
               <Image
                 src={capaUrl}
-                alt={tituloGuia}
+                alt={tituloGuia ?? "Capa do guia"}
                 fill
                 className="object-contain"
                 sizes="(max-width: 1200px) 100vw, 1200px"
@@ -112,12 +112,14 @@ export async function ElaborePlano() {
 
           {/* Título do guia e parágrafos descritivos */}
           <div className="space-y-4 text-left">
-            <h3
-              className="text-xl lg:text-2xl font-bold text-foreground leading-snug"
-              style={{ fontFamily: "var(--font-heading)" }}
-            >
-              {tituloGuia}
-            </h3>
+            {tituloGuia && (
+              <h3
+                className="text-xl lg:text-2xl font-bold text-foreground leading-snug"
+                style={{ fontFamily: "var(--font-heading)" }}
+              >
+                {tituloGuia}
+              </h3>
+            )}
 
             {htmlDescricao ? (
               <div
