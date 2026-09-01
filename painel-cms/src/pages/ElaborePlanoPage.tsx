@@ -22,6 +22,7 @@ export const ElaborePlanoPage: React.FC = () => {
   const [tituloSecao, setTituloSecao] = useState('');
   const [tituloGuia, setTituloGuia] = useState('');
   const [descricao, setDescricao] = useState('');
+  const [imagePosition, setImagePosition] = useState<'topo' | 'esquerda' | 'direita'>('topo');
   const [capaFile, setCapaFile] = useState<StrapiFile | null>(null);
   const [arquivoFile, setArquivoFile] = useState<StrapiFile | null>(null);
 
@@ -55,6 +56,7 @@ export const ElaborePlanoPage: React.FC = () => {
       setTituloSecao(data.titulo_secao ?? '');
       setTituloGuia(data.titulo_guia ?? '');
       setDescricao(data.descricao ?? '');
+      setImagePosition(data.image_position ?? 'topo');
       setCapaFile(data.capa ?? null);
       setArquivoFile(data.arquivo ?? null);
     }
@@ -98,6 +100,7 @@ export const ElaborePlanoPage: React.FC = () => {
       descricao: descricao.trim() || null,
       capa: capaFile ? capaFile.id : null,
       arquivo: arquivoFile ? arquivoFile.id : null,
+      image_position: imagePosition,
       published_at: data?.published_at || new Date().toISOString(),
     };
 
@@ -451,6 +454,27 @@ export const ElaborePlanoPage: React.FC = () => {
                 {imageUploader.error}
               </p>
             )}
+          </div>
+
+          {/* Posição da Imagem de Capa */}
+          <div>
+            <label htmlFor="image-position" style={labelStyle}>
+              Posição da Imagem de Capa
+            </label>
+            <select
+              id="image-position"
+              value={imagePosition}
+              onChange={(e) => setImagePosition(e.target.value as 'topo' | 'esquerda' | 'direita')}
+              disabled={isSaving}
+              style={inputStyle}
+            >
+              <option value="topo">Topo — imagem acima do texto (padrão)</option>
+              <option value="esquerda">Esquerda — imagem à esquerda, texto à direita</option>
+              <option value="direita">Direita — imagem à direita, texto à esquerda</option>
+            </select>
+            <p style={{ margin: '5px 0 0', fontSize: '12px', color: 'var(--text-soft)' }}>
+              Define o layout da seção no site. Requer uma imagem de capa carregada para ter efeito.
+            </p>
           </div>
 
           {/* Arquivo do Guia (PDF/Doc) */}

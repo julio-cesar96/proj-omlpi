@@ -32,6 +32,11 @@
       "allowedTypes": ["images", "files", "videos"],
       "plugin": "upload",
       "required": false
+    },
+    "image_position": {
+      "type": "enumeration",
+      "enum": ["topo", "esquerda", "direita"],
+      "default": "topo"
     }
   }
 }

@@ -368,6 +368,7 @@ export interface ElaborePlano {
   descricao?: string | null;
   capa?: StrapiFile | null;
   arquivo?: StrapiFile | null;
+  image_position?: 'topo' | 'esquerda' | 'direita' | null;
   published_at?: string | null;
   created_at?: string;
   updated_at?: string;
@@ -379,6 +380,7 @@ export interface ElaborePlanoPayload {
   descricao?: string | null;
   capa?: number | null; // ID do StrapiFile
   arquivo?: number | null; // ID do StrapiFile
+  image_position?: 'topo' | 'esquerda' | 'direita' | null;
   published_at?: string | null;
 }
 
