@@ -33,7 +33,7 @@ interface ConsultaPublicaProps {
 function parseTab(raw: string | string[] | undefined): TabId {
   const value = Array.isArray(raw) ? raw[0] : raw;
   const validIds = TABS.map((t) => t.id) as readonly string[];
-  return (validIds.includes(value as string) ? value : "nacional") as TabId;
+  return (validIds.includes(value as string) ? value : "mapa") as TabId;
 }
 
 function parseId(raw: string | string[] | undefined): number | undefined {
@@ -105,6 +105,12 @@ export async function ConsultaPublica({ searchParams }: ConsultaPublicaProps) {
           aria-labelledby={`tab-${tab}`}
           className="mt-8"
         >
+          {tab === "nacional" && (
+            <div className="py-20 text-center space-y-3 text-muted-foreground">
+              <p className="text-base font-medium">Conteúdo em breve.</p>
+            </div>
+          )}
+
           {tab === "mapa" && (
             <div className="grid lg:grid-cols-[1fr_320px] gap-8">
               <div>

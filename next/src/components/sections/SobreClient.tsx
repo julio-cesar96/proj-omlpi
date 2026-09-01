@@ -105,11 +105,11 @@ export function SobreClient({ abas }: Props) {
           : `${STRAPI_URL}${aba.image.url}`
         : null;
 
-      const historicoMatchIndex = text.search(/^##\s*Histórico/m);
+      const historicoMatchIndex = text.search(/^##\s*(Histórico|Memória)/m);
 
       if (historicoMatchIndex !== -1) {
         const parte1Text = text.slice(0, historicoMatchIndex).trim();
-        const parte2Text = text.slice(historicoMatchIndex).replace(/^##\s*Histórico\s*\n?/, "").trim();
+        const parte2Text = text.slice(historicoMatchIndex).replace(/^##\s*(Histórico|Memória)\s*\n?/, '').trim();
 
         if (parte1Text) {
           const res1 = renderText(parte1Text, aba.image?.url, aba.title ?? "");

@@ -86,8 +86,8 @@ function BannerImage() {
       {/* Floating stat badges */}
       <div className="absolute -bottom-5 -left-5 bg-white backdrop-blur-md rounded-xl shadow-lg px-4 py-3 border border-border">
         <div
-          className="text-xl font-black text-primary"
-          style={{ fontFamily: "var(--font-heading)" }}
+          className="text-xl font-black"
+          style={{ fontFamily: "var(--font-heading)", color: "#17A649" }}
         >
           {STATS_PLACEHOLDER[2].value}
         </div>
@@ -97,8 +97,8 @@ function BannerImage() {
       </div>
       <div className="absolute -top-5 -right-3 bg-white backdrop-blur-md rounded-xl shadow-lg px-4 py-3 border border-border">
         <div
-          className="text-xl font-black text-secondary"
-          style={{ fontFamily: "var(--font-heading)" }}
+          className="text-xl font-black"
+          style={{ fontFamily: "var(--font-heading)", color: "#17A649" }}
         >
           {STATS_PLACEHOLDER[1].value}
         </div>
