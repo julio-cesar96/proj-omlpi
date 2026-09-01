@@ -197,22 +197,29 @@ export async function ElaborePlano() {
       className="py-16 lg:py-24 bg-white border-t border-border/40"
     >
       <div className="max-w-7xl mx-auto px-5 lg:px-10">
-        <SectionLabel>Guia para elaboração de planos</SectionLabel>
-        <h2
-          className="text-[30px] lg:text-[40px] font-black text-foreground mb-8"
-          style={{ fontFamily: "var(--font-heading)" }}
-        >
-          {tituloSecao}
-        </h2>
 
         {isLateral ? (
-          /* ── Layout lateral: 2 colunas ── */
+          /* ── Layout lateral: kicker + título + imagem à esq, texto à dir ── */
           <div
             className={`grid lg:grid-cols-[2fr_3fr] gap-10 lg:gap-16 items-start ${
               !imageFirst ? "lg:[&>*:first-child]:order-last" : ""
             }`}
           >
-            <CapaImage capaUrl={capaUrl} tituloGuia={tituloGuia} lateral />
+            {/* Coluna esquerda: kicker + título + imagem */}
+            <div className="space-y-5">
+              <div>
+                <SectionLabel>Guia para elaboração de planos</SectionLabel>
+                <h2
+                  className="text-[30px] lg:text-[40px] font-black text-foreground"
+                  style={{ fontFamily: "var(--font-heading)" }}
+                >
+                  {tituloSecao}
+                </h2>
+              </div>
+              <CapaImage capaUrl={capaUrl} tituloGuia={tituloGuia} lateral />
+            </div>
+
+            {/* Coluna direita: subtítulo + texto + download */}
             <ConteudoGuia
               tituloGuia={tituloGuia}
               htmlDescricao={htmlDescricao}
@@ -220,8 +227,15 @@ export async function ElaborePlano() {
             />
           </div>
         ) : (
-          /* ── Layout topo: imagem full-width acima do texto (fallback / 'topo') ── */
+          /* ── Layout topo: cabeçalho full-width, imagem + texto abaixo (fallback / 'topo') ── */
           <div className="space-y-8">
+            <SectionLabel>Guia para elaboração de planos</SectionLabel>
+            <h2
+              className="text-[30px] lg:text-[40px] font-black text-foreground mb-8"
+              style={{ fontFamily: "var(--font-heading)" }}
+            >
+              {tituloSecao}
+            </h2>
             <CapaImage capaUrl={capaUrl} tituloGuia={tituloGuia} />
             <ConteudoGuia
               tituloGuia={tituloGuia}
