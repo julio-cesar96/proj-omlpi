@@ -295,6 +295,12 @@ export interface StrapiElaborePlano {
   descricao?: string | null;
   capa?: StrapiFile | null;
   arquivo?: StrapiFile | null;
+  /**
+   * Posição da imagem de capa na seção.
+   * Campo a ser adicionado ao Strapi no Bloco 2.
+   * Enquanto não existir, o componente usa 'topo' como fallback.
+   */
+  image_position?: 'topo' | 'esquerda' | 'direita' | null;
 }
 
 

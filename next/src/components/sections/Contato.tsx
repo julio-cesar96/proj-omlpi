@@ -170,8 +170,8 @@ export function Contato() {
               style={{ aspectRatio: "16/9" }}
             >
               <Image
-                src="/images/contato-dominio.png"
-                alt="Ilustração decorativa de peças de dominó"
+                src="/images/img2-meninas-vibram.png"
+                alt="Crianças vibrando juntas"
                 fill
                 className="object-cover"
                 sizes="(max-width: 1024px) 100vw, 50vw"

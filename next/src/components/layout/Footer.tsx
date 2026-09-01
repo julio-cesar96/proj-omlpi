@@ -107,7 +107,7 @@ export async function Footer() {
         </div>
 
         {/* Tarja de logos parceiros */}
-        <div className="mb-8 pb-8 border-b border-black/10">
+        <div className="mb-4 pb-6">
           <Image
             src="/barra-logos.png"
             alt="Logos dos parceiros institucionais"
@@ -115,6 +115,15 @@ export async function Footer() {
             height={234}
             className="w-full h-auto object-contain"
           />
+        </div>
+
+        {/* Texto institucional */}
+        <div className="mb-8 pb-8 border-b border-black/10">
+          <p className="text-xs leading-[1.7] text-center" style={{ color: "var(--foreground)" }}>
+            Uma iniciativa da Rede Nacional Primeira Infância (RNPI), com apoio da Fundação Maria
+            Cecilia Souto Vidigal, Itaú Social e Fundação Van Leer, desenvolvida pelo Centro de
+            Criação de Imagem Popular (CECIP).
+          </p>
         </div>
 
         {/* Rodapé inferior */}

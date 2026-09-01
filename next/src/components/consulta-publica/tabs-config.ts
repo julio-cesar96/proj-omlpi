@@ -8,9 +8,10 @@
  */
 
 export const TABS = [
+  { id: "nacional", label: "Nacional" },
   { id: "mapa", label: "Mapa" },
   { id: "municipais", label: "Municipais" },
   { id: "estaduais", label: "Estaduais / Distrital" },
 ] as const;
 
-export type TabId = (typeof TABS)[number]["id"] | "nacional" | "monitoramento";
+export type TabId = (typeof TABS)[number]["id"] | "monitoramento";

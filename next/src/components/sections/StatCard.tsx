@@ -42,7 +42,7 @@ export function StatCard({
           <button
             onClick={() => setOpen((v) => !v)}
             aria-label={`Mais informações sobre ${label}`}
-            className="w-4 h-4 rounded-full border border-muted-foreground/40 text-muted-foreground/60 text-[10px] font-bold leading-none flex items-center justify-center flex-shrink-0 hover:border-foreground hover:text-foreground transition-colors"
+            className="w-4 h-4 rounded-full border border-[#F25D27]/50 text-[#F25D27] text-[10px] font-bold leading-none flex items-center justify-center flex-shrink-0 hover:border-[#F25D27] hover:bg-[#fff3ee] transition-colors"
           >
             i
           </button>

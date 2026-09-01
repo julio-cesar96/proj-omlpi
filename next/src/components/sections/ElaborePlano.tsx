@@ -3,6 +3,11 @@
  *
  * Posicionada logo abaixo da seção PNIPI na home.
  * Consome os dados do Strapi via GET /elabore-planos com fallback para conteúdo estático.
+ *
+ * Suporte a image_position (Bloco 2 — campo a ser adicionado ao Strapi):
+ *   - 'topo'     (default/fallback): imagem full-width acima do texto
+ *   - 'esquerda': grid 2 colunas — imagem à esquerda, texto à direita
+ *   - 'direita':  grid 2 colunas — texto à esquerda, imagem à direita
  */
 
 import Image from "next/image";
@@ -45,6 +50,115 @@ function SectionLabel({ children }: { children: React.ReactNode }) {
   );
 }
 
+// ─── Sub-componente: Imagem de capa ──────────────────────────────────────────
+
+function CapaImage({
+  capaUrl,
+  tituloGuia,
+  lateral,
+}: {
+  capaUrl: string | null;
+  tituloGuia: string | null;
+  lateral?: boolean;
+}) {
+  if (capaUrl) {
+    return (
+      <div
+        className={`relative rounded-2xl overflow-hidden shadow-sm border border-border/40 bg-muted/20 flex items-center justify-center ${
+          lateral
+            ? "w-full h-full min-h-[320px] aspect-[3/4]"
+            : "w-full max-h-[400px] aspect-[3/2]"
+        }`}
+      >
+        <Image
+          src={capaUrl}
+          alt={tituloGuia ?? "Capa do guia"}
+          fill
+          className="object-contain"
+          sizes={lateral ? "(max-width: 1024px) 100vw, 40vw" : "(max-width: 1200px) 100vw, 1200px"}
+          unoptimized
+        />
+      </div>
+    );
+  }
+
+  return (
+    <div
+      className={`bg-[#F5F0E8] border-2 border-dashed border-muted-foreground/30 rounded-2xl overflow-hidden flex flex-col items-center justify-center p-6 text-center shadow-sm ${
+        lateral ? "w-full min-h-[320px]" : "w-full max-h-[400px] aspect-[3/2]"
+      }`}
+    >
+      <ImageIcon className="w-10 h-10 text-muted-foreground/60 mb-2" aria-hidden="true" />
+      <span className="text-sm font-medium text-muted-foreground">
+        Capa do Guia — imagem a ser inserida
+      </span>
+    </div>
+  );
+}
+
+// ─── Sub-componente: Conteúdo editorial ──────────────────────────────────────
+
+function ConteudoGuia({
+  tituloGuia,
+  htmlDescricao,
+  arquivoUrl,
+}: {
+  tituloGuia: string | null;
+  htmlDescricao: string | null;
+  arquivoUrl: string | null;
+}) {
+  return (
+    <div className="space-y-4 text-left">
+      {tituloGuia && (
+        <h3
+          className="text-xl lg:text-2xl font-bold text-foreground leading-snug"
+          style={{ fontFamily: "var(--font-heading)" }}
+        >
+          {tituloGuia}
+        </h3>
+      )}
+
+      {htmlDescricao ? (
+        <div
+          className="prose prose-sm max-w-none text-muted-foreground leading-relaxed text-[15px] lg:text-base
+            [&_p]:mb-4
+            [&_h2]:text-foreground [&_h2]:font-bold [&_h2]:mt-6 [&_h2]:mb-3
+            [&_h3]:text-foreground [&_h3]:font-semibold [&_h3]:mt-5 [&_h3]:mb-2
+            [&_strong]:text-foreground
+            [&_ul]:list-disc [&_ul]:pl-5 [&_li]:mb-1
+            [&_a]:text-[#F25D27] [&_a]:underline [&_a]:font-medium [&_a]:hover:text-[#e04d18] [&_a]:transition-colors"
+          dangerouslySetInnerHTML={{ __html: htmlDescricao }}
+        />
+      ) : (
+        <>
+          <p className="text-muted-foreground text-[15px] lg:text-base leading-relaxed">
+            O Guia para elaboração de planos intersetoriais pela primeira infância, publicação histórica da RNPI, agora se torna normativa governamental para a criação, implementação e monitoramento de planos municipais e estaduais no Brasil.
+          </p>
+          <p className="text-muted-foreground text-[15px] lg:text-base leading-relaxed">
+            Publicado em parceria com a Subsecretaria da Política Nacional Integrada da Primeira Infância, do Ministério da Educação, o material, atualizado com novos conteúdos, traz um novo capítulo dedicado à PNIPI. E inclui também orientações sobre temas transversais fundamentais na atualidade, como a diversidade das múltiplas infâncias brasileiras, educação antirracista, eliminação de violências e proteção no ambiente digital.
+          </p>
+        </>
+      )}
+
+      {arquivoUrl && (
+        <div className="pt-4">
+          <a
+            href={arquivoUrl}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="inline-flex items-center gap-2.5 px-6 py-3 bg-primary text-white font-bold rounded-xl hover:bg-[#e04d18] transition-colors shadow-sm text-sm"
+          >
+            <Download className="w-4 h-4" aria-hidden="true" />
+            Baixar Guia
+          </a>
+        </div>
+      )}
+    </div>
+  );
+}
+
+// ─── Main ────────────────────────────────────────────────────────────────────
+
 export async function ElaborePlano() {
   let data: StrapiElaborePlano | null = null;
 
@@ -57,6 +171,7 @@ export async function ElaborePlano() {
   const tituloSecao = data?.titulo_secao || "Elabore o plano do seu município";
   const tituloGuia = data?.titulo_guia || null;
   const descricaoMd = data?.descricao;
+  const imagePosition = data?.image_position ?? "topo"; // fallback seguro
 
   const capaUrl = data?.capa?.url
     ? data.capa.url.startsWith("http")
@@ -71,6 +186,9 @@ export async function ElaborePlano() {
     : null;
 
   const htmlDescricao = descricaoMd ? renderMarkdown(descricaoMd) : null;
+
+  const isLateral = imagePosition === "esquerda" || imagePosition === "direita";
+  const imageFirst = imagePosition !== "direita"; // esquerda ou topo → imagem vem antes
 
   return (
     <section
@@ -87,79 +205,32 @@ export async function ElaborePlano() {
           {tituloSecao}
         </h2>
 
-        {/* Bloco editorial em largura total */}
-        <div className="space-y-8">
-          {/* Imagem de Capa ou Placeholder */}
-          {capaUrl ? (
-            <div className="relative w-full max-h-[400px] aspect-[3/2] rounded-2xl overflow-hidden shadow-sm border border-border/40 bg-muted/20 flex items-center justify-center">
-              <Image
-                src={capaUrl}
-                alt={tituloGuia ?? "Capa do guia"}
-                fill
-                className="object-contain"
-                sizes="(max-width: 1200px) 100vw, 1200px"
-                unoptimized
-              />
-            </div>
-          ) : (
-            <div className="w-full max-h-[400px] aspect-[3/2] bg-[#F5F0E8] border-2 border-dashed border-muted-foreground/30 rounded-2xl overflow-hidden flex flex-col items-center justify-center p-6 text-center shadow-sm">
-              <ImageIcon className="w-10 h-10 text-muted-foreground/60 mb-2" aria-hidden="true" />
-              <span className="text-sm font-medium text-muted-foreground">
-                Capa do Guia — imagem a ser inserida
-              </span>
-            </div>
-          )}
-
-          {/* Título do guia e parágrafos descritivos */}
-          <div className="space-y-4 text-left">
-            {tituloGuia && (
-              <h3
-                className="text-xl lg:text-2xl font-bold text-foreground leading-snug"
-                style={{ fontFamily: "var(--font-heading)" }}
-              >
-                {tituloGuia}
-              </h3>
-            )}
-
-            {htmlDescricao ? (
-              <div
-                className="prose prose-sm max-w-none text-muted-foreground leading-relaxed text-[15px] lg:text-base
-                  [&_p]:mb-4
-                  [&_h2]:text-foreground [&_h2]:font-bold [&_h2]:mt-6 [&_h2]:mb-3
-                  [&_h3]:text-foreground [&_h3]:font-semibold [&_h3]:mt-5 [&_h3]:mb-2
-                  [&_strong]:text-foreground
-                  [&_ul]:list-disc [&_ul]:pl-5 [&_li]:mb-1
-                  [&_a]:text-primary [&_a]:underline [&_a]:font-medium [&_a]:hover:text-primary/80 [&_a]:transition-colors"
-                dangerouslySetInnerHTML={{ __html: htmlDescricao }}
-              />
-            ) : (
-              <>
-                <p className="text-muted-foreground text-[15px] lg:text-base leading-relaxed">
-                  O Guia para elaboração de planos intersetoriais pela primeira infância, publicação histórica da RNPI, agora se torna normativa governamental para a criação, implementação e monitoramento de planos municipais e estaduais no Brasil.
-                </p>
-                <p className="text-muted-foreground text-[15px] lg:text-base leading-relaxed">
-                  Publicado em parceria com a Subsecretaria da Política Nacional Integrada da Primeira Infância, do Ministério da Educação, o material, atualizado com novos conteúdos, traz um novo capítulo dedicado à PNIPI. E inclui também orientações sobre temas transversais fundamentais na atualidade, como a diversidade das múltiplas infâncias brasileiras, educação antirracista, eliminação de violências e proteção no ambiente digital.
-                </p>
-              </>
-            )}
-
-            {arquivoUrl && (
-              <div className="pt-4">
-                <a
-                  href={arquivoUrl}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="inline-flex items-center gap-2.5 px-6 py-3 bg-primary text-white font-bold rounded-xl hover:bg-[#e04d18] transition-colors shadow-sm text-sm"
-                >
-                  <Download className="w-4 h-4" aria-hidden="true" />
-                  Baixar Guia
-                </a>
-              </div>
-            )}
+        {isLateral ? (
+          /* ── Layout lateral: 2 colunas ── */
+          <div
+            className={`grid lg:grid-cols-[2fr_3fr] gap-10 lg:gap-16 items-start ${
+              !imageFirst ? "lg:[&>*:first-child]:order-last" : ""
+            }`}
+          >
+            <CapaImage capaUrl={capaUrl} tituloGuia={tituloGuia} lateral />
+            <ConteudoGuia
+              tituloGuia={tituloGuia}
+              htmlDescricao={htmlDescricao}
+              arquivoUrl={arquivoUrl}
+            />
           </div>
-        </div>
+        ) : (
+          /* ── Layout topo: imagem full-width acima do texto (fallback / 'topo') ── */
+          <div className="space-y-8">
+            <CapaImage capaUrl={capaUrl} tituloGuia={tituloGuia} />
+            <ConteudoGuia
+              tituloGuia={tituloGuia}
+              htmlDescricao={htmlDescricao}
+              arquivoUrl={arquivoUrl}
+            />
+          </div>
+        )}
       </div>
     </section>
   );
 }
-

@@ -157,7 +157,7 @@ function DocumentCard({ guia }: { guia: StrapiGuia }) {
           href={fileUrl}
           target="_blank"
           rel="noopener noreferrer"
-          className="mt-auto flex items-center justify-center gap-2 py-2.5 bg-foreground text-white text-xs font-semibold rounded-xl hover:bg-[#333418] transition-colors"
+          className="mt-auto flex items-center justify-center gap-2 py-2.5 border border-[#A49A87] text-[#444525] text-xs font-semibold rounded-xl hover:border-[#17A649] hover:text-[#17A649] transition-colors"
         >
           <DownloadIcon /> Baixar
         </a>
@@ -349,7 +349,7 @@ function MidiaCard({ midia }: { midia: StrapiMidiaPublica }) {
           <span className="text-[11px] text-muted-foreground font-semibold">
             {formatFileSize(midia.size)}
           </span>
-          <span className="flex items-center gap-1 text-[11px] text-primary font-semibold group-hover:underline">
+          <span className="flex items-center gap-1 text-[11px] text-[#444525] font-semibold border border-[#A49A87] rounded-lg px-2 py-0.5 group-hover:border-[#17A649] group-hover:text-[#17A649] transition-colors">
             <DownloadIcon size={10} /> Baixar
           </span>
         </div>

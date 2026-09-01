@@ -33,7 +33,7 @@ interface ConsultaPublicaProps {
 function parseTab(raw: string | string[] | undefined): TabId {
   const value = Array.isArray(raw) ? raw[0] : raw;
   const validIds = TABS.map((t) => t.id) as readonly string[];
-  return (validIds.includes(value as string) ? value : "mapa") as TabId;
+  return (validIds.includes(value as string) ? value : "nacional") as TabId;
 }
 
 function parseId(raw: string | string[] | undefined): number | undefined {

@@ -188,7 +188,7 @@ export async function Hero() {
                   </svg>
                 </a>
                 <a
-                  href="#sobre"
+                  href="#historico"
                   className="inline-flex items-center gap-2 px-7 py-3.5 border-2 border-[rgba(164,154,135,0.35)] text-foreground font-semibold rounded-full hover:border-secondary hover:text-secondary transition-colors text-[15px]"
                 >
                   Sobre o projeto
