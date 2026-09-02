@@ -31,7 +31,7 @@ const STATS_PLACEHOLDER = [
   },
   {
     value: "19",
-    label: "Planos Estaduais em vigência",
+    label: "Planos Estaduais",
     tooltip: "Dos 26 estados e o Distrito Federal, 22 responderam ao levantamento. 12 informaram possuir PEPI em vigência, 7 estão com plano em elaboração e 3 não possuem PEPI."
   },
   {
