@@ -22,7 +22,6 @@ import { UploadPlano } from "./UploadPlano";
  *   estaduais  → PainelEstadual (grid de estados + PainelMunicipal se selecionado)
  *
  * Tabs em placeholder (Fase 3b):
- *   nacional      → PainelNacionalPlaceholder
  *   monitoramento → MonitoramentoPlaceholder
  */
 
@@ -105,12 +104,6 @@ export async function ConsultaPublica({ searchParams }: ConsultaPublicaProps) {
           aria-labelledby={`tab-${tab}`}
           className="mt-8"
         >
-          {tab === "nacional" && (
-            <div className="py-20 text-center space-y-3 text-muted-foreground">
-              <p className="text-base font-medium">Conteúdo em breve.</p>
-            </div>
-          )}
-
           {tab === "mapa" && (
             <div className="grid lg:grid-cols-[1fr_320px] gap-8">
               <div>
