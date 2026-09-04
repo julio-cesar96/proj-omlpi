@@ -120,7 +120,7 @@ export function SobreClient({ abas }: Props) {
           const res2 = renderText(parte2Text, aba.image?.url, aba.title ?? "");
           historicoContent.push({ ...res2, imageSrc, title: "Histórico" });
         }
-      } else if (aba.title?.toLowerCase().includes("histórico")) {
+      } else if (aba.title?.toLowerCase().includes("histórico") || aba.title?.toLowerCase().includes("memória") || aba.title?.toLowerCase().includes("memoria")) {
         const res = renderText(text, aba.image?.url, aba.title ?? "");
         historicoContent.push({ ...res, imageSrc, title: aba.title });
       } else {

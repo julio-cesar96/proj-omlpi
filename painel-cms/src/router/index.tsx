@@ -19,6 +19,7 @@ const Usuarios      = React.lazy(() => import('../pages/Usuarios').then(m => ({ 
 const Configuracoes = React.lazy(() => import('../pages/Configuracoes').then(m => ({ default: m.Configuracoes })));
 const Inicio        = React.lazy(() => import('../pages/Inicio').then(m => ({ default: m.Inicio })));
 const Sobre         = React.lazy(() => import('../pages/Sobre').then(m => ({ default: m.Sobre })));
+const Memoria       = React.lazy(() => import('../pages/Memoria').then(m => ({ default: m.Memoria })));
 const Guias         = React.lazy(() => import('../pages/Guias').then(m => ({ default: m.Guias })));
 const ElaborePlano  = React.lazy(() => import('../pages/ElaborePlanoPage').then(m => ({ default: m.ElaborePlanoPage })));
 
@@ -97,6 +98,7 @@ export const AppRouter: React.FC = () => {
             <Route path="/textos/novo"    element={<TextosEditor />} />
             <Route path="/textos/:id"     element={<TextosEditor />} />
             <Route path="/sobre"          element={<Sobre />} />
+            <Route path="/memoria"        element={<Memoria />} />
             <Route path="/elabore-plano"  element={<ElaborePlano />} />
             <Route path="/usuarios"       element={<Usuarios />} />
 
