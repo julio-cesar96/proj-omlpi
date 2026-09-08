@@ -27,6 +27,7 @@ export const Midiateca: React.FC = () => {
   const [activeFilter, setActiveFilter] = useState<MediaFilterKey>('all');
   const [activeSort, setActiveSort] = useState<MediaSortKey>('recent');
   const [currentPage, setCurrentPage] = useState(1);
+  const [searchQuery, setSearchQuery] = useState('');
   const [toastMessage, setToastMessage] = useState<string | null>(null);
   const [deleteTarget, setDeleteTarget] = useState<{ id: number; name: string; relatedCount: number } | null>(null);
   const [bulkPublishPending, setBulkPublishPending] = useState(false);
@@ -47,14 +48,20 @@ export const Midiateca: React.FC = () => {
     setCurrentPage(1);
   };
 
+  const handleSearch = (q: string) => {
+    setSearchQuery(q);
+    setCurrentPage(1);
+  };
+
   const { data: files, isLoading } = useMediaFiles({
     start: (currentPage - 1) * LIMIT,
     limit: LIMIT,
     sortKey: activeSort,
     filterType: activeFilter,
+    searchQuery,
   });
 
-  const { counts } = useMediaCounts();
+  const { counts } = useMediaCounts(searchQuery);
   const { data: storageData, isLoading: isStorageLoading, isError: isStorageError } = useStorageUsage();
   const { uploads, uploadFiles, clearCompleted } = useMediaUpload();
   const deleteMutation = useMediaDelete();
@@ -139,6 +146,8 @@ export const Midiateca: React.FC = () => {
         onFilter={handleFilter}
         activeSort={activeSort}
         onSort={handleSort}
+        searchQuery={searchQuery}
+        onSearchChange={handleSearch}
         onBulkPublish={() => setBulkPublishPending(true)}
       />
 
