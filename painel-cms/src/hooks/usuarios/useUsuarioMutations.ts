@@ -131,5 +131,23 @@ export function useUsuarioMutations() {
     // Não invalida a query de usuários — a senha não altera nenhum campo listável
   });
 
-  return { createUsuario, updateUsuario, toggleBloqueio, redefinirSenha };
+  /**
+   * O próprio usuário altera sua senha via PUT /users/me.
+   * Disponível para todos os roles (Admin, Editor, Revisor) — requer permissão
+   * `update` habilitada no Strapi Admin para o role correspondente.
+   */
+  const alterarMinhaSenha = useMutation<void, Error, { novaSenha: string }>({
+    mutationFn: async ({ novaSenha }) => {
+      const res = await apiFetch('/users/me', {
+        method: 'PUT',
+        body: JSON.stringify({ password: novaSenha }),
+      });
+      if (!res.ok) {
+        const err = await res.json().catch(() => ({}));
+        throw new Error(err.message || 'Erro ao alterar senha.');
+      }
+    },
+  });
+
+  return { createUsuario, updateUsuario, toggleBloqueio, redefinirSenha, alterarMinhaSenha };
 }
