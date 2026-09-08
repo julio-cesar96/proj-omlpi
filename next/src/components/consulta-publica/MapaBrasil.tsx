@@ -17,7 +17,7 @@ import type { StrapiLocale } from "@/lib/strapi";
 
 // Cores do mapa — alinhadas com tokens do design (theme.css)
 const MAP_COLORS = {
-  approved: "#17a649",       // --secondary: verde = aprovado
+  approved: "#009045",       // --secondary: verde = aprovado
   inProgress: "#f25d27",     // --primary: laranja = em elaboração / lei
   none: "#e8f0e8",           // branco-esverdeado sutil para "sem plano"
   hover: "#444525",          // --foreground: escuro no hover

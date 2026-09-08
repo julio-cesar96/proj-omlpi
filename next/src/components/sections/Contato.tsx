@@ -197,7 +197,7 @@ export function Contato() {
                     height="24"
                     viewBox="0 0 24 24"
                     fill="none"
-                    stroke="#17a649"
+                    stroke="#009045"
                     strokeWidth="2.5"
                     strokeLinecap="round"
                     strokeLinejoin="round"
