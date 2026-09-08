@@ -22,9 +22,9 @@ const statusMap: Record<StatusType, { label: string; color: string; bg: string; 
   },
   publicado: {
     label: 'Publicado',
-    color: '#17A649',
+    color: '#009045',
     bg: 'var(--accent)',
-    dot: '#17A649',
+    dot: '#009045',
   },
   arquivado: {
     label: 'Arquivado',
@@ -34,9 +34,9 @@ const statusMap: Record<StatusType, { label: string; color: string; bg: string; 
   },
   ativo: {
     label: 'Ativo',
-    color: '#17A649',
+    color: '#009045',
     bg: 'var(--accent)',
-    dot: '#17A649',
+    dot: '#009045',
   },
   inativo: {
     label: 'Inativo',

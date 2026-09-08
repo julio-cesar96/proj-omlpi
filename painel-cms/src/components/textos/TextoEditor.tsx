@@ -252,7 +252,7 @@ export const TextoEditor: React.FC<TextoEditorProps> = ({
             <span
               style={{
                 fontWeight: 700,
-                color: isPublished ? '#17A649' : '#7a7663',
+                color: isPublished ? '#009045' : '#7a7663',
                 background: isPublished ? 'var(--accent)' : 'var(--muted)',
                 padding: '2px 10px',
                 borderRadius: '20px',

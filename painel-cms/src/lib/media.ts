@@ -9,7 +9,7 @@ export function getMediaType(mime: string): MediaFileType {
 
 export const MEDIA_TYPE_CONFIG: Record<MediaFileType, { label: string; bg: string; color: string }> = {
   pdf:   { label: 'PDF', bg: '#FDE7DE', color: '#F25D27' },
-  img:   { label: 'IMG', bg: '#E8F5EE', color: '#17A649' },
+  img:   { label: 'IMG', bg: '#E8F5EE', color: '#009045' },
   video: { label: 'VÍD', bg: '#efe6fb', color: '#8a6bd6' },
   doc:   { label: 'DOC', bg: '#e6eefb', color: '#3b6bd6' },
 };

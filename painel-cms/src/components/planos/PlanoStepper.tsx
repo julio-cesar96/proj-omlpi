@@ -10,7 +10,7 @@ const flow: EditorialState[] = ['rascunho', 'revisao', 'publicado', 'arquivado']
 const statusConfig: Record<EditorialState, { label: string; dot: string }> = {
   rascunho: { label: 'Rascunho', dot: '#a49a87' },
   revisao: { label: 'Em revisão', dot: '#F25D27' },
-  publicado: { label: 'Publicado', dot: '#17A649' },
+  publicado: { label: 'Publicado', dot: '#009045' },
   arquivado: { label: 'Arquivado', dot: '#c08585' },
 };
 

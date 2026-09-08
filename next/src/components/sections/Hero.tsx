@@ -98,7 +98,7 @@ function BannerImage() {
       <div className="absolute -top-5 -right-3 bg-white backdrop-blur-md rounded-xl shadow-lg px-4 py-3 border border-border">
         <div
           className="text-xl font-black"
-          style={{ fontFamily: "var(--font-heading)", color: "#17A649" }}
+          style={{ fontFamily: "var(--font-heading)", color: "#009045" }}
         >
           {STATS_PLACEHOLDER[1].value}
         </div>
@@ -133,7 +133,7 @@ export async function Hero() {
         <div
           className="absolute top-0 right-0 w-[600px] h-[600px] opacity-[0.07] pointer-events-none rounded-full"
           style={{
-            background: "radial-gradient(circle, #17A649 0%, transparent 70%)",
+            background: "radial-gradient(circle, #009045 0%, transparent 70%)",
             transform: "translate(25%, -25%)",
           }}
           aria-hidden="true"

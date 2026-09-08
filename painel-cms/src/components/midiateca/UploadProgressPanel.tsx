@@ -83,7 +83,7 @@ export const UploadProgressPanel: React.FC<UploadProgressPanelProps> = ({ upload
           const statusColor = u.error
             ? 'var(--destructive)'
             : u.done
-            ? '#17A649' // var(--secondary)
+            ? '#009045' // var(--secondary)
             : '#7a7663'; // var(--text-soft)
 
           const barColor = u.error

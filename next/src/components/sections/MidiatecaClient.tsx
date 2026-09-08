@@ -42,7 +42,7 @@ const TYPE_CONFIG: Record<
   { label: string; bg: string; color: string; mimeParam?: string }
 > = {
   pdf:   { label: 'PDF', bg: '#FDE7DE', color: '#F25D27', mimeParam: 'application/pdf' },
-  img:   { label: 'IMG', bg: '#E8F5EE', color: '#17A649', mimeParam: 'image/' },
+  img:   { label: 'IMG', bg: '#E8F5EE', color: '#009045', mimeParam: 'image/' },
   video: { label: 'VÍD', bg: '#efe6fb', color: '#8a6bd6', mimeParam: 'video/' },
   doc:   { label: 'DOC', bg: '#e6eefb', color: '#3b6bd6' },
 };
@@ -157,7 +157,7 @@ function DocumentCard({ guia }: { guia: StrapiGuia }) {
           href={fileUrl}
           target="_blank"
           rel="noopener noreferrer"
-          className="mt-auto flex items-center justify-center gap-2 py-2.5 border border-[#A49A87] text-[#444525] text-xs font-semibold rounded-xl hover:border-[#17A649] hover:text-[#17A649] transition-colors"
+          className="mt-auto flex items-center justify-center gap-2 py-2.5 border border-[#A49A87] text-[#444525] text-xs font-semibold rounded-xl hover:border-[#009045] hover:text-[#009045] transition-colors"
         >
           <DownloadIcon /> Baixar
         </a>
@@ -349,7 +349,7 @@ function MidiaCard({ midia }: { midia: StrapiMidiaPublica }) {
           <span className="text-[11px] text-muted-foreground font-semibold">
             {formatFileSize(midia.size)}
           </span>
-          <span className="flex items-center gap-1 text-[11px] text-[#444525] font-semibold border border-[#A49A87] rounded-lg px-2 py-0.5 group-hover:border-[#17A649] group-hover:text-[#17A649] transition-colors">
+          <span className="flex items-center gap-1 text-[11px] text-[#444525] font-semibold border border-[#A49A87] rounded-lg px-2 py-0.5 group-hover:border-[#009045] group-hover:text-[#009045] transition-colors">
             <DownloadIcon size={10} /> Baixar
           </span>
         </div>

@@ -212,7 +212,7 @@ export const PlanoPdfDropzone: React.FC<PlanoPdfDropzoneProps> = ({
             style={{
               fontSize: '12px',
               fontWeight: 700,
-              color: '#17A649',
+              color: '#009045',
               background: 'var(--accent)',
               padding: '3px 10px',
               borderRadius: '20px',

@@ -24,7 +24,7 @@ const statusConfig: Record<EditorialState, { label: string; bg: string; color: s
     label: 'Publicado',
     bg: '#EBF7EE',
     color: '#117835',
-    dot: '#17A649',
+    dot: '#009045',
   },
   arquivado: {
     label: 'Arquivado',
