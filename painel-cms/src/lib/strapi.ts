@@ -195,6 +195,7 @@ export interface UsuarioPayload {
 export interface UsuarioUpdatePayload {
   username?: string;
   email?: string;
+  password?: string;
   role?: number;
   blocked?: boolean;
 }

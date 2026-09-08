@@ -105,5 +105,31 @@ export function useUsuarioMutations() {
     onSuccess: invalidate,
   });
 
-  return { createUsuario, updateUsuario, toggleBloqueio };
+  /**
+   * Redefine a senha de qualquer usuário (admin only).
+   * Gera uma nova senha temporária forte e a envia via PUT /users/:id.
+   * Retorna { senhaTemporaria } para exibição única no modal — nunca armazenada.
+   */
+  const redefinirSenha = useMutation<
+    { senhaTemporaria: string },
+    Error,
+    { id: number }
+  >({
+    mutationFn: async ({ id }) => {
+      const senhaTemporaria = generateTempPassword();
+      const res = await apiFetch(`/users/${id}`, {
+        method: 'PUT',
+        body: JSON.stringify({ password: senhaTemporaria }),
+      });
+      if (!res.ok) {
+        const err = await res.json().catch(() => ({}));
+        throw new Error(err.message || 'Erro ao redefinir senha.');
+      }
+      await res.json();
+      return { senhaTemporaria };
+    },
+    // Não invalida a query de usuários — a senha não altera nenhum campo listável
+  });
+
+  return { createUsuario, updateUsuario, toggleBloqueio, redefinirSenha };
 }

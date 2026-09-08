@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { X } from 'lucide-react';
+import { X, KeyRound } from 'lucide-react';
 import { useRoles } from '../../hooks/usuarios/useRoles';
 import type { StrapiUsuario, UsuarioPayload, UsuarioUpdatePayload, RoleLookup } from '../../lib/strapi';
 
@@ -24,6 +24,8 @@ interface UsuarioDrawerProps {
   onCreate: (payload: Omit<UsuarioPayload, 'password'>) => Promise<void>;
   onUpdate: (id: number, payload: UsuarioUpdatePayload) => Promise<void>;
   onToggleBloqueio: (id: number, blocked: boolean) => Promise<void>;
+  /** Admin redefine senha de um usuário. Retorna a senha temporária gerada. */
+  onRedefinirSenha: (id: number) => Promise<string>;
 }
 
 export const UsuarioDrawer: React.FC<UsuarioDrawerProps> = ({
@@ -34,6 +36,7 @@ export const UsuarioDrawer: React.FC<UsuarioDrawerProps> = ({
   onCreate,
   onUpdate,
   onToggleBloqueio,
+  onRedefinirSenha,
 }) => {
   const isEdit = usuario !== null;
 
@@ -42,6 +45,8 @@ export const UsuarioDrawer: React.FC<UsuarioDrawerProps> = ({
   const [roleId, setRoleId] = useState<number | null>(null);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [fieldError, setFieldError] = useState<string | null>(null);
+  // Confirmação em dois cliques para evitar redefinição acidental
+  const [confirmandoSenha, setConfirmandoSenha] = useState(false);
 
   const { data: roles = [] } = useRoles();
 
@@ -57,6 +62,7 @@ export const UsuarioDrawer: React.FC<UsuarioDrawerProps> = ({
       setRoleId(null);
     }
     setFieldError(null);
+    setConfirmandoSenha(false);
   }, [usuario, isOpen]);
 
   if (!isOpen) return null;
@@ -102,6 +108,22 @@ export const UsuarioDrawer: React.FC<UsuarioDrawerProps> = ({
     setIsSubmitting(true);
     try {
       await onToggleBloqueio(usuario.id, !usuario.blocked);
+      onClose();
+    } finally {
+      setIsSubmitting(false);
+    }
+  };
+
+  const handleRedefinirSenha = async () => {
+    if (!usuario) return;
+    if (!confirmandoSenha) {
+      setConfirmandoSenha(true);
+      return;
+    }
+    setIsSubmitting(true);
+    setConfirmandoSenha(false);
+    try {
+      await onRedefinirSenha(usuario.id);
       onClose();
     } finally {
       setIsSubmitting(false);
@@ -359,6 +381,95 @@ export const UsuarioDrawer: React.FC<UsuarioDrawerProps> = ({
               Ver permissões detalhadas no Strapi Admin →
             </a>
           </div>
+
+          {/* Redefinir senha (modo edição — admin pode redefinir qualquer um, inclusive si mesmo) */}
+          {isEdit && (
+            <div
+              style={{
+                padding: '14px',
+                borderRadius: '12px',
+                border: `1.5px solid ${confirmandoSenha ? 'var(--warning, #ca8a04)' : 'var(--border)'}`,
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'space-between',
+                gap: '12px',
+                transition: 'border-color .2s',
+                background: confirmandoSenha ? 'rgba(202,138,4,.06)' : 'transparent',
+              }}
+            >
+              <div>
+                <p
+                  style={{
+                    margin: 0,
+                    fontSize: '13px',
+                    fontWeight: 700,
+                    color: confirmandoSenha ? 'var(--warning, #ca8a04)' : 'var(--text)',
+                    display: 'flex',
+                    alignItems: 'center',
+                    gap: '6px',
+                  }}
+                >
+                  <KeyRound size={14} />
+                  {confirmandoSenha ? 'Confirmar redefinição?' : 'Redefinir senha'}
+                </p>
+                <p
+                  style={{
+                    margin: '2px 0 0',
+                    fontSize: '12px',
+                    color: 'var(--text-soft)',
+                  }}
+                >
+                  {confirmandoSenha
+                    ? 'Uma nova senha temporária será gerada e exibida uma única vez.'
+                    : 'Gera uma nova senha temporária para o usuário.'}
+                </p>
+              </div>
+              <div style={{ display: 'flex', gap: '8px', flexShrink: 0 }}>
+                {confirmandoSenha && (
+                  <button
+                    type="button"
+                    onClick={() => setConfirmandoSenha(false)}
+                    disabled={isSubmitting}
+                    style={{
+                      height: '36px',
+                      padding: '0 14px',
+                      borderRadius: '9px',
+                      border: '1px solid var(--border)',
+                      background: 'var(--card)',
+                      color: 'var(--text)',
+                      fontSize: '12.5px',
+                      fontWeight: 700,
+                      cursor: 'pointer',
+                      whiteSpace: 'nowrap',
+                    }}
+                  >
+                    Cancelar
+                  </button>
+                )}
+                <button
+                  type="button"
+                  onClick={handleRedefinirSenha}
+                  disabled={isSubmitting}
+                  style={{
+                    height: '36px',
+                    padding: '0 16px',
+                    borderRadius: '9px',
+                    border: 'none',
+                    background: confirmandoSenha ? 'var(--warning, #ca8a04)' : 'var(--muted)',
+                    color: confirmandoSenha ? '#fff' : 'var(--text)',
+                    fontSize: '12.5px',
+                    fontWeight: 700,
+                    cursor: isSubmitting ? 'not-allowed' : 'pointer',
+                    whiteSpace: 'nowrap',
+                    transition: 'background .2s, color .2s',
+                    opacity: isSubmitting ? 0.6 : 1,
+                  }}
+                >
+                  {isSubmitting ? 'Redefinindo…' : confirmandoSenha ? 'Confirmar' : 'Redefinir'}
+                </button>
+              </div>
+            </div>
+          )}
 
           {/* Ação de bloqueio (só em edição, não para o próprio usuário) */}
           {isEdit && !isSelf && (

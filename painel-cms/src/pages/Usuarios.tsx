@@ -17,7 +17,7 @@ const ROLE_BADGE: Record<string, { bg: string; color: string }> = {
 export const Usuarios: React.FC = () => {
   const { user: authUser } = useAuth();
   const { data: usuarios = [], isLoading, error } = useUsuarios();
-  const { createUsuario, updateUsuario, toggleBloqueio } = useUsuarioMutations();
+  const { createUsuario, updateUsuario, toggleBloqueio, redefinirSenha } = useUsuarioMutations();
 
   const [drawerOpen, setDrawerOpen] = useState(false);
   const [selectedUsuario, setSelectedUsuario] = useState<StrapiUsuario | null>(null);
@@ -53,6 +53,12 @@ export const Usuarios: React.FC = () => {
 
   const handleToggleBloqueio = async (id: number, blocked: boolean) => {
     await toggleBloqueio.mutateAsync({ id, blocked });
+  };
+
+  const handleRedefinirSenha = async (id: number): Promise<string> => {
+    const result = await redefinirSenha.mutateAsync({ id });
+    setSenhaModal({ open: true, senha: result.senhaTemporaria });
+    return result.senhaTemporaria;
   };
 
   return (
@@ -346,6 +352,7 @@ export const Usuarios: React.FC = () => {
         onCreate={handleCreate}
         onUpdate={handleUpdate}
         onToggleBloqueio={handleToggleBloqueio}
+        onRedefinirSenha={handleRedefinirSenha}
       />
 
       {/* Modal senha temporária */}
