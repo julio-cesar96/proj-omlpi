@@ -97,6 +97,11 @@
   --radius-md: var(--radius-md);
   --radius-lg: var(--radius-lg);
   --radius-xl: var(--radius-xl);
+
+  /* Animações — drawer e empty states */
+  --animate-slideUp: slideUp 0.28s cubic-bezier(0.16, 1, 0.3, 1);
+  --animate-slideInRight: slideInRight 0.28s cubic-bezier(0.16, 1, 0.3, 1);
+  --animate-fadeIn: fadeIn 0.3s ease;
 }
 
 /* ─── Base ─────────────────────────────────────────────────────────────────── */
@@ -149,5 +154,33 @@
   :focus-visible {
     outline: 2px solid var(--ring);
     outline-offset: 2px;
+  }
+}
+
+/* ─── Keyframes ─────────────────────────────────────────────────────────────── */
+
+@keyframes slideUp {
+  from { transform: translateY(100%); opacity: 0; }
+  to   { transform: translateY(0);    opacity: 1; }
+}
+
+@keyframes slideInRight {
+  from { transform: translateX(100%); opacity: 0; }
+  to   { transform: translateX(0);    opacity: 1; }
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to   { opacity: 1; }
+}
+
+/* Drawer — animação responsiva via media query */
+.drawer-panel {
+  animation: var(--animate-slideUp);
+}
+
+@media (min-width: 640px) {
+  .drawer-panel {
+    animation: var(--animate-slideInRight);
   }
 }

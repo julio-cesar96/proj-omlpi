@@ -127,7 +127,7 @@ export async function ConsultaPublica({ searchParams }: ConsultaPublicaProps) {
                   </p>
                 </div>
 
-                <div className="bg-card border border-border rounded-xl p-5 space-y-4">
+                <div id="upload-plano" className="bg-card border border-border rounded-xl p-5 space-y-4">
                   <div>
                     <h3 className="font-semibold text-foreground">
                       Enviar plano
