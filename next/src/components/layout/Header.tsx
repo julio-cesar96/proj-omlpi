@@ -17,8 +17,8 @@ const NAV_LINKS = [
   { href: "#sobre", label: "Sobre" },
   { href: "#historico", label: "Histórico" },
   { href: "#consulta-publica", label: "Consulte os Planos" },
+  { href: "#elabore-plano", label: "Guia para Elaboração" },
   { href: "#midiateca", label: "Referências" },
-  { href: "#elabore-plano", label: "Guia" },
   { href: "#contato", label: "Contato" },
 ] as const;
 
@@ -50,7 +50,7 @@ export function Header() {
               priority
             />
             <span className="font-black text-foreground text-xl">
-              Observa<span className="text-[#F25D27]">.</span>
+              OBSERVA<span className="text-[#F25D27]">.</span>
             </span>
           </a>
 

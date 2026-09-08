@@ -21,8 +21,8 @@ const NAV_LINKS = [
   { href: "#sobre", label: "Sobre" },
   { href: "#historico", label: "Histórico" },
   { href: "#consulta-publica", label: "Consulte os Planos" },
+  { href: "#elabore-plano", label: "Guia para Elaboração" },
   { href: "#midiateca", label: "Referências" },
-  { href: "#elabore-plano", label: "Guia" },
   { href: "#contato", label: "Contato" },
 ] as const;
 
@@ -53,7 +53,7 @@ export async function Footer() {
                 className="object-contain"
               />
               <span className="font-black text-xl" style={{ fontFamily: "var(--font-heading)", color: "var(--foreground)" }}>
-                Observa<span className="text-[#F25D27]">.</span>
+                OBSERVA<span className="text-[#F25D27]">.</span>
               </span>
             </div>
             <p className="text-sm leading-[1.7]" style={{ color: "var(--foreground)" }}>

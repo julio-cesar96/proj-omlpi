@@ -87,7 +87,7 @@ function BannerImage() {
       <div className="absolute -bottom-5 -left-5 bg-white backdrop-blur-md rounded-xl shadow-lg px-4 py-3 border border-border">
         <div
           className="text-xl font-black"
-          style={{ fontFamily: "var(--font-heading)", color: "#17A649" }}
+          style={{ fontFamily: "var(--font-heading)", color: "#009045" }}
         >
           {STATS_PLACEHOLDER[2].value}
         </div>
@@ -191,7 +191,7 @@ export async function Hero() {
                   href="#historico"
                   className="inline-flex items-center gap-2 px-7 py-3.5 border-2 border-[rgba(164,154,135,0.35)] text-foreground font-semibold rounded-full hover:border-secondary hover:text-secondary transition-colors text-[15px]"
                 >
-                  Sobre o projeto
+                  Sobre a plataforma
                 </a>
               </div>
             </div>
