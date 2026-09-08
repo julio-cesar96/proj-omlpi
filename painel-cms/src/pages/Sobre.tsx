@@ -24,6 +24,12 @@ export const Sobre: React.FC = () => {
   const isSaving =
     createSobre.isPending || updateSobre.isPending || deleteSobre.isPending;
 
+  // Filtra abas pertencentes à seção Quem Somos (exclui Histórico / Memória, que tem aba própria)
+  const quemSomosSobres = sobres.filter((s) => {
+    const t = s.title?.toLowerCase() ?? '';
+    return !t.includes('histórico') && !t.includes('historico') && !t.includes('memória') && !t.includes('memoria');
+  });
+
   // ─── Handlers de modal ────────────────────────────────────────────────────
 
   const handleSaveDraft = async (payload: SobrePayload) => {
@@ -96,9 +102,9 @@ export const Sobre: React.FC = () => {
           </h1>
           {!isLoading && (
             <p style={{ margin: '4px 0 0', fontSize: '13px', color: 'var(--text-soft)', fontWeight: 500 }}>
-              {sobres.length === 0
+              {quemSomosSobres.length === 0
                 ? 'Nenhuma aba cadastrada'
-                : `${sobres.length} aba${sobres.length > 1 ? 's' : ''} cadastrada${sobres.length > 1 ? 's' : ''}`}
+                : `${quemSomosSobres.length} aba${quemSomosSobres.length > 1 ? 's' : ''} cadastrada${quemSomosSobres.length > 1 ? 's' : ''}`}
               {' · '}
               <span style={{ fontStyle: 'italic' }}>
                 ordem por data de criação — reordenação requer campo extra no Strapi
@@ -152,7 +158,7 @@ export const Sobre: React.FC = () => {
             />
           ))}
         </div>
-      ) : sobres.length === 0 ? (
+      ) : quemSomosSobres.length === 0 ? (
         <div
           style={{
             textAlign: 'center',
@@ -172,7 +178,7 @@ export const Sobre: React.FC = () => {
         </div>
       ) : (
         <div style={{ display: 'flex', flexDirection: 'column', gap: '10px' }}>
-          {sobres.map((sobre, index) => (
+          {quemSomosSobres.map((sobre, index) => (
             <SobreCard
               key={sobre.id}
               sobre={sobre}
@@ -192,6 +198,7 @@ export const Sobre: React.FC = () => {
         onSaveDraft={handleSaveDraft}
         onPublish={handlePublish}
         isSaving={isSaving}
+        defaultSectionType="sobre"
       />
 
       {/* Confirmação de exclusão */}

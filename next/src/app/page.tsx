@@ -4,18 +4,20 @@
  * Seções implementadas:
  *   #inicio          → <Hero />          (server — banners, eixos, stats)
  *   #sobre           → <Sobre />         (server + SobreClient)
+ *   #historico       → <Historico />     (server + HistoricoClient)
  *   #pnipi           → <Pnipi />         (server + PnipiClient)
  *   #midiateca       → <Midiateca />     (server + MidiatecaClient)
  *   #consulta-publica → <ConsultaPublica /> (server, lê searchParams — Fase 3a)
  *   #contato         → <Contato />       (client)
  *
- * Navegação institucional: âncoras simples (#sobre, #pnipi…)
+ * Navegação institucional: âncoras simples (#sobre, #historico, #pnipi…)
  * Consulta pública: estado em query string (?tab=…&location_id=…&area=…)
  * Lido no server para SSR; sincronizado no client ao interagir (router.replace).
  */
 
 import { Hero } from "@/components/sections/Hero";
 import { Sobre } from "@/components/sections/Sobre";
+import { Historico } from "@/components/sections/Historico";
 // import { Pnipi } from "@/components/sections/Pnipi"; // ocultada a pedido do cliente
 import { ElaborePlano } from "@/components/sections/ElaborePlano";
 import { Midiateca } from "@/components/sections/Midiateca";
@@ -34,6 +36,7 @@ export default async function Home({
     <>
       <Hero />
       <Sobre />
+      <Historico />
       <ConsultaPublica searchParams={params} />
       {/* <Pnipi /> — seção Legislação ocultada a pedido do cliente */}
       <ElaborePlano />

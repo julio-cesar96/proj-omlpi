@@ -1,38 +1,38 @@
 /**
- * Sobre — Server Component (seção Sobre)
+ * Sobre — Server Component (seção Sobre / Quem somos)
  *
  * Busca os registros da collection `sobres` ordenados por `created_at:asc`.
- * Cada registro = uma aba (Quem somos / Resultados do levantamento / Histórico).
- * Confirmado na Fase 1: N registros, um por aba.
+ * Filtra apenas as abas institucionais de "Quem somos" (a seção "Histórico"
+ * agora possui seu próprio componente independente <Historico />).
  *
- * ⚠️ O schema real do `sobre` não tem campo `order`. Usa `created_at:asc`
- * como proxy de ordem de inserção. Se a ordem das abas precisar ser
- * controlável via CMS, será necessário adicionar campo `order` ao schema
- * (decisão de escopo do redesign do CMS, fora desta migração).
- *
- * Passa os dados para SobreClient para gerenciamento de estado client-side.
+ * Passa os dados para SobreClient para gerenciamento de abas client-side.
  * Cache: revalidate 3600s (dado estático, muda raramente).
  */
 
 import { getSobres, StrapiSobre } from "@/lib/strapi";
 import { SobreClient } from "./SobreClient";
 
-function SectionLabel({ children }: { children: React.ReactNode }) {
-  return (
-    <div className="flex items-center gap-2 mb-3">
-      <span className="w-6 h-0.5 bg-primary rounded-full" />
-      <span className="text-xs font-bold uppercase tracking-widest text-primary">
-        {children}
-      </span>
-    </div>
-  );
-}
-
 export async function Sobre() {
   let abas: StrapiSobre[] = [];
 
   try {
-    abas = await getSobres({ _sort: "created_at:asc" });
+    const todasAbas = await getSobres({ _sort: "created_at:asc" });
+
+    // Filtra apenas as abas pertencentes a "Quem somos" (exclui Histórico)
+    abas = todasAbas.filter((aba) => {
+      const t = aba.title?.toLowerCase() ?? "";
+      const txt = aba.text ?? "";
+      const isHist =
+        t.includes("histórico") ||
+        t.includes("historico") ||
+        t.includes("memória") ||
+        t.includes("memoria") ||
+        txt.includes("section_label: Memória") ||
+        txt.includes("section_label: Memoria") ||
+        txt.includes("section_title: Histórico") ||
+        txt.includes("section_title: Historico");
+      return !isHist;
+    });
   } catch (error) {
     console.error("[Sobre] Falha ao buscar getSobres():", error);
   }

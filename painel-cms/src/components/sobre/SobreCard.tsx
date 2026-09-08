@@ -1,5 +1,6 @@
 import React from 'react';
 import type { Sobre } from '../../lib/strapi';
+import { parseSobreText } from '../../lib/frontmatter';
 
 interface SobreCardProps {
   sobre: Sobre;
@@ -112,6 +113,36 @@ export const SobreCard: React.FC<SobreCardProps> = ({
         >
           Atualizado em {formatDate(sobre.updated_at)}
         </div>
+        {(() => {
+          const parsed = parseSobreText(sobre.text);
+          if (parsed.meta.section_label || parsed.meta.section_title) {
+            return (
+              <div
+                style={{
+                  fontSize: '11.5px',
+                  color: 'var(--primary)',
+                  fontWeight: 600,
+                  marginTop: '3px',
+                  display: 'flex',
+                  gap: '8px',
+                  flexWrap: 'wrap',
+                }}
+              >
+                {parsed.meta.section_label && (
+                  <span>
+                    Tarja: <strong>{parsed.meta.section_label}</strong>
+                  </span>
+                )}
+                {parsed.meta.section_title && (
+                  <span>
+                    Título: <strong>{parsed.meta.section_title}</strong>
+                  </span>
+                )}
+              </div>
+            );
+          }
+          return null;
+        })()}
       </div>
 
       {/* Badge de status */}

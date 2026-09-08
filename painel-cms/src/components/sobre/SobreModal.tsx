@@ -2,6 +2,7 @@ import React, { useEffect, useRef, useState } from 'react';
 import type { Sobre, SobrePayload } from '../../lib/strapi';
 import type { StrapiFile } from '../../lib/strapi';
 import { useUploadSingleFile } from '../../hooks/useUploadSingleFile';
+import { parseSobreText, serializeSobreText } from '../../lib/frontmatter';
 
 const STRAPI_URL =
   import.meta.env.VITE_STRAPI_URL || 'https://omlpi-strapi.rnpiobserva.org.br';
@@ -13,10 +14,13 @@ interface SobreModalProps {
   onSaveDraft: (payload: SobrePayload) => void;
   onPublish: (payload: SobrePayload) => void;
   isSaving: boolean;
+  defaultSectionType?: 'sobre' | 'historico';
 }
 
 interface FormState {
   title: string;
+  section_label: string;
+  section_title: string;
   text: string;
   link: string;
   link_title: string;
@@ -26,6 +30,8 @@ interface FormState {
 
 const EMPTY_FORM: FormState = {
   title: '',
+  section_label: '',
+  section_title: '',
   text: '',
   link: '',
   link_title: '',
@@ -48,6 +54,7 @@ export const SobreModal: React.FC<SobreModalProps> = ({
   onSaveDraft,
   onPublish,
   isSaving,
+  defaultSectionType,
 }) => {
   const [form, setForm] = useState<FormState>(EMPTY_FORM);
   const [image, setImage] = useState<StrapiFile | null>(null);
@@ -65,9 +72,22 @@ export const SobreModal: React.FC<SobreModalProps> = ({
   useEffect(() => {
     if (open) {
       if (sobre) {
+        const parsed = parseSobreText(sobre.text);
+        const isHistorico =
+          defaultSectionType === 'historico' ||
+          (sobre.title?.toLowerCase() ?? '').includes('histórico') ||
+          (sobre.title?.toLowerCase() ?? '').includes('historico') ||
+          (sobre.title?.toLowerCase() ?? '').includes('memória') ||
+          (sobre.title?.toLowerCase() ?? '').includes('memoria');
+
         setForm({
-          title: sobre.title ?? '',
-          text: sobre.text ?? '',
+          title: sobre.title ?? (isHistorico ? 'Histórico' : ''),
+          section_label:
+            parsed.meta.section_label ?? (isHistorico ? 'Memória' : 'Sobre'),
+          section_title:
+            parsed.meta.section_title ??
+            (isHistorico ? sobre.title || 'Histórico' : sobre.title || 'Quem somos'),
+          text: parsed.content ?? '',
           link: sobre.link ?? '',
           link_title: sobre.link_title ?? '',
           link2: sobre.link2 ?? '',
@@ -79,26 +99,46 @@ export const SobreModal: React.FC<SobreModalProps> = ({
           Boolean(sobre.link || sobre.link_title || sobre.link2 || sobre.link2_title)
         );
       } else {
-        setForm(EMPTY_FORM);
+        const isHistorico = defaultSectionType === 'historico';
+        setForm({
+          title: isHistorico ? 'Histórico' : '',
+          section_label: isHistorico ? 'Memória' : 'Sobre',
+          section_title: isHistorico ? 'Histórico' : 'Quem somos',
+          text: '',
+          link: '',
+          link_title: '',
+          link2: '',
+          link2_title: '',
+        });
         setImage(null);
         setLinksExpanded(false);
       }
       setUploadError(null);
     }
-  }, [open, sobre, setUploadError]);
+  }, [open, sobre, defaultSectionType, setUploadError]);
 
   if (!open) return null;
 
-  const buildPayload = (publishedAt: string | null): SobrePayload => ({
-    title: form.title.trim(),
-    text: form.text.trim() || null,
-    image: image ? image.id : null,
-    link: form.link.trim() || null,
-    link_title: form.link_title.trim() || null,
-    link2: form.link2.trim() || null,
-    link2_title: form.link2_title.trim() || null,
-    published_at: publishedAt,
-  });
+  const buildPayload = (publishedAt: string | null): SobrePayload => {
+    const serializedText = serializeSobreText(
+      {
+        section_label: form.section_label.trim(),
+        section_title: form.section_title.trim(),
+      },
+      form.text
+    );
+
+    return {
+      title: form.title.trim(),
+      text: serializedText || null,
+      image: image ? image.id : null,
+      link: form.link.trim() || null,
+      link_title: form.link_title.trim() || null,
+      link2: form.link2.trim() || null,
+      link2_title: form.link2_title.trim() || null,
+      published_at: publishedAt,
+    };
+  };
 
   const isValid = form.title.trim().length > 0;
 
@@ -280,6 +320,84 @@ export const SobreModal: React.FC<SobreModalProps> = ({
               onFocus={(e) => { e.currentTarget.style.borderColor = 'var(--primary)'; }}
               onBlur={(e) => { e.currentTarget.style.borderColor = 'var(--border)'; }}
             />
+          </div>
+
+          {/* Configuração dos títulos no Site (tarja laranja e H2) */}
+          <div
+            style={{
+              padding: '14px 16px',
+              borderRadius: '12px',
+              border: '1px solid var(--border)',
+              background: 'var(--muted)',
+              display: 'flex',
+              flexDirection: 'column',
+              gap: '12px',
+            }}
+          >
+            <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+              <span
+                style={{
+                  display: 'inline-block',
+                  width: '18px',
+                  height: '3px',
+                  background: 'var(--primary)',
+                  borderRadius: '2px',
+                }}
+              />
+              <span
+                style={{
+                  fontSize: '12px',
+                  fontWeight: 800,
+                  textTransform: 'uppercase',
+                  letterSpacing: '.5px',
+                  color: 'var(--primary)',
+                }}
+              >
+                Personalização Visual no Site
+              </span>
+            </div>
+
+            <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '12px' }}>
+              {/* Rótulo da tarja laranja */}
+              <div style={{ display: 'flex', flexDirection: 'column', gap: '5px' }}>
+                <label style={{ ...labelStyle, fontSize: '12px' }}>
+                  Texto ao lado da tarja laranja
+                </label>
+                <input
+                  type="text"
+                  value={form.section_label}
+                  onChange={(e) => setForm((f) => ({ ...f, section_label: e.target.value }))}
+                  placeholder="Ex: Memória ou Sobre"
+                  style={{ ...inputStyle, height: '38px', fontSize: '13px', background: 'var(--card)' }}
+                  onFocus={(e) => { e.currentTarget.style.borderColor = 'var(--primary)'; }}
+                  onBlur={(e) => { e.currentTarget.style.borderColor = 'var(--border)'; }}
+                />
+                <span style={{ fontSize: '11px', color: 'var(--text-soft)' }}>
+                  Padrão:{' '}
+                  <em>{defaultSectionType === 'historico' ? 'Memória' : 'Sobre'}</em>
+                </span>
+              </div>
+
+              {/* Título principal H2 */}
+              <div style={{ display: 'flex', flexDirection: 'column', gap: '5px' }}>
+                <label style={{ ...labelStyle, fontSize: '12px' }}>
+                  Título da seção (H2)
+                </label>
+                <input
+                  type="text"
+                  value={form.section_title}
+                  onChange={(e) => setForm((f) => ({ ...f, section_title: e.target.value }))}
+                  placeholder="Ex: Histórico ou Quem somos"
+                  style={{ ...inputStyle, height: '38px', fontSize: '13px', background: 'var(--card)' }}
+                  onFocus={(e) => { e.currentTarget.style.borderColor = 'var(--primary)'; }}
+                  onBlur={(e) => { e.currentTarget.style.borderColor = 'var(--border)'; }}
+                />
+                <span style={{ fontSize: '11px', color: 'var(--text-soft)' }}>
+                  Padrão:{' '}
+                  <em>{defaultSectionType === 'historico' ? 'Histórico' : 'Quem somos'}</em>
+                </span>
+              </div>
+            </div>
           </div>
 
           {/* Texto (Markdown) */}

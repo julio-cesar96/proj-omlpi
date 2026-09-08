@@ -1,12 +1,11 @@
 /**
- * SobreClient — Client Component
+ * HistoricoClient — Client Component
  *
- * Renderiza o conteúdo institucional da seção Sobre / Quem somos (#sobre).
- * A seção Histórico (#historico) agora possui seu próprio componente <Historico />.
+ * Renderiza a seção Memória / Histórico (#historico).
  *
  * Suporta customização dinâmica de:
- *  - Rótulo superior / tarja laranja (padrão: "Sobre", configurável via CMS com section_label)
- *  - Título principal H2 (padrão: "Quem somos", configurável via CMS com section_title)
+ *  - Rótulo superior / tarja laranja (padrão: "Memória", configurável via CMS com section_label)
+ *  - Título principal H2 (padrão: "Histórico", configurável via CMS com section_title)
  *
  * Suporte a marcador {{imagem}} no campo `text`:
  *  - Se {{imagem}} estiver no texto E a aba tiver imagem → imagem inserida no fluxo.
@@ -95,11 +94,11 @@ interface Props {
   abas: StrapiSobre[];
 }
 
-export function SobreClient({ abas }: Props) {
-  let sectionLabel = "Sobre";
-  let sectionTitle = "Quem somos";
+export function HistoricoClient({ abas }: Props) {
+  let sectionLabel = "Memória";
+  let sectionTitle = "Histórico";
 
-  let sobreContent: {
+  let historicoContent: {
     html: string;
     imageFallback: boolean;
     imageSrc: string | null;
@@ -111,6 +110,7 @@ export function SobreClient({ abas }: Props) {
       const rawText = aba.text ?? "";
       const { meta, content: parsedContent } = parseSobreText(rawText);
 
+      // Metadados de frontmatter têm precedência
       if (meta.section_label) {
         sectionLabel = meta.section_label;
       }
@@ -126,17 +126,20 @@ export function SobreClient({ abas }: Props) {
 
       let textToRender = parsedContent;
 
-      // Se ainda contiver a tag antiga de split `## Histórico`, corta para exibir só a parte Sobre
+      // Fallback para conteúdo legado que ainda tenha split por '## Histórico'
       const historicoMatchIndex = textToRender.search(
         /^##\s*(Histórico|Memória)/m
       );
       if (historicoMatchIndex !== -1) {
-        textToRender = textToRender.slice(0, historicoMatchIndex).trim();
+        textToRender = textToRender
+          .slice(historicoMatchIndex)
+          .replace(/^##\s*(Histórico|Memória)\s*\n?/, "")
+          .trim();
       }
 
       if (textToRender) {
         const res = renderText(textToRender, aba.image?.url, aba.title ?? "");
-        sobreContent.push({
+        historicoContent.push({
           ...res,
           imageSrc,
           title: aba.title ?? undefined,
@@ -146,7 +149,11 @@ export function SobreClient({ abas }: Props) {
   }
 
   return (
-    <section id="sobre" aria-label={sectionTitle} className="py-20 lg:py-28">
+    <section
+      id="historico"
+      aria-label={sectionTitle}
+      className="py-20 lg:py-28 border-t border-border/40 bg-muted/30"
+    >
       <div className="max-w-7xl mx-auto px-5 lg:px-10">
         <SectionLabel>{sectionLabel}</SectionLabel>
         <h2
@@ -156,34 +163,19 @@ export function SobreClient({ abas }: Props) {
           {sectionTitle}
         </h2>
 
-        {sobreContent.length === 0 ? (
+        {historicoContent.length === 0 ? (
           <p className="text-muted-foreground leading-[1.75]">
-            O Observa &#x2013; Observatório do Marco Legal da Primeira Infância
-            é uma iniciativa da Rede Nacional Primeira Infância &#x2013; RNPI que
-            foi desenvolvida sob coordenação da ANDI &#x2013; Comunicação e
-            Direitos, entidade que desempenhou a função de secretaria executiva
-            da rede para o período 2018-2021. Atualmente, a Plataforma é gerida
-            pela União Nacional dos Conselhos Municipais de Educação - UNCME.
-            <br />
-            <br />
-            Formada em 2007, a RNPI é a principal articulação de alcance
-            nacional a ter como missão o fomento de políticas públicas voltadas à
-            garantia dos direitos das crianças de 0 a 6 anos de idade. Sua
-            composição é democrática e plural, acolhendo hoje mais de 200
-            instituições de diferentes dimensões e perfis.
+            A Rede Nacional Primeira Infância (RNPI) foi criada em 2007 como uma
+            articulação de organizações da sociedade civil, do governo e do setor
+            privado para promover os direitos da criança de 0 a 6 anos no
+            Brasil. O Observa surge no âmbito desse movimento como instrumento
+            permanente de monitoramento e transparência das políticas públicas
+            pela primeira infância.
           </p>
         ) : (
           <div className="flex flex-col gap-12">
-            {sobreContent.map((item, idx) => (
+            {historicoContent.map((item, idx) => (
               <div key={idx} className="max-w-none">
-                {item.title && sobreContent.length > 1 && (
-                  <h3
-                    className="text-2xl font-black text-foreground mb-6"
-                    style={{ fontFamily: "var(--font-heading)" }}
-                  >
-                    {item.title}
-                  </h3>
-                )}
                 {item.imageFallback && item.imageSrc && (
                   // eslint-disable-next-line @next/next/no-img-element
                   <img
