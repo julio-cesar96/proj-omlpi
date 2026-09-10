@@ -184,3 +184,22 @@
     animation: var(--animate-slideInRight);
   }
 }
+
+/* ─── Links do CMS ───────────────────────────────────────────────────────────── */
+/* Regra fora de @layer → vence sobre Tailwind base/utilities e reset do browser */
+.prose a,
+.prose a:visited {
+  color: var(--primary) !important;
+  text-decoration: underline;
+  font-weight: 500;
+  transition: color 0.15s ease;
+}
+/* strong dentro de link herda o laranja (não o foreground do container) */
+.prose a strong,
+.prose a:visited strong {
+  color: inherit !important;
+}
+.prose a:hover,
+.prose a:hover strong {
+  color: #e04d18 !important;
+}

@@ -46,8 +46,8 @@ function renderMarkdown(md: string): string {
       /\[([^\]]+)\]\(([^)\s"]+)(?:\s+"([^"]*)")?\)/g,
       (_, text, href, title) =>
         title
-          ? `<a href="${href}" title="${title}" target="_blank" rel="noopener noreferrer">${text}</a>`
-          : `<a href="${href}" target="_blank" rel="noopener noreferrer">${text}</a>`
+          ? `<a href="${href}" title="${title}" target="_blank" rel="noopener noreferrer" style="color:#f25d27;text-decoration:underline;font-weight:500">${text}</a>`
+          : `<a href="${href}" target="_blank" rel="noopener noreferrer" style="color:#f25d27;text-decoration:underline;font-weight:500">${text}</a>`
     )
     .replace(/^- (.+)$/gm, "<li>$1</li>")
     .replace(/(<li>.*<\/li>\n?)+/g, (m) => `<ul>${m}</ul>`)

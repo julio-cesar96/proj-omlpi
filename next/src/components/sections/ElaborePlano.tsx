@@ -29,8 +29,8 @@ function renderMarkdown(md: string): string {
       /\[([^\]]+)\]\(([^)\s"]+)(?:\s+"([^"]*)")?\)/g,
       (_, text, href, title) =>
         title
-          ? `<a href="${href}" title="${title}" target="_blank" rel="noopener noreferrer">${text}</a>`
-          : `<a href="${href}" target="_blank" rel="noopener noreferrer">${text}</a>`
+          ? `<a href="${href}" title="${title}" target="_blank" rel="noopener noreferrer" style="color:#f25d27;text-decoration:underline;font-weight:500">${text}</a>`
+          : `<a href="${href}" target="_blank" rel="noopener noreferrer" style="color:#f25d27;text-decoration:underline;font-weight:500">${text}</a>`
     )
     .replace(/^- (.+)$/gm, "<li>$1</li>")
     .replace(/(<li>.*<\/li>\n?)+/g, (m) => `<ul>${m}</ul>`)
@@ -64,10 +64,10 @@ function CapaImage({
   if (capaUrl) {
     return (
       <div
-        className={`relative rounded-2xl overflow-hidden shadow-sm border border-border/40 bg-muted/20 flex items-center justify-center ${
+        className={`relative overflow-hidden flex items-center justify-center ${
           lateral
-            ? "w-full h-full min-h-[320px] aspect-[3/4]"
-            : "w-full max-h-[400px] aspect-[3/2]"
+            ? "w-full aspect-[4/3]"
+            : "w-full max-h-[400px] aspect-[3/2] rounded-2xl shadow-sm border border-border/40 bg-muted/20"
         }`}
       >
         <Image
@@ -171,7 +171,7 @@ export async function ElaborePlano() {
   const tituloSecao = data?.titulo_secao || "Elabore o plano do seu município";
   const tituloGuia = data?.titulo_guia || null;
   const descricaoMd = data?.descricao;
-  const imagePosition = data?.image_position ?? "topo"; // fallback seguro
+  const imagePosition = data?.image_position ?? "esquerda"; // fallback: layout lateral (design aprovado)
 
   const capaUrl = data?.capa?.url
     ? data.capa.url.startsWith("http")
@@ -201,7 +201,7 @@ export async function ElaborePlano() {
         {isLateral ? (
           /* ── Layout lateral: kicker + título + imagem à esq, texto à dir ── */
           <div
-            className={`grid lg:grid-cols-[2fr_3fr] gap-10 lg:gap-16 items-start ${
+            className={`grid lg:grid-cols-[2fr_3fr] gap-14 lg:gap-24 items-start ${
               !imageFirst ? "lg:[&>*:first-child]:order-last" : ""
             }`}
           >
