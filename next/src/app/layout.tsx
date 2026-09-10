@@ -27,12 +27,14 @@ const plusJakartaSans = Plus_Jakarta_Sans({
 // ─── Metadata base ────────────────────────────────────────────────────────────
 export const metadata: Metadata = {
   title: {
-    default: "Observa — Monitoramento de Planos pela Primeira Infância no Brasil",
+    default: "Observa — Monitoramento dos Planos pela Primeira Infância",
     template: "%s | Observa",
   },
   description:
-    "Plataforma nacional de monitoramento e transparência de Planos Municipais pela Primeira Infância (PNIPI). Acompanhe o status dos planos em todos os municípios e estados do Brasil.",
-  metadataBase: new URL("https://observa.rnpi.org.br"), // placeholder de fase anterior
+    "Plataforma de monitoramento e transparência dos Planos Municipais pela Primeira Infância (PNIPI). Acompanhe o status dos planos em todo o Brasil.",
+  metadataBase: new URL(
+    process.env.NEXT_PUBLIC_SITE_URL || "https://www.rnpiobserva.org.br"
+  ),
   alternates: {
     canonical: "/",
   },
@@ -49,9 +51,9 @@ export const metadata: Metadata = {
     type: "website",
     locale: "pt_BR",
     siteName: "Observa",
-    title: "Observa — Monitoramento de Planos pela Primeira Infância no Brasil",
+    title: "Observa — Monitoramento dos Planos pela Primeira Infância",
     description:
-      "Plataforma nacional de monitoramento e transparência de Planos Municipais pela Primeira Infância (PNIPI). Acompanhe o status dos planos em todos os municípios e estados do Brasil.",
+      "Plataforma de monitoramento e transparência dos Planos Municipais pela Primeira Infância (PNIPI). Acompanhe o status dos planos em todo o Brasil.",
     url: "/",
     images: [
       {
@@ -67,9 +69,9 @@ export const metadata: Metadata = {
     card: "summary_large_image",
     site: "@rnpiobserva",
     creator: "@rnpiobserva",
-    title: "Observa — Monitoramento de Planos pela Primeira Infância no Brasil",
+    title: "Observa — Monitoramento dos Planos pela Primeira Infância",
     description:
-      "Plataforma nacional de monitoramento e transparência de Planos Municipais pela Primeira Infância (PNIPI). Acompanhe o status dos planos em todos os municípios e estados do Brasil.",
+      "Plataforma de monitoramento e transparência dos Planos Municipais pela Primeira Infância (PNIPI). Acompanhe o status dos planos em todo o Brasil.",
     images: ["/twitter.jpg"],
   },
   icons: {

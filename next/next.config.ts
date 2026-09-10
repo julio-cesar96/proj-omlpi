@@ -43,6 +43,49 @@ const nextConfig: NextConfig & { sentry?: Record<string, unknown> } = {
         destination: "/",
         permanent: true,
       },
+
+      // ── /metodologia → Referência ─────────────────────────────────────────
+      {
+        source: "/metodologia",
+        destination: "/#referencia",
+        permanent: true,
+      },
+
+      // ── /observa → Início (#inicio) ───────────────────────────────────────
+      {
+        source: "/observa",
+        destination: "/#inicio",
+        permanent: true,
+      },
+
+      // ── /sobre-nos & /sobre → Sobre (#sobre) ──────────────────────────────
+      {
+        source: "/sobre-nos",
+        destination: "/#sobre",
+        permanent: true,
+      },
+      {
+        source: "/sobre",
+        destination: "/#sobre",
+        permanent: true,
+      },
+
+      // ── /materiais, /repositorio, /referencias → Referência (#referencia) ──
+      {
+        source: "/materiais",
+        destination: "/#referencia",
+        permanent: true,
+      },
+      {
+        source: "/repositorio",
+        destination: "/#referencia",
+        permanent: true,
+      },
+      {
+        source: "/referencias",
+        destination: "/#referencia",
+        permanent: true,
+      },
     ];
   },
 

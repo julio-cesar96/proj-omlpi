@@ -9,7 +9,7 @@ export default function robots(): MetadataRoute.Robots {
         disallow: ["/api/"],
       },
     ],
-    sitemap: "https://observa.rnpi.org.br/sitemap.xml",
-    host: "https://observa.rnpi.org.br",
+    sitemap: `${process.env.NEXT_PUBLIC_SITE_URL || "https://www.rnpiobserva.org.br"}/sitemap.xml`,
+    host: process.env.NEXT_PUBLIC_SITE_URL || "https://www.rnpiobserva.org.br",
   };
 }

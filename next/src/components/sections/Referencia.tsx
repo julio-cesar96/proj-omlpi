@@ -55,6 +55,7 @@ export async function Referencia() {
       aria-label="Referências"
       className="py-20 lg:py-28 bg-white"
     >
+      <span id="referencias" className="sr-only" />
       <div className="max-w-7xl mx-auto px-5 lg:px-10">
         <SectionLabel>Referências</SectionLabel>
         <h2
