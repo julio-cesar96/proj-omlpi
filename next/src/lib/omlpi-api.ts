@@ -347,7 +347,7 @@ export async function getLocaleResume(
   return res;
 }
 
-/** Download de dados abertos (Open Data / Midiateca). Retorna Response (stream). */
+/** Download de dados abertos (Open Data / seção Referências). Retorna Response (stream). */
 export async function downloadData(): Promise<Response> {
   const base = getOmlpiUrl();
   const res = await fetch(`${base}/data/download`, { cache: "no-store" });

@@ -6,7 +6,7 @@
  *   #sobre           → <Sobre />         (server + SobreClient)
  *   #historico       → <Historico />     (server + HistoricoClient)
  *   #pnipi           → <Pnipi />         (server + PnipiClient)
- *   #midiateca       → <Midiateca />     (server + MidiatecaClient)
+ *   #referencia      → <Referencia />    (server + ReferenciaClient)
  *   #consulta-publica → <ConsultaPublica /> (server, lê searchParams — Fase 3a)
  *   #contato         → <Contato />       (client)
  *
@@ -20,7 +20,7 @@ import { Sobre } from "@/components/sections/Sobre";
 import { Historico } from "@/components/sections/Historico";
 // import { Pnipi } from "@/components/sections/Pnipi"; // ocultada a pedido do cliente
 import { ElaborePlano } from "@/components/sections/ElaborePlano";
-import { Midiateca } from "@/components/sections/Midiateca";
+import { Referencia } from "@/components/sections/Referencia";
 import { Contato } from "@/components/sections/Contato";
 import { ConsultaPublica } from "@/components/consulta-publica/ConsultaPublica";
 
@@ -40,7 +40,7 @@ export default async function Home({
       <ConsultaPublica searchParams={params} />
       {/* <Pnipi /> — seção Legislação ocultada a pedido do cliente */}
       <ElaborePlano />
-      <Midiateca />
+      <Referencia />
       <Contato />
     </>
   );

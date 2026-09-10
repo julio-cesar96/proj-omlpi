@@ -26,14 +26,14 @@ const nextConfig: NextConfig & { sentry?: Record<string, unknown> } = {
       // ── /indicadores → a confirmar ────────────────────────────────────────
       {
         source: "/indicadores",
-        destination: "/#midiateca",
+        destination: "/#referencia",
         permanent: true,
       },
 
       // ── /biblioteca → a confirmar ─────────────────────────────────────────
       {
         source: "/biblioteca",
-        destination: "/#midiateca",
+        destination: "/#referencia",
         permanent: true,
       },
 

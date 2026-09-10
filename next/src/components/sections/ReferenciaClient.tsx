@@ -1,5 +1,5 @@
 /**
- * MidiatecaClient — Client Component (seção Midiateca)
+ * ReferenciaClient — Client Component (seção Referências)
  *
  * 2 abas:
  *   1. Documentos — grade de StrapiGuia por categoria (dados passados como prop)
@@ -19,7 +19,7 @@ const LIMIT = 20;
 
 // ─── Tipos locais ─────────────────────────────────────────────────────────────
 
-type MidiatecaTab = 'documentos' | 'midias';
+type ReferenciaTab = 'documentos' | 'midias';
 type MidiaFilterKey = 'all' | 'pdf' | 'img' | 'video' | 'doc';
 
 // ─── Utilitários de tipo de mídia ─────────────────────────────────────────────
@@ -157,7 +157,7 @@ function DocumentCard({ guia }: { guia: StrapiGuia }) {
           href={fileUrl}
           target="_blank"
           rel="noopener noreferrer"
-          className="mt-auto flex items-center justify-center gap-2 py-2.5 border border-[#A49A87] text-[#444525] text-xs font-semibold rounded-xl hover:border-[#009045] hover:text-[#009045] transition-colors"
+          className="mt-auto flex items-center justify-center gap-2 py-2.5 border border-[#A49A87] text-[#444525] text-xs font-semibold rounded-xl hover:border-[#17A649] hover:text-[#17A649] transition-colors"
         >
           <DownloadIcon /> Baixar
         </a>
@@ -200,7 +200,7 @@ function DocumentosTab({
         setPage((prev) => prev + 1);
       }
     } catch (err) {
-      console.error('[MidiatecaClient] erro ao carregar guias:', err);
+      console.error('[ReferenciaClient] erro ao carregar guias:', err);
     } finally {
       setLoading(false);
     }
@@ -349,7 +349,7 @@ function MidiaCard({ midia }: { midia: StrapiMidiaPublica }) {
           <span className="text-[11px] text-muted-foreground font-semibold">
             {formatFileSize(midia.size)}
           </span>
-          <span className="flex items-center gap-1 text-[11px] text-[#444525] font-semibold border border-[#A49A87] rounded-lg px-2 py-0.5 group-hover:border-[#009045] group-hover:text-[#009045] transition-colors">
+          <span className="flex items-center gap-1 text-[11px] text-[#444525] font-semibold border border-[#A49A87] rounded-lg px-2 py-0.5 group-hover:border-[#17A649] group-hover:text-[#17A649] transition-colors">
             <DownloadIcon size={10} /> Baixar
           </span>
         </div>
@@ -415,7 +415,7 @@ function MidiasTab({
         setOffset(nextOffset);
         setHasMore(nextOffset < total);
       } catch (err) {
-        console.error('[MidiatecaClient] erro ao carregar mídias:', err);
+        console.error('[ReferenciaClient] erro ao carregar mídias:', err);
       } finally {
         setLoading(false);
       }
@@ -459,7 +459,7 @@ function MidiasTab({
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
             placeholder="Buscar por nome do arquivo..."
-            id="midiateca-midia-search"
+            id="referencia-midia-search"
             className="w-full pl-9 pr-4 py-2.5 rounded-xl border border-border bg-background text-sm text-foreground placeholder:text-muted-foreground focus:outline-none focus:border-primary transition-colors"
           />
         </div>
@@ -537,20 +537,20 @@ interface Props {
   totalMidias: number;
 }
 
-const TAB_LABELS: Record<MidiatecaTab, string> = {
+const TAB_LABELS: Record<ReferenciaTab, string> = {
   documentos: 'Documentos',
   midias: 'Mídias',
 };
 
-export function MidiatecaClient({ guiasIniciais, guias: guiasProp, totalGuias, midias, totalMidias }: Props) {
+export function ReferenciaClient({ guiasIniciais, guias: guiasProp, totalGuias, midias, totalMidias }: Props) {
   const initialGuias = guiasIniciais ?? guiasProp ?? [];
-  const [activeTab, setActiveTab] = useState<MidiatecaTab>('documentos');
+  const [activeTab, setActiveTab] = useState<ReferenciaTab>('documentos');
 
   return (
     <>
       {/* Tab bar */}
       <div className="flex gap-2 flex-wrap mb-8 p-1.5 bg-background rounded-2xl border border-border w-fit shadow-sm">
-        {(Object.keys(TAB_LABELS) as MidiatecaTab[]).map((tab) => (
+        {(Object.keys(TAB_LABELS) as ReferenciaTab[]).map((tab) => (
           <button
             key={tab}
             type="button"

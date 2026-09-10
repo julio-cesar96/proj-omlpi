@@ -1,7 +1,7 @@
 /**
  * Route Handler — /api/midiateca-publica
  *
- * Proxy que encaminha requests do client para GET /midiateca-publica no Strapi,
+ * Proxy que encaminha requests do client (seção Referências) para GET /midiateca-publica no Strapi,
  * sem expor STRAPI_API_URL no bundle do browser.
  *
  * Parâmetros aceitos do client:

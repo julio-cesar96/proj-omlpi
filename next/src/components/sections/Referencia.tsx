@@ -1,5 +1,5 @@
 /**
- * Midiateca — Server Component (seção Midiateca)
+ * Referencia — Server Component (seção Referências)
  *
  * Busca em paralelo:
  *   - getGuias()          → aba "Documentos" (grade por categoria)
@@ -9,14 +9,14 @@
  * As funções getArtigos(), searchArtigos() e getTags() não são mais usadas aqui.
  *
  * Paginação de Mídias: o SSR carrega os primeiros 20 registros.
- * O componente client MidiatecaClient usa /api/midiateca-publica (Route Handler)
+ * O componente client ReferenciaClient usa /api/midiateca-publica (Route Handler)
  * para paginação incremental via botão "Carregar mais".
  *
  * Referência: docs/API_CONTRACTS.md §1 — CMS (Strapi)
  */
 
 import { getGuias, getGuiasCount, getMidiaPublica, StrapiGuia, StrapiMidiaPublica } from '@/lib/strapi';
-import { MidiatecaClient } from './MidiatecaClient';
+import { ReferenciaClient } from './ReferenciaClient';
 
 function SectionLabel({ children }: { children: React.ReactNode }) {
   return (
@@ -29,7 +29,7 @@ function SectionLabel({ children }: { children: React.ReactNode }) {
   );
 }
 
-export async function Midiateca() {
+export async function Referencia() {
   let guias: StrapiGuia[] = [];
   let totalGuias = 0;
   let midias: StrapiMidiaPublica[] = [];
@@ -51,8 +51,8 @@ export async function Midiateca() {
 
   return (
     <section
-      id="midiateca"
-      aria-label="Midiateca"
+      id="referencia"
+      aria-label="Referências"
       className="py-20 lg:py-28 bg-white"
     >
       <div className="max-w-7xl mx-auto px-5 lg:px-10">
@@ -64,7 +64,7 @@ export async function Midiateca() {
           Conteúdos e legislações
         </h2>
 
-        <MidiatecaClient
+        <ReferenciaClient
           guiasIniciais={guias}
           totalGuias={totalGuias}
           midias={midias}

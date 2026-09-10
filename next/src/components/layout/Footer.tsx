@@ -22,7 +22,7 @@ const NAV_LINKS = [
   { href: "#historico", label: "Histórico" },
   { href: "#consulta-publica", label: "Consulte os Planos" },
   { href: "#elabore-plano", label: "Guia para Elaboração" },
-  { href: "#midiateca", label: "Referências" },
+  { href: "#referencia", label: "Referências" },
   { href: "#contato", label: "Contato" },
 ] as const;
 

@@ -160,7 +160,7 @@ export interface StrapiSobre {
 }
 
 /**
- * Texto introdutório da seção Midiateca (equivalente a `/indicadores` no site antigo).
+ * Texto introdutório da seção Referências (equivalente a `/indicadores` no site antigo).
  *
  * `textoindicadors` é um **singleType** no Strapi — retorna um único objeto.
  *
@@ -193,7 +193,7 @@ export interface StrapiGuia {
 /**
  * Artigo da biblioteca.
  *
- * Confirmado: a seção Midiateca usa a collection `artigos` com busca,
+ * Confirmado: a coleção `artigos` foi usada na antiga seção Midiateca (hoje Referências) com busca,
  * tags e paginação. Endpoint de produção observado:
  *   GET https://omlpi-strapi.rnpiobserva.org.br/artigos?_limit=15&_start=0
  *
@@ -342,7 +342,7 @@ export function getSobres(params?: StrapiQueryParams): Promise<StrapiSobre[]> {
 }
 
 /**
- * Texto introdutório da seção Midiateca.
+ * Texto introdutório da seção Referências.
  *
  * `textoindicadors` é **singleType** — retorna um único objeto.
  * Campos: `titulo` (string), `texto` (richtext) — ambos em português.
@@ -354,7 +354,7 @@ export function getTextoIndicador(): Promise<StrapiTextoIndicador> {
   return strapiGet<StrapiTextoIndicador>("textoindicadors");
 }
 
-/** Guias / documentos de referência (Midiateca / PNIPI) */
+/** Guias / documentos de referência (seção Referências / PNIPI) */
 export function getGuias(params?: StrapiQueryParams): Promise<StrapiGuia[]> {
   return strapiGet<StrapiGuia[]>("guias", { _sort: "created_at:desc", ...params });
 }
@@ -364,7 +364,7 @@ export function getGuiasCount(params?: StrapiQueryParams): Promise<number> {
   return strapiGet<number>("guias/count", params);
 }
 
-/** Tags de artigos (mantida para uso futuro; não mais usada na Midiateca após remoção da aba Artigos) */
+/** Tags de artigos (mantida para uso futuro; não mais usada na seção Referências após remoção da aba Artigos) */
 export function getTags(params?: StrapiQueryParams): Promise<StrapiTag[]> {
   return strapiGet<StrapiTag[]>("tags", params);
 }
@@ -372,10 +372,10 @@ export function getTags(params?: StrapiQueryParams): Promise<StrapiTag[]> {
 /**
  * Artigos da collection `artigos` do Strapi.
  *
- * ⚠️  NÃO usar para o fluxo de busca/filtro/paginação da Midiateca.
- *     O Strapi não tem full-text search nativo. A Midiateca usava
+ * ⚠️  NÃO usar para o fluxo de busca/filtro/paginação da seção Referências.
+ *     O Strapi não tem full-text search nativo. A antiga Midiateca usava
  *     `searchArtigos()` de `lib/cms-search.ts` (omlpi-cms-search).
- *     A aba Artigos foi removida da Midiateca. Mantida aqui para
+ *     A aba Artigos foi removida da seção Referências. Mantida aqui para
  *     eventuais usos futuros que não dependam de busca textual.
  */
 export function getArtigos(params?: StrapiQueryParams): Promise<StrapiArtigo[]> {
@@ -407,7 +407,7 @@ export interface MidiatecaPublicaResponse {
 }
 
 /**
- * Arquivos públicos da Midiateca via endpoint customizado /midiateca-publica.
+ * Arquivos públicos da seção Referências via endpoint customizado /midiateca-publica.
  * Nunca expõe /upload/files inteiro — só os marcados como is_public: true.
  *
  * Parâmetros aceitos: _start, _limit, _sort, name_contains, mime_contains.
