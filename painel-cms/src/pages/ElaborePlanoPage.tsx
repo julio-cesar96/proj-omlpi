@@ -3,6 +3,7 @@ import { ExternalLink, AlertCircle, RefreshCw, FileText, Image as ImageIcon, Upl
 import { useElaborePlano } from '../hooks/elabore-plano/useElaborePlano';
 import { useUploadSingleFile } from '../hooks/useUploadSingleFile';
 import { Toast } from '../components/ui/Toast';
+import { MediaPickerModal } from '../components/ui/MediaPickerModal';
 import type { ElaborePlanoPayload, StrapiFile } from '../lib/strapi';
 
 const SITE_URL = import.meta.env.VITE_SITE_URL as string | undefined;
@@ -25,6 +26,8 @@ export const ElaborePlanoPage: React.FC = () => {
   const [imagePosition, setImagePosition] = useState<'topo' | 'esquerda' | 'direita'>('topo');
   const [capaFile, setCapaFile] = useState<StrapiFile | null>(null);
   const [arquivoFile, setArquivoFile] = useState<StrapiFile | null>(null);
+  const [capaPickerOpen, setCapaPickerOpen] = useState(false);
+  const [arquivoPickerOpen, setArquivoPickerOpen] = useState(false);
 
   const [toast, setToast] = useState<{ visible: boolean; message: string }>({
     visible: false,
@@ -416,7 +419,7 @@ export const ElaborePlanoPage: React.FC = () => {
                 </button>
               </div>
             ) : (
-              <div>
+              <div style={{ display: 'flex', gap: '10px', flexWrap: 'wrap' }}>
                 <input
                   ref={capaInputRef}
                   type="file"
@@ -424,6 +427,7 @@ export const ElaborePlanoPage: React.FC = () => {
                   onChange={handleCapaSelect}
                   style={{ display: 'none' }}
                 />
+                {/* Botão: subir novo arquivo */}
                 <button
                   type="button"
                   onClick={() => capaInputRef.current?.click()}
@@ -445,7 +449,45 @@ export const ElaborePlanoPage: React.FC = () => {
                   <ImageIcon size={18} color="var(--primary)" />
                   {imageUploader.uploading
                     ? `Enviando capa… ${imageUploader.progress}%`
-                    : 'Selecionar imagem de capa'}
+                    : 'Subir imagem de capa'}
+                </button>
+
+                {/* Botão: escolher da Midiateca */}
+                <button
+                  type="button"
+                  onClick={() => setCapaPickerOpen(true)}
+                  disabled={imageUploader.uploading || isSaving}
+                  style={{
+                    padding: '12px 18px',
+                    borderRadius: '11px',
+                    border: '1px solid var(--border)',
+                    background: 'var(--muted)',
+                    color: 'var(--text)',
+                    fontSize: '13.5px',
+                    fontWeight: 600,
+                    cursor: imageUploader.uploading || isSaving ? 'not-allowed' : 'pointer',
+                    display: 'flex',
+                    alignItems: 'center',
+                    gap: '8px',
+                    transition: 'border-color .15s ease, background .15s ease',
+                  }}
+                  onMouseEnter={(e) => {
+                    if (!imageUploader.uploading && !isSaving) {
+                      e.currentTarget.style.borderColor = 'var(--primary)';
+                      e.currentTarget.style.background = 'var(--card)';
+                    }
+                  }}
+                  onMouseLeave={(e) => {
+                    e.currentTarget.style.borderColor = 'var(--border)';
+                    e.currentTarget.style.background = 'var(--muted)';
+                  }}
+                >
+                  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                    <rect x="3" y="3" width="18" height="18" rx="2" />
+                    <circle cx="8.5" cy="8.5" r="1.5" />
+                    <polyline points="21 15 16 10 5 21" />
+                  </svg>
+                  Da Midiateca
                 </button>
               </div>
             )}
@@ -570,7 +612,7 @@ export const ElaborePlanoPage: React.FC = () => {
                 </button>
               </div>
             ) : (
-              <div>
+              <div style={{ display: 'flex', gap: '10px', flexWrap: 'wrap' }}>
                 <input
                   ref={arquivoInputRef}
                   type="file"
@@ -578,6 +620,7 @@ export const ElaborePlanoPage: React.FC = () => {
                   onChange={handleArquivoSelect}
                   style={{ display: 'none' }}
                 />
+                {/* Botão: subir novo arquivo */}
                 <button
                   type="button"
                   onClick={() => arquivoInputRef.current?.click()}
@@ -599,7 +642,41 @@ export const ElaborePlanoPage: React.FC = () => {
                   <Upload size={18} color="var(--primary)" />
                   {fileUploader.uploading
                     ? `Enviando arquivo… ${fileUploader.progress}%`
-                    : 'Selecionar arquivo (PDF)'}
+                    : 'Subir arquivo (PDF)'}
+                </button>
+
+                {/* Botão: escolher da Midiateca */}
+                <button
+                  type="button"
+                  onClick={() => setArquivoPickerOpen(true)}
+                  disabled={fileUploader.uploading || isSaving}
+                  style={{
+                    padding: '12px 18px',
+                    borderRadius: '11px',
+                    border: '1px solid var(--border)',
+                    background: 'var(--muted)',
+                    color: 'var(--text)',
+                    fontSize: '13.5px',
+                    fontWeight: 600,
+                    cursor: fileUploader.uploading || isSaving ? 'not-allowed' : 'pointer',
+                    display: 'flex',
+                    alignItems: 'center',
+                    gap: '8px',
+                    transition: 'border-color .15s ease, background .15s ease',
+                  }}
+                  onMouseEnter={(e) => {
+                    if (!fileUploader.uploading && !isSaving) {
+                      e.currentTarget.style.borderColor = 'var(--primary)';
+                      e.currentTarget.style.background = 'var(--card)';
+                    }
+                  }}
+                  onMouseLeave={(e) => {
+                    e.currentTarget.style.borderColor = 'var(--border)';
+                    e.currentTarget.style.background = 'var(--muted)';
+                  }}
+                >
+                  <FileText size={18} color="var(--primary)" />
+                  Da Midiateca
                 </button>
               </div>
             )}
@@ -659,6 +736,30 @@ export const ElaborePlanoPage: React.FC = () => {
         visible={toast.visible}
         message={toast.message}
         onClose={() => setToast((t) => ({ ...t, visible: false }))}
+      />
+
+      {/* Media Picker — Imagem de Capa */}
+      <MediaPickerModal
+        open={capaPickerOpen}
+        onClose={() => setCapaPickerOpen(false)}
+        onSelect={(file) => {
+          setCapaFile(file);
+          setCapaPickerOpen(false);
+        }}
+        filterType="img"
+        title="Selecionar imagem de capa da Midiateca"
+      />
+
+      {/* Media Picker — Arquivo do Guia */}
+      <MediaPickerModal
+        open={arquivoPickerOpen}
+        onClose={() => setArquivoPickerOpen(false)}
+        onSelect={(file) => {
+          setArquivoFile(file);
+          setArquivoPickerOpen(false);
+        }}
+        filterType="doc"
+        title="Selecionar arquivo da Midiateca"
       />
     </>
   );
