@@ -6,7 +6,7 @@ O site público permite consultar, por município ou estado, se existe um plano 
 
 - **Site público:** https://www.rnpiobserva.org.br
 - **CMS (Strapi, API + admin nativo):** https://omlpi-strapi.rnpiobserva.org.br
-- **Painel administrativo (novo):** aplicação própria, roda localmente em `http://localhost:5173`
+- **Painel administrativo (novo):** https://painel.rnpiobserva.org.br/login
 
 ## Sumário
 
