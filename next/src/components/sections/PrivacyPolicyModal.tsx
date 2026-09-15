@@ -15,34 +15,13 @@
 "use client";
 
 import { useState, useEffect, useRef } from "react";
-
-// Renderização simples de markdown para HTML (sem dependência extra)
-function renderMarkdown(md: string): string {
-  return md
-    .replace(/^### (.+)$/gm, "<h3>$1</h3>")
-    .replace(/^## (.+)$/gm, "<h2>$1</h2>")
-    .replace(/^# (.+)$/gm, "<h1>$1</h1>")
-    .replace(/\*\*(.+?)\*\*/g, "<strong>$1</strong>")
-    .replace(/\*(.+?)\*/g, "<em>$1</em>")
-    .replace(
-      /\[([^\]]+)\]\(([^)\s"]+)(?:\s+"([^"]*)")?\)/g,
-      (_, text, href, title) =>
-        title
-          ? `<a href="${href}" title="${title}" target="_blank" rel="noopener noreferrer" style="color:#f25d27;text-decoration:underline;font-weight:500">${text}</a>`
-          : `<a href="${href}" target="_blank" rel="noopener noreferrer" style="color:#f25d27;text-decoration:underline;font-weight:500">${text}</a>`
-    )
-    .replace(/^- (.+)$/gm, "<li>$1</li>")
-    .replace(/(<li>.*<\/li>\n?)+/g, (m) => `<ul>${m}</ul>`)
-    .replace(/\n\n/g, "</p><p>")
-    .replace(/^(?!<[h|u|o|l])(.+)$/gm, "<p>$1</p>")
-    .replace(/<p><\/p>/g, "");
-}
+import { renderMarkdown } from "@/lib/markdown";
 
 interface Props {
   content: string;
 }
 
-export function PrivacyPolicyModal({ content }: Props) {
+export function PrivacyPolicyModal({ content }: Props): React.JSX.Element {
   const [open, setOpen] = useState(false);
   const triggerRef = useRef<HTMLButtonElement>(null);
   const closeRef = useRef<HTMLButtonElement>(null);
