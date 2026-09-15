@@ -14,6 +14,7 @@
 
 import { useState, useCallback } from 'react';
 import { StrapiGuia, StrapiMidiaPublica } from '@/lib/strapi';
+import { STRAPI_PUBLIC_URL, resolveStrapiFileUrl } from '@/lib/strapi-media';
 
 const LIMIT = 20;
 
@@ -41,15 +42,15 @@ const TYPE_CONFIG: Record<
   Exclude<MidiaFilterKey, 'all'>,
   { label: string; bg: string; color: string; mimeParam?: string }
 > = {
-  pdf:   { label: 'PDF', bg: '#FDE7DE', color: '#F25D27', mimeParam: 'application/pdf' },
-  img:   { label: 'IMG', bg: '#E8F5EE', color: '#009045', mimeParam: 'image/' },
+  pdf:   { label: 'PDF', bg: '#FDE7DE', color: 'var(--primary)', mimeParam: 'application/pdf' },
+  img:   { label: 'IMG', bg: 'var(--accent)', color: 'var(--secondary)', mimeParam: 'image/' },
   video: { label: 'VÍD', bg: '#efe6fb', color: '#8a6bd6', mimeParam: 'video/' },
   doc:   { label: 'DOC', bg: '#e6eefb', color: '#3b6bd6' },
 };
 
 // ─── Icons ────────────────────────────────────────────────────────────────────
 
-function DownloadIcon({ size = 12 }: { size?: number }) {
+function DownloadIcon({ size = 12 }: { size?: number }): React.JSX.Element {
   return (
     <svg
       xmlns="http://www.w3.org/2000/svg"
@@ -68,7 +69,7 @@ function DownloadIcon({ size = 12 }: { size?: number }) {
   );
 }
 
-function SearchIcon() {
+function SearchIcon(): React.JSX.Element {
   return (
     <svg
       xmlns="http://www.w3.org/2000/svg"
@@ -104,28 +105,20 @@ function groupByCategory(guias: StrapiGuia[]): Map<string, StrapiGuia[]> {
   return map;
 }
 
-function DocumentCard({ guia }: { guia: StrapiGuia }) {
-  const STRAPI_URL =
-    process.env.NEXT_PUBLIC_STRAPI_URL ||
-    'https://omlpi-strapi.rnpiobserva.org.br';
-
-  const fileUrl = guia.file?.url
-    ? guia.file.url.startsWith('http')
-      ? guia.file.url
-      : `${STRAPI_URL}${guia.file.url}`
-    : null;
+function DocumentCard({ guia }: { guia: StrapiGuia }): React.JSX.Element {
+  const fileUrl = resolveStrapiFileUrl(guia.file?.url);
 
   return (
     <div className="bg-background rounded-2xl p-5 border border-border hover:shadow-md transition-shadow flex flex-col">
       <div className="flex items-start gap-3 mb-4">
-        <div className="w-11 h-11 rounded-xl bg-[#fff3ee] flex items-center justify-center flex-shrink-0">
+        <div className="w-11 h-11 rounded-xl bg-[#fff3ee] text-primary flex items-center justify-center flex-shrink-0">
           <svg
             xmlns="http://www.w3.org/2000/svg"
             width="18"
             height="18"
             viewBox="0 0 24 24"
             fill="none"
-            stroke="#f25d27"
+            stroke="currentColor"
             strokeWidth="2"
             strokeLinecap="round"
             strokeLinejoin="round"
@@ -157,7 +150,7 @@ function DocumentCard({ guia }: { guia: StrapiGuia }) {
           href={fileUrl}
           target="_blank"
           rel="noopener noreferrer"
-          className="mt-auto flex items-center justify-center gap-2 py-2.5 border border-[#A49A87] text-[#444525] text-xs font-semibold rounded-xl hover:border-[#17A649] hover:text-[#17A649] transition-colors"
+          className="mt-auto flex items-center justify-center gap-2 py-2.5 border border-border text-foreground text-xs font-semibold rounded-xl hover:border-secondary hover:text-secondary transition-colors"
         >
           <DownloadIcon /> Baixar
         </a>
@@ -176,7 +169,7 @@ function DocumentosTab({
 }: {
   initialGuias: StrapiGuia[];
   totalGuias: number;
-}) {
+}): React.JSX.Element {
   const [guias, setGuias] = useState<StrapiGuia[]>(initialGuias);
   const [page, setPage] = useState(1);
   const [loading, setLoading] = useState(false);
@@ -186,12 +179,9 @@ function DocumentosTab({
   const handleLoadMore = async () => {
     setLoading(true);
     try {
-      const STRAPI_URL =
-        process.env.NEXT_PUBLIC_STRAPI_URL ||
-        'https://omlpi-strapi.rnpiobserva.org.br';
       const start = page * 6;
       const res = await fetch(
-        `${STRAPI_URL}/guias?_limit=6&_start=${start}&_sort=created_at:desc`
+        `${STRAPI_PUBLIC_URL}/guias?_limit=6&_start=${start}&_sort=created_at:desc`
       );
       if (!res.ok) throw new Error('Erro ao carregar mais guias');
       const data: StrapiGuia[] = await res.json();
@@ -225,7 +215,10 @@ function DocumentosTab({
               className="text-base font-bold text-foreground mb-5 flex items-center gap-2"
               style={{ fontFamily: 'var(--font-heading)' }}
             >
-              <span className="w-4 h-0.5 bg-primary rounded-full inline-block" />
+              <span
+                className="w-4 h-0.5 bg-primary rounded-full inline-block"
+                aria-hidden="true"
+              />
               {cat}
             </h3>
             <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-5">
@@ -280,25 +273,16 @@ function DocumentosTab({
 
 // ─── Mídias (arquivos públicos da Media Library) ──────────────────────────────
 
-function MidiaCard({ midia }: { midia: StrapiMidiaPublica }) {
-  const STRAPI_URL =
-    process.env.NEXT_PUBLIC_STRAPI_URL ||
-    'https://omlpi-strapi.rnpiobserva.org.br';
-
+function MidiaCard({ midia }: { midia: StrapiMidiaPublica }): React.JSX.Element {
   const type = getMediaType(midia.mime);
   const config = TYPE_CONFIG[type];
   const isImg = type === 'img';
 
-  const fileUrl = midia.url.startsWith('http')
-    ? midia.url
-    : `${STRAPI_URL}${midia.url}`;
+  const fileUrl = resolveStrapiFileUrl(midia.url) ?? midia.url;
 
   const thumbnail =
     isImg && midia.formats
-      ? (
-          (midia.formats as Record<string, { url: string }>)?.thumbnail?.url ||
-          (midia.formats as Record<string, { url: string }>)?.small?.url
-        ) ?? null
+      ? midia.formats.thumbnail?.url ?? midia.formats.small?.url ?? null
       : null;
 
   return (
@@ -317,14 +301,14 @@ function MidiaCard({ midia }: { midia: StrapiMidiaPublica }) {
         {isImg && thumbnail ? (
           // eslint-disable-next-line @next/next/no-img-element
           <img
-            src={thumbnail.startsWith('http') ? thumbnail : `${STRAPI_URL}${thumbnail}`}
+            src={resolveStrapiFileUrl(thumbnail) ?? thumbnail}
             alt={midia.name}
             className="w-full h-full object-cover"
           />
         ) : (
           <span
             style={{
-              fontFamily: "'Nunito', sans-serif",
+              fontFamily: 'var(--font-heading)',
               fontWeight: 900,
               fontSize: '18px',
               color: config.color,
@@ -349,7 +333,7 @@ function MidiaCard({ midia }: { midia: StrapiMidiaPublica }) {
           <span className="text-[11px] text-muted-foreground font-semibold">
             {formatFileSize(midia.size)}
           </span>
-          <span className="flex items-center gap-1 text-[11px] text-[#444525] font-semibold border border-[#A49A87] rounded-lg px-2 py-0.5 group-hover:border-[#17A649] group-hover:text-[#17A649] transition-colors">
+          <span className="flex items-center gap-1 text-[11px] text-foreground font-semibold border border-border rounded-lg px-2 py-0.5 group-hover:border-secondary group-hover:text-secondary transition-colors">
             <DownloadIcon size={10} /> Baixar
           </span>
         </div>
@@ -364,7 +348,7 @@ function MidiasTab({
 }: {
   initialMidias: StrapiMidiaPublica[];
   totalMidias: number;
-}) {
+}): React.JSX.Element {
   const [midias, setMidias] = useState<StrapiMidiaPublica[]>(initialMidias);
   const [searchQuery, setSearchQuery] = useState('');
   const [activeFilter, setActiveFilter] = useState<MidiaFilterKey>('all');
@@ -528,8 +512,7 @@ function MidiasTab({
 // ─── Main ─────────────────────────────────────────────────────────────────────
 
 interface Props {
-  guiasIniciais?: StrapiGuia[];
-  guias?: StrapiGuia[];
+  guiasIniciais: StrapiGuia[];
   totalGuias: number;
   /** Mídias públicas carregadas via getMidiaPublica() no SSR */
   midias: StrapiMidiaPublica[];
@@ -542,8 +525,12 @@ const TAB_LABELS: Record<ReferenciaTab, string> = {
   midias: 'Mídias',
 };
 
-export function ReferenciaClient({ guiasIniciais, guias: guiasProp, totalGuias, midias, totalMidias }: Props) {
-  const initialGuias = guiasIniciais ?? guiasProp ?? [];
+export function ReferenciaClient({
+  guiasIniciais,
+  totalGuias,
+  midias,
+  totalMidias,
+}: Props): React.JSX.Element {
   const [activeTab, setActiveTab] = useState<ReferenciaTab>('documentos');
 
   return (
@@ -568,7 +555,7 @@ export function ReferenciaClient({ guiasIniciais, guias: guiasProp, totalGuias, 
       </div>
 
       {activeTab === 'documentos' && (
-        <DocumentosTab initialGuias={initialGuias} totalGuias={totalGuias} />
+        <DocumentosTab initialGuias={guiasIniciais} totalGuias={totalGuias} />
       )}
       {activeTab === 'midias' && (
         <MidiasTab initialMidias={midias} totalMidias={totalMidias} />
