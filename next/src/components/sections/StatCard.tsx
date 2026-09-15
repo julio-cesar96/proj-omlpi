@@ -2,16 +2,15 @@
 
 import React from "react";
 
-export function StatCard({
-  value,
-  label,
-  tooltip,
-}: {
+interface Props {
   value: string;
   label: string;
   tooltip?: string | null;
-}) {
+}
+
+export function StatCard({ value, label, tooltip }: Props): React.JSX.Element {
   const [open, setOpen] = React.useState(false);
+  const tooltipId = React.useId();
   const timeoutRef = React.useRef<NodeJS.Timeout | null>(null);
 
   const handleMouseEnter = () => {
@@ -65,12 +64,12 @@ export function StatCard({
             onMouseLeave={handleMouseLeave}
             onFocus={handleMouseEnter}
             onBlur={handleMouseLeave}
-            aria-expanded={open}
+            aria-describedby={open ? tooltipId : undefined}
             aria-label={`Mais informações sobre ${label}`}
-            className={`w-4 h-4 rounded-full border-[1.5px] border-[#F25D27] text-[11px] font-black leading-none flex items-center justify-center flex-shrink-0 transition-colors cursor-pointer ${
+            className={`w-4 h-4 rounded-full border-[1.5px] border-primary text-[11px] font-black leading-none flex items-center justify-center flex-shrink-0 transition-colors cursor-pointer ${
               open
-                ? "bg-[#F25D27] text-white"
-                : "text-[#F25D27] hover:bg-[#F25D27] hover:text-white"
+                ? "bg-primary text-white"
+                : "text-primary hover:bg-primary hover:text-white"
             }`}
           >
             i
@@ -81,6 +80,7 @@ export function StatCard({
       {/* Popover */}
       {tooltip && open && (
         <div
+          id={tooltipId}
           role="tooltip"
           onMouseEnter={handleMouseEnter}
           onMouseLeave={handleMouseLeave}
@@ -88,7 +88,10 @@ export function StatCard({
         >
           {tooltip}
           {/* seta */}
-          <span className="absolute top-full left-1/2 -translate-x-1/2 border-[6px] border-transparent border-t-white drop-shadow-[0_1px_0_rgba(0,0,0,0.08)] pointer-events-none" />
+          <span
+            className="absolute top-full left-1/2 -translate-x-1/2 border-[6px] border-transparent border-t-white drop-shadow-[0_1px_0_rgba(0,0,0,0.08)] pointer-events-none"
+            aria-hidden="true"
+          />
         </div>
       )}
     </div>
