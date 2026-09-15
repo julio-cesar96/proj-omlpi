@@ -11,24 +11,11 @@
 
 import { useState } from "react";
 import { StrapiGuia, StrapiFaq, StrapiPlano } from "@/lib/strapi";
-
-const STRAPI_URL =
-  process.env.NEXT_PUBLIC_STRAPI_URL ||
-  "https://omlpi-strapi.rnpiobserva.org.br";
-
-/**
- * Resolve URL de arquivo vinda do Strapi.
- * O provider de upload é o local (padrão do Strapi v3), que devolve caminhos
- * relativos (/uploads/...) — usá-los crus aponta para o domínio do Next e dá 404.
- */
-function resolveFileUrl(url?: string | null): string | null {
-  if (!url) return null;
-  return url.startsWith("http") ? url : `${STRAPI_URL}${url}`;
-}
+import { STRAPI_PUBLIC_URL, resolveStrapiFileUrl } from "@/lib/strapi-media";
 
 // ─── Sub-components ───────────────────────────────────────────────────────────
 
-function DownloadIcon() {
+function DownloadIcon(): React.JSX.Element {
   return (
     <svg
       xmlns="http://www.w3.org/2000/svg"
@@ -47,7 +34,7 @@ function DownloadIcon() {
   );
 }
 
-function ChevronIcon({ open }: { open: boolean }) {
+function ChevronIcon({ open }: { open: boolean }): React.JSX.Element {
   return (
     <svg
       xmlns="http://www.w3.org/2000/svg"
@@ -67,8 +54,8 @@ function ChevronIcon({ open }: { open: boolean }) {
   );
 }
 
-function GuiaCard({ guia }: { guia: StrapiGuia }) {
-  const fileUrl = resolveFileUrl(guia.file?.url);
+function GuiaCard({ guia }: { guia: StrapiGuia }): React.JSX.Element {
+  const fileUrl = resolveStrapiFileUrl(guia.file?.url);
 
   return (
     <div className="bg-white rounded-2xl p-5 border border-border hover:shadow-md transition-shadow flex flex-col">
@@ -107,7 +94,7 @@ function GuiaCard({ guia }: { guia: StrapiGuia }) {
   );
 }
 
-function FaqAccordion({ items }: { items: StrapiFaq[] }) {
+function FaqAccordion({ items }: { items: StrapiFaq[] }): React.JSX.Element {
   const [openIndex, setOpenIndex] = useState<number | null>(null);
 
   return (
@@ -147,8 +134,7 @@ function FaqAccordion({ items }: { items: StrapiFaq[] }) {
 // ─── Main ─────────────────────────────────────────────────────────────────────
 
 interface Props {
-  guiasIniciais?: StrapiGuia[];
-  guias?: StrapiGuia[];
+  guiasIniciais: StrapiGuia[];
   totalGuias: number;
   planos: StrapiPlano[];
   faqs: StrapiFaq[];
@@ -162,10 +148,14 @@ const TAB_LABELS: Record<PnipiTab, string> = {
   faq: "Dúvidas frequentes",
 };
 
-export function PnipiClient({ guiasIniciais, guias: guiasProp, totalGuias, planos, faqs }: Props) {
-  const initialGuias = guiasIniciais ?? guiasProp ?? [];
+export function PnipiClient({
+  guiasIniciais,
+  totalGuias,
+  planos,
+  faqs,
+}: Props): React.JSX.Element {
   const [activeTab, setActiveTab] = useState<PnipiTab>("leis");
-  const [guias, setGuias] = useState<StrapiGuia[]>(initialGuias);
+  const [guias, setGuias] = useState<StrapiGuia[]>(guiasIniciais);
   const [page, setPage] = useState(1);
   const [loading, setLoading] = useState(false);
 
@@ -175,7 +165,7 @@ export function PnipiClient({ guiasIniciais, guias: guiasProp, totalGuias, plano
     setLoading(true);
     try {
       const start = page * 6;
-      const res = await fetch(`${STRAPI_URL}/guias?_limit=6&_start=${start}&_sort=created_at:desc`);
+      const res = await fetch(`${STRAPI_PUBLIC_URL}/guias?_limit=6&_start=${start}&_sort=created_at:desc`);
       if (!res.ok) throw new Error("Erro ao carregar mais guias");
       const data: StrapiGuia[] = await res.json();
       if (Array.isArray(data)) {
@@ -268,21 +258,21 @@ export function PnipiClient({ guiasIniciais, guias: guiasProp, totalGuias, plano
         <div className="max-w-2xl space-y-4">
           {planos.length > 0 ? (
             planos.map((plano) => {
-              const documentoUrl = resolveFileUrl(plano.documento?.url);
+              const documentoUrl = resolveStrapiFileUrl(plano.documento?.url);
 
               return (
               <div
                 key={plano.id}
                 className="bg-white rounded-2xl p-6 border border-border flex items-start gap-5 hover:shadow-md transition-shadow"
               >
-                <div className="w-12 h-12 rounded-2xl bg-[#fff3ee] flex items-center justify-center flex-shrink-0">
+                <div className="w-12 h-12 rounded-2xl bg-[#fff3ee] text-primary flex items-center justify-center flex-shrink-0">
                   <svg
                     xmlns="http://www.w3.org/2000/svg"
                     width="20"
                     height="20"
                     viewBox="0 0 24 24"
                     fill="none"
-                    stroke="#f25d27"
+                    stroke="currentColor"
                     strokeWidth="2"
                     strokeLinecap="round"
                     strokeLinejoin="round"
