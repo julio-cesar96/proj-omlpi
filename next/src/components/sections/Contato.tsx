@@ -12,13 +12,19 @@
 
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect, useRef } from "react";
 import Image from "next/image";
 import { submitContactForm, validateContactForm, ContactFormData } from "@/lib/contact";
+import { SectionLabel } from "@/components/ui/SectionLabel";
 
 // ─── Dados estáticos ──────────────────────────────────────────────────────────
 
-const BRAZIL_STATES = [
+interface BrazilState {
+  uf: string;
+  name: string;
+}
+
+const BRAZIL_STATES: BrazilState[] = [
   { uf: "AC", name: "Acre" },
   { uf: "AL", name: "Alagoas" },
   { uf: "AM", name: "Amazonas" },
@@ -48,7 +54,7 @@ const BRAZIL_STATES = [
   { uf: "TO", name: "Tocantins" },
 ];
 
-const SUBJECT_OPTIONS = [
+const SUBJECT_OPTIONS: string[] = [
   "Dúvida sobre planos municipais",
   "Informar novo plano",
   "Atualização de dados",
@@ -67,7 +73,8 @@ const labelClass =
 
 // ─── Main ─────────────────────────────────────────────────────────────────────
 
-export function Contato() {
+export function Contato(): React.JSX.Element {
+  const resetTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
   const [form, setForm] = useState<Partial<ContactFormData>>({
     name: "",
     state: "",
@@ -78,6 +85,13 @@ export function Contato() {
   const [error, setError] = useState<string | null>(null);
   const [submitted, setSubmitted] = useState(false);
   const [loading, setLoading] = useState(false);
+
+  // Limpa o timeout de reset se o componente sair antes dos 3s
+  useEffect(() => {
+    return () => {
+      if (resetTimeoutRef.current) clearTimeout(resetTimeoutRef.current);
+    };
+  }, []);
 
   function handleChange(
     e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement>
@@ -99,7 +113,7 @@ export function Contato() {
       await submitContactForm(form as ContactFormData);
       setSubmitted(true);
       // Reseta o formulário após 3s
-      setTimeout(() => {
+      resetTimeoutRef.current = setTimeout(() => {
         setSubmitted(false);
         setForm({ name: "", state: "", email: "", subject: SUBJECT_OPTIONS[0], message: "" });
       }, 3000);
@@ -120,12 +134,7 @@ export function Contato() {
         <div className="grid lg:grid-cols-2 gap-12 lg:gap-20 items-start">
           {/* Texto à esquerda */}
           <div>
-            <div className="flex items-center gap-2 mb-3">
-              <span className="w-6 h-0.5 bg-primary rounded-full" />
-              <span className="text-xs font-bold uppercase tracking-widest text-primary">
-                Contato
-              </span>
-            </div>
+            <SectionLabel>Contato</SectionLabel>
             <h2
               className="text-[30px] lg:text-[40px] font-black text-foreground mb-4"
               style={{ fontFamily: "var(--font-heading)" }}
@@ -139,14 +148,14 @@ export function Contato() {
 
             {/* E-mail de referência */}
             <div className="flex items-center gap-3 mb-8">
-              <div className="w-11 h-11 rounded-xl bg-[#fff3ee] flex items-center justify-center flex-shrink-0">
+              <div className="w-11 h-11 rounded-xl bg-[#fff3ee] text-primary flex items-center justify-center flex-shrink-0">
                 <svg
                   xmlns="http://www.w3.org/2000/svg"
                   width="16"
                   height="16"
                   viewBox="0 0 24 24"
                   fill="none"
-                  stroke="#f25d27"
+                  stroke="currentColor"
                   strokeWidth="2"
                   strokeLinecap="round"
                   strokeLinejoin="round"
@@ -190,14 +199,14 @@ export function Contato() {
 
             {submitted ? (
               <div className="py-10 text-center">
-                <div className="w-14 h-14 rounded-full bg-[#e8f5ee] flex items-center justify-center mx-auto mb-4">
+                <div className="w-14 h-14 rounded-full bg-accent text-secondary flex items-center justify-center mx-auto mb-4">
                   <svg
                     xmlns="http://www.w3.org/2000/svg"
                     width="24"
                     height="24"
                     viewBox="0 0 24 24"
                     fill="none"
-                    stroke="#009045"
+                    stroke="currentColor"
                     strokeWidth="2.5"
                     strokeLinecap="round"
                     strokeLinejoin="round"
@@ -224,6 +233,8 @@ export function Contato() {
                       id="contato-nome"
                       type="text"
                       name="name"
+                      aria-invalid={error ? true : undefined}
+                      aria-describedby={error ? "contato-erro" : undefined}
                       value={form.name}
                       onChange={handleChange}
                       placeholder="Seu nome completo"
@@ -261,6 +272,8 @@ export function Contato() {
                     id="contato-email"
                     type="email"
                     name="email"
+                    aria-invalid={error ? true : undefined}
+                    aria-describedby={error ? "contato-erro" : undefined}
                     value={form.email}
                     onChange={handleChange}
                     placeholder="seu@email.com.br"
@@ -296,6 +309,8 @@ export function Contato() {
                   <textarea
                     id="contato-mensagem"
                     name="message"
+                    aria-invalid={error ? true : undefined}
+                    aria-describedby={error ? "contato-erro" : undefined}
                     rows={4}
                     value={form.message}
                     onChange={handleChange}
@@ -307,8 +322,9 @@ export function Contato() {
 
                 {error && (
                   <p
+                    id="contato-erro"
                     role="alert"
-                    className="text-sm text-[#d4183d] font-medium"
+                    className="text-sm text-destructive font-medium"
                   >
                     {error}
                   </p>
