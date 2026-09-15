@@ -13,12 +13,21 @@
 
 import Image from "next/image";
 import { getBanner, StrapiBanner } from "@/lib/strapi";
+import { SectionLabel } from "@/components/ui/SectionLabel";
 import { StatCard } from "./StatCard";
+
+/** Número exibido na faixa de stats abaixo do Hero. */
+interface HeroStat {
+  value: string;
+  label: string;
+  /** Texto do popover explicativo; null quando o número dispensa nota. */
+  tooltip: string | null;
+}
 
 // ─── Stats (placeholder) ─────────────────────────────────────────────────────
 // TODO: substituir pelos dados reais do endpoint omlpi-api `data/resume/` quando confirmado.
 // Ver pendência em docs/progresso/fase-1-fundacao.md §9 item 3.
-const STATS_PLACEHOLDER = [
+const STATS_PLACEHOLDER: HeroStat[] = [
   {
     value: "5.106",
     label: "Municípios mapeados",
@@ -43,17 +52,6 @@ const STATS_PLACEHOLDER = [
 
 // ─── Sub-components ──────────────────────────────────────────────────────────
 
-function SectionLabel({ children }: { children: React.ReactNode }) {
-  return (
-    <div className="flex items-center gap-2 mb-3">
-      <span className="w-6 h-0.5 bg-primary rounded-full" />
-      <span className="text-xs font-bold uppercase tracking-widest text-primary">
-        {children}
-      </span>
-    </div>
-  );
-}
-
 /**
  * Componente visual da área de imagem do Hero.
  *
@@ -66,7 +64,7 @@ function SectionLabel({ children }: { children: React.ReactNode }) {
  * - aspectRatio: "16/9"
  * - rounded-2xl (cantos mais suaves)
  */
-function BannerImage() {
+function BannerImage(): React.JSX.Element {
   return (
     <div className="relative">
       <div
@@ -87,7 +85,7 @@ function BannerImage() {
       <div className="absolute -bottom-5 -left-5 bg-white backdrop-blur-md rounded-xl shadow-lg px-4 py-3 border border-border">
         <div
           className="text-xl font-black"
-          style={{ fontFamily: "var(--font-heading)", color: "#009045" }}
+          style={{ fontFamily: "var(--font-heading)", color: "var(--secondary)" }}
         >
           {STATS_PLACEHOLDER[2].value}
         </div>
@@ -98,7 +96,7 @@ function BannerImage() {
       <div className="absolute -top-5 -right-3 bg-white backdrop-blur-md rounded-xl shadow-lg px-4 py-3 border border-border">
         <div
           className="text-xl font-black"
-          style={{ fontFamily: "var(--font-heading)", color: "#009045" }}
+          style={{ fontFamily: "var(--font-heading)", color: "var(--secondary)" }}
         >
           {STATS_PLACEHOLDER[1].value}
         </div>
@@ -112,13 +110,14 @@ function BannerImage() {
 
 // ─── Main ────────────────────────────────────────────────────────────────────
 
-export async function Hero() {
+export async function Hero(): Promise<React.JSX.Element> {
   let banner: StrapiBanner | null = null;
 
   try {
     banner = await getBanner();
-  } catch {
+  } catch (err) {
     // Sem API configurada (dev local sem .env): renderiza com fallback gracioso
+    console.error("[Hero] Falha ao buscar getBanner():", err);
   }
 
   return (
@@ -133,7 +132,8 @@ export async function Hero() {
         <div
           className="absolute top-0 right-0 w-[600px] h-[600px] opacity-[0.07] pointer-events-none rounded-full"
           style={{
-            background: "radial-gradient(circle, #009045 0%, transparent 70%)",
+            background:
+            "radial-gradient(circle, var(--secondary) 0%, transparent 70%)",
             transform: "translate(25%, -25%)",
           }}
           aria-hidden="true"
@@ -141,7 +141,8 @@ export async function Hero() {
         <div
           className="absolute bottom-0 left-0 w-[400px] h-[400px] opacity-[0.06] pointer-events-none rounded-full"
           style={{
-            background: "radial-gradient(circle, #F25D27 0%, transparent 70%)",
+            background:
+            "radial-gradient(circle, var(--primary) 0%, transparent 70%)",
             transform: "translate(-30%, 30%)",
           }}
           aria-hidden="true"
@@ -203,13 +204,11 @@ export async function Hero() {
       </section>
 
       {/* ── Stats strip ── */}
-      <div
-        className="py-12"
-        style={{
-          background: "#F5F0E8",
-          borderTop: "3px solid var(--primary)",
-        }}
+      <section
+        id="numeros"
         aria-label="Números do levantamento"
+        className="py-12 bg-background-alt"
+        style={{ borderTop: "3px solid var(--primary)" }}
       >
         <div className="max-w-7xl mx-auto px-5 lg:px-10">
           <div className="grid grid-cols-2 lg:grid-cols-4 gap-6 lg:gap-12">
@@ -237,7 +236,7 @@ export async function Hero() {
             </a>
           </p>
         </div>
-      </div>
+      </section>
     </>
   );
 }
