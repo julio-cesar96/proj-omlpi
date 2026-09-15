@@ -13,42 +13,9 @@
 import Image from "next/image";
 import { Image as ImageIcon, Download } from "lucide-react";
 import { getElaborePlano, StrapiElaborePlano } from "@/lib/strapi";
-
-const STRAPI_URL =
-  process.env.NEXT_PUBLIC_STRAPI_URL ||
-  "https://omlpi-strapi.rnpiobserva.org.br";
-
-function renderMarkdown(md: string): string {
-  return md
-    .replace(/^### (.+)$/gm, "<h3>$1</h3>")
-    .replace(/^## (.+)$/gm, "<h2>$1</h2>")
-    .replace(/^# (.+)$/gm, "<h1>$1</h1>")
-    .replace(/\*\*(.+?)\*\*/g, "<strong>$1</strong>")
-    .replace(/\*(.+?)\*/g, "<em>$1</em>")
-    .replace(
-      /\[([^\]]+)\]\(([^)\s"]+)(?:\s+"([^"]*)")?\)/g,
-      (_, text, href, title) =>
-        title
-          ? `<a href="${href}" title="${title}" target="_blank" rel="noopener noreferrer" style="color:#f25d27;text-decoration:underline;font-weight:500">${text}</a>`
-          : `<a href="${href}" target="_blank" rel="noopener noreferrer" style="color:#f25d27;text-decoration:underline;font-weight:500">${text}</a>`
-    )
-    .replace(/^- (.+)$/gm, "<li>$1</li>")
-    .replace(/(<li>.*<\/li>\n?)+/g, (m) => `<ul>${m}</ul>`)
-    .replace(/\n\n/g, "</p><p>")
-    .replace(/^(?!<[h|u|o|l])(.+)$/gm, "<p>$1</p>")
-    .replace(/<p><\/p>/g, "");
-}
-
-function SectionLabel({ children }: { children: React.ReactNode }) {
-  return (
-    <div className="flex items-center gap-2 mb-3">
-      <span className="w-6 h-0.5 bg-primary rounded-full" />
-      <span className="text-xs font-bold uppercase tracking-widest text-primary">
-        {children}
-      </span>
-    </div>
-  );
-}
+import { resolveStrapiFileUrl } from "@/lib/strapi-media";
+import { renderMarkdown } from "@/lib/markdown";
+import { SectionLabel } from "@/components/ui/SectionLabel";
 
 // ─── Sub-componente: Imagem de capa ──────────────────────────────────────────
 
@@ -60,7 +27,7 @@ function CapaImage({
   capaUrl: string | null;
   tituloGuia: string | null;
   lateral?: boolean;
-}) {
+}): React.JSX.Element {
   if (capaUrl) {
     return (
       <div
@@ -84,7 +51,7 @@ function CapaImage({
 
   return (
     <div
-      className={`bg-[#F5F0E8] border-2 border-dashed border-muted-foreground/30 rounded-2xl overflow-hidden flex flex-col items-center justify-center p-6 text-center shadow-sm ${
+      className={`bg-background-alt border-2 border-dashed border-muted-foreground/30 rounded-2xl overflow-hidden flex flex-col items-center justify-center p-6 text-center shadow-sm ${
         lateral ? "w-full min-h-[320px]" : "w-full max-h-[400px] aspect-[3/2]"
       }`}
     >
@@ -106,7 +73,7 @@ function ConteudoGuia({
   tituloGuia: string | null;
   htmlDescricao: string | null;
   arquivoUrl: string | null;
-}) {
+}): React.JSX.Element {
   return (
     <div className="space-y-4 text-left">
       {tituloGuia && (
@@ -126,7 +93,7 @@ function ConteudoGuia({
             [&_h3]:text-foreground [&_h3]:font-semibold [&_h3]:mt-5 [&_h3]:mb-2
             [&_strong]:text-foreground
             [&_ul]:list-disc [&_ul]:pl-5 [&_li]:mb-1
-            [&_a]:text-[#F25D27] [&_a]:underline [&_a]:font-medium [&_a]:hover:text-[#e04d18] [&_a]:transition-colors"
+            [&_a]:text-primary [&_a]:underline [&_a]:font-medium [&_a]:hover:text-primary/80 [&_a]:transition-colors"
           dangerouslySetInnerHTML={{ __html: htmlDescricao }}
         />
       ) : (
@@ -159,7 +126,7 @@ function ConteudoGuia({
 
 // ─── Main ────────────────────────────────────────────────────────────────────
 
-export async function ElaborePlano() {
+export async function ElaborePlano(): Promise<React.JSX.Element> {
   let data: StrapiElaborePlano | null = null;
 
   try {
@@ -173,17 +140,8 @@ export async function ElaborePlano() {
   const descricaoMd = data?.descricao;
   const imagePosition = data?.image_position ?? "esquerda"; // fallback: layout lateral (design aprovado)
 
-  const capaUrl = data?.capa?.url
-    ? data.capa.url.startsWith("http")
-      ? data.capa.url
-      : `${STRAPI_URL}${data.capa.url}`
-    : null;
-
-  const arquivoUrl = data?.arquivo?.url
-    ? data.arquivo.url.startsWith("http")
-      ? data.arquivo.url
-      : `${STRAPI_URL}${data.arquivo.url}`
-    : null;
+  const capaUrl = resolveStrapiFileUrl(data?.capa?.url);
+  const arquivoUrl = resolveStrapiFileUrl(data?.arquivo?.url);
 
   const htmlDescricao = descricaoMd ? renderMarkdown(descricaoMd) : null;
 
