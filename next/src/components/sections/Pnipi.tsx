@@ -9,39 +9,35 @@
  */
 
 import { getGuias, getGuiasCount, getFaqs, getPlanos, StrapiGuia, StrapiFaq, StrapiPlano } from "@/lib/strapi";
+import { SectionLabel } from "@/components/ui/SectionLabel";
 import { PnipiClient } from "./PnipiClient";
 
-function SectionLabel({ children }: { children: React.ReactNode }) {
-  return (
-    <div className="flex items-center gap-2 mb-3">
-      <span className="w-6 h-0.5 bg-primary rounded-full" />
-      <span className="text-xs font-bold uppercase tracking-widest text-primary">
-        {children}
-      </span>
-    </div>
-  );
-}
-
-export async function Pnipi() {
+export async function Pnipi(): Promise<React.JSX.Element> {
   let guias: StrapiGuia[] = [];
   let totalGuias = 0;
   let faqs: StrapiFaq[] = [];
   let planos: StrapiPlano[] = [];
 
-  try {
-    const [fetchedGuias, fetchedGuiasCount, fetchedFaqs, fetchedPlanos] = await Promise.all([
-      getGuias({ _limit: 6, _sort: "created_at:desc" }).catch(() => []),
-      getGuiasCount().catch(() => 0),
-      getFaqs({ _sort: "ordem:asc" }).catch(() => []),
-      getPlanos({ _sort: "titulo:asc" }).catch(() => []),
-    ]);
-    guias = fetchedGuias;
-    totalGuias = fetchedGuiasCount;
-    faqs = fetchedFaqs;
-    planos = fetchedPlanos;
-  } catch {
-    // Sem API configurada: usa arrays vazios
-  }
+  // allSettled: uma coleção indisponível não derruba as outras abas, mas o erro
+  // é logado por origem — os .catch(() => []) anteriores engoliam tudo em silêncio.
+  const [resGuias, resCount, resFaqs, resPlanos] = await Promise.allSettled([
+    getGuias({ _limit: 6, _sort: "created_at:desc" }),
+    getGuiasCount(),
+    getFaqs({ _sort: "ordem:asc" }),
+    getPlanos({ _sort: "titulo:asc" }),
+  ]);
+
+  if (resGuias.status === "fulfilled") guias = resGuias.value;
+  else console.error("[Pnipi] Falha ao buscar getGuias():", resGuias.reason);
+
+  if (resCount.status === "fulfilled") totalGuias = resCount.value;
+  else console.error("[Pnipi] Falha ao buscar getGuiasCount():", resCount.reason);
+
+  if (resFaqs.status === "fulfilled") faqs = resFaqs.value;
+  else console.error("[Pnipi] Falha ao buscar getFaqs():", resFaqs.reason);
+
+  if (resPlanos.status === "fulfilled") planos = resPlanos.value;
+  else console.error("[Pnipi] Falha ao buscar getPlanos():", resPlanos.reason);
 
   return (
     <section id="pnipi" aria-label="PNIPI" className="py-20 lg:py-28">
