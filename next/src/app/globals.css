@@ -16,6 +16,8 @@
 
   /* Cores — paleta principal */
   --background: #fffff0;
+  /* Fundo alternativo das faixas destacadas (stats do Hero, capa do ElaborePlano) */
+  --background-alt: #f5f0e8;
   --foreground: #444525;
   --card: #ffffff;
   --card-foreground: #444525;
@@ -65,6 +67,7 @@
 
   /* Cores */
   --color-background: var(--background);
+  --color-background-alt: var(--background-alt);
   --color-foreground: var(--foreground);
   --color-card: var(--card);
   --color-card-foreground: var(--card-foreground);
