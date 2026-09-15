@@ -382,6 +382,16 @@ export function getArtigos(params?: StrapiQueryParams): Promise<StrapiArtigo[]> 
   return strapiGet<StrapiArtigo[]>("artigos", params);
 }
 
+/** Variante gerada pelo Strapi para uma imagem (thumbnail, small, medium, large). */
+export interface StrapiMidiaFormat {
+  url: string;
+  width?: number;
+  height?: number;
+  size?: number;
+  mime?: string;
+  [key: string]: unknown;
+}
+
 /** Arquivo retornado pelo endpoint público /midiateca-publica */
 export interface StrapiMidiaPublica {
   id: number;
@@ -395,7 +405,7 @@ export interface StrapiMidiaPublica {
   caption?: string | null;
   width?: number | null;
   height?: number | null;
-  formats?: Record<string, unknown> | null;
+  formats?: Record<string, StrapiMidiaFormat> | null;
   created_at: string;
   [key: string]: unknown;
 }
