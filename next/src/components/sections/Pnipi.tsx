@@ -46,6 +46,7 @@ export async function Pnipi() {
   return (
     <section id="pnipi" aria-label="PNIPI" className="py-20 lg:py-28">
       <div className="max-w-7xl mx-auto px-5 lg:px-10">
+        <SectionLabel>PNIPI</SectionLabel>
         <h2
           className="text-[30px] lg:text-[40px] font-black text-foreground mb-3"
           style={{ fontFamily: "var(--font-heading)" }}

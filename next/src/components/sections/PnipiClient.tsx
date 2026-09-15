@@ -12,6 +12,20 @@
 import { useState } from "react";
 import { StrapiGuia, StrapiFaq, StrapiPlano } from "@/lib/strapi";
 
+const STRAPI_URL =
+  process.env.NEXT_PUBLIC_STRAPI_URL ||
+  "https://omlpi-strapi.rnpiobserva.org.br";
+
+/**
+ * Resolve URL de arquivo vinda do Strapi.
+ * O provider de upload é o local (padrão do Strapi v3), que devolve caminhos
+ * relativos (/uploads/...) — usá-los crus aponta para o domínio do Next e dá 404.
+ */
+function resolveFileUrl(url?: string | null): string | null {
+  if (!url) return null;
+  return url.startsWith("http") ? url : `${STRAPI_URL}${url}`;
+}
+
 // ─── Sub-components ───────────────────────────────────────────────────────────
 
 function DownloadIcon() {
@@ -54,6 +68,8 @@ function ChevronIcon({ open }: { open: boolean }) {
 }
 
 function GuiaCard({ guia }: { guia: StrapiGuia }) {
+  const fileUrl = resolveFileUrl(guia.file?.url);
+
   return (
     <div className="bg-white rounded-2xl p-5 border border-border hover:shadow-md transition-shadow flex flex-col">
       <div
@@ -73,9 +89,9 @@ function GuiaCard({ guia }: { guia: StrapiGuia }) {
           {guia.description}
         </div>
       )}
-      {guia.file?.url ? (
+      {fileUrl ? (
         <a
-          href={guia.file.url}
+          href={fileUrl}
           target="_blank"
           rel="noopener noreferrer"
           className="inline-flex items-center gap-1.5 text-xs text-secondary font-semibold hover:underline mt-auto"
@@ -158,7 +174,6 @@ export function PnipiClient({ guiasIniciais, guias: guiasProp, totalGuias, plano
   const handleLoadMore = async () => {
     setLoading(true);
     try {
-      const STRAPI_URL = process.env.NEXT_PUBLIC_STRAPI_URL || "https://omlpi-strapi.rnpiobserva.org.br";
       const start = page * 6;
       const res = await fetch(`${STRAPI_URL}/guias?_limit=6&_start=${start}&_sort=created_at:desc`);
       if (!res.ok) throw new Error("Erro ao carregar mais guias");
@@ -252,7 +267,10 @@ export function PnipiClient({ guiasIniciais, guias: guiasProp, totalGuias, plano
       {activeTab === "planos" && (
         <div className="max-w-2xl space-y-4">
           {planos.length > 0 ? (
-            planos.map((plano) => (
+            planos.map((plano) => {
+              const documentoUrl = resolveFileUrl(plano.documento?.url);
+
+              return (
               <div
                 key={plano.id}
                 className="bg-white rounded-2xl p-6 border border-border flex items-start gap-5 hover:shadow-md transition-shadow"
@@ -287,9 +305,9 @@ export function PnipiClient({ guiasIniciais, guias: guiasProp, totalGuias, plano
                   >
                     {plano.titulo}
                   </div>
-                  {plano.documento?.url ? (
+                  {documentoUrl ? (
                     <a
-                      href={plano.documento.url}
+                      href={documentoUrl}
                       target="_blank"
                       rel="noopener noreferrer"
                       className="inline-flex items-center gap-2 px-4 py-2 bg-primary text-white text-xs font-semibold rounded-full hover:bg-[#e04d18] transition-colors"
@@ -303,7 +321,8 @@ export function PnipiClient({ guiasIniciais, guias: guiasProp, totalGuias, plano
                   )}
                 </div>
               </div>
-            ))
+              );
+            })
           ) : (
             <p className="text-sm text-muted-foreground">
               Nenhum plano de ação disponível no momento.

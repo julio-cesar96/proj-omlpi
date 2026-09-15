@@ -99,7 +99,7 @@ export function SobreClient({ abas }: Props) {
   let sectionLabel = "Sobre";
   let sectionTitle = "Quem somos";
 
-  let sobreContent: {
+  const sobreContent: {
     html: string;
     imageFallback: boolean;
     imageSrc: string | null;

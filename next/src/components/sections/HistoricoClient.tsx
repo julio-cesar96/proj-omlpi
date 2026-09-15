@@ -98,7 +98,7 @@ export function HistoricoClient({ abas }: Props) {
   let sectionLabel = "Memória";
   let sectionTitle = "Histórico";
 
-  let historicoContent: {
+  const historicoContent: {
     html: string;
     imageFallback: boolean;
     imageSrc: string | null;
