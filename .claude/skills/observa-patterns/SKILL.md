@@ -123,3 +123,97 @@ export async function MinhaSecao() {
 - Evitar `any` — usar `unknown` quando necessário
 - Funções devem ter tipo de retorno explícito
 - Interfaces usam `[key: string]: unknown` para extensibilidade do Strapi
+
+## Custom Hooks
+
+### Quando usar
+- Client Components com lógica de estado, side effects ou data fetching
+- Qualquer componente do `painel-cms/` com mutations ou queries
+- Formulários, modais com estado, toggles, filtros, paginação client-side
+
+### Quando NÃO usar
+- Server Components no `next/` (hooks não funcionam sem "use client")
+- Lógica que pode ficar no servidor (data fetching do Strapi = Server Component)
+
+### Padrão
+
+```typescript
+// hooks/useNomeDoHook.ts
+import { useState } from "react";
+
+export function useContatoForm() {
+  const [status, setStatus] = useState<"idle" | "sending" | "success" | "error">("idle");
+  
+  async function handleSubmit(data: FormData) {
+    setStatus("sending");
+    try {
+      await fetch("/api/contato", { method: "POST", body: data });
+      setStatus("success");
+    } catch {
+      setStatus("error");
+    }
+  }
+
+  return { status, handleSubmit };
+}
+
+// Componente fica limpo
+function ContatoForm() {
+  const { status, handleSubmit } = useContatoForm();
+  return <form onSubmit={handleSubmit}>...</form>;
+}
+```
+
+### Regra prática
+Se um Client Component tem mais de ~15 linhas de lógica (useState, useEffect,
+handlers), extrair para um custom hook em `hooks/` ou co-locado ao lado do componente.
+
+## Async/Await
+
+### Regra: SEMPRE usar async/await, NUNCA .then()/.catch()
+
+```typescript
+// CERTO
+async function loadGuias() {
+  try {
+    const data = await fetch("/api/guias");
+    const guias = await data.json();
+    setGuias(guias);
+  } catch (err) {
+    console.error("[loadGuias] Erro:", err);
+  }
+}
+
+// ERRADO
+function loadGuias() {
+  fetch("/api/guias")
+    .then((res) => res.json())
+    .then((data) => setGuias(data))
+    .catch((err) => console.error(err));
+}
+```
+
+### Inclui Promise.all e Promise.allSettled
+
+```typescript
+// CERTO — múltiplas chamadas paralelas
+const [guias, eixos] = await Promise.all([
+  getGuias(),
+  getEixos(),
+]);
+
+// ERRADO
+getGuias().then((g) => {
+  getEixos().then((e) => {
+    // callback hell
+  });
+});
+```
+
+### Exceção única
+Event handlers inline em JSX onde a arrow é de uma linha:
+
+```typescript
+// Aceitável (uma linha, sem lógica)
+<button onClick={() => setOpen(true)}>Abrir</button>
+```
