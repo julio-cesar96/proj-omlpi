@@ -86,6 +86,13 @@ Strapi v3.3.3 (omlpi-cms) ──leitura server-only──> next/ (site público 
 - Contratos de API a seguir à risca em `docs/API_CONTRACTS.md` — não supor endpoints, parâmetros ou formatos além do descrito; faltando informação, sinalizar pendência em vez de inventar.
 - `docs/archive/` é de uma fase de planejamento anterior (multi-página) — usar só como inventário técnico, nunca como arquitetura a seguir.
 
+## Regras de Git
+
+- NUNCA faça git commit automaticamente
+- NUNCA faça git push
+- Apenas edite os arquivos e explique o que mudou
+- O desenvolvedor faz o commit manualmente
+
 ## Idioma
 
 Código, documentação, commits e nomes de branch estão em português. Manter o padrão.
