@@ -1,12 +1,15 @@
 ---
 name: review-painel
-description: Code review seguindo os padrões do painel-cms
+description: Code review seguindo os padrões do painel-cms (NUNCA revisar next/)
 ---
 
-Faça um code review completo dos arquivos em $ARGUMENTS.
-Se nenhum argumento for passado, revise o diff atual do git.
+Faça um code review EXCLUSIVAMENTE dos arquivos dentro de painel-cms/.
+Escopo: $ARGUMENTS (se nenhum argumento for passado, use painel-cms/src/).
 
-Aplique os critérios da skill painel-cms-patterns e verifique:
+IMPORTANTE: IGNORE completamente o diretório next/. Este review é APENAS
+para o painel-cms. Use APENAS a skill painel-cms-patterns como referência.
+
+Verifique:
 
 **Hooks:**
 - Lógica de fetch/mutation está em custom hook, não no componente?
@@ -20,20 +23,20 @@ Aplique os critérios da skill painel-cms-patterns e verifique:
 - published_at reenviado no PUT de singleTypes?
 - Campos em português?
 
-**Tipagem:**
-- Tipos de lib/strapi.ts sendo usados?
-- Props tipadas com interface ou React.FC<Props>?
-- Sem any?
-
 **SOLID:**
 - Arquivo tem mais de 200 linhas? Precisa dividir?
 - Mais de 3 useState? Precisa extrair hook?
 - Page tem lógica de negócio? Mover para hook/componente?
 - Props recebem objeto inteiro do Strapi? Criar interface mínima?
 
+**Tipagem:**
+- Tipos de lib/strapi.ts sendo usados?
+- Props tipadas com interface ou React.FC<Props>?
+- Sem any?
+
 **Estilização:**
 - CSS variables ao invés de cores hardcoded?
-- Padrão de layout de página seguido?
+- Inline styles que poderiam ser Tailwind?
 
 Para cada problema: arquivo, linha, problema, severidade e correção.
 No final: nota geral e ordem de correção priorizada.
