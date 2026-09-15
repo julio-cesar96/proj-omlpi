@@ -16,20 +16,10 @@
  */
 
 import { getGuias, getGuiasCount, getMidiaPublica, StrapiGuia, StrapiMidiaPublica } from '@/lib/strapi';
+import { SectionLabel } from '@/components/ui/SectionLabel';
 import { ReferenciaClient } from './ReferenciaClient';
 
-function SectionLabel({ children }: { children: React.ReactNode }) {
-  return (
-    <div className="flex items-center gap-2 mb-3">
-      <span className="w-6 h-0.5 bg-primary rounded-full" />
-      <span className="text-xs font-bold uppercase tracking-widest text-primary">
-        {children}
-      </span>
-    </div>
-  );
-}
-
-export async function Referencia() {
+export async function Referencia(): Promise<React.JSX.Element> {
   let guias: StrapiGuia[] = [];
   let totalGuias = 0;
   let midias: StrapiMidiaPublica[] = [];
@@ -39,14 +29,15 @@ export async function Referencia() {
     const [guiasResult, guiasCountResult, midiasResult] = await Promise.all([
       getGuias({ _limit: 6, _sort: 'created_at:desc' }),
       getGuiasCount(),
-      getMidiaPublica({ _limit: 20, _start: 0 } as Parameters<typeof getMidiaPublica>[0]),
+      getMidiaPublica({ _limit: 20, _start: 0 }),
     ]);
     guias = guiasResult;
     totalGuias = guiasCountResult;
     midias = midiasResult.results;
     totalMidias = midiasResult.count;
-  } catch {
+  } catch (err) {
     // Sem API configurada: renderiza com arrays vazios
+    console.error('[Referencia] Falha ao carregar dados do Strapi:', err);
   }
 
   return (
