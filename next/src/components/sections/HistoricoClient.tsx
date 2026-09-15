@@ -1,5 +1,5 @@
 /**
- * HistoricoClient — Client Component
+ * HistoricoClient — Server Component
  *
  * Renderiza a seção Memória / Histórico (#historico).
  *
@@ -11,142 +11,74 @@
  *  - Se {{imagem}} estiver no texto E a aba tiver imagem → imagem inserida no fluxo.
  *  - Se tiver imagem sem marcador → imagem no TOPO do bloco como fallback.
  *  - Se não houver imagem → marcador removido silenciosamente.
+ *
+ * O nome mantém o sufixo `Client` por compatibilidade com os imports, mas o
+ * componente não tem estado nem eventos: renderiza no servidor.
  */
 
-"use client";
-
+import Image from "next/image";
 import { StrapiSobre } from "@/lib/strapi";
+import { resolveStrapiFileUrl } from "@/lib/strapi-media";
+import { renderText } from "@/lib/markdown";
 import { parseSobreText } from "@/lib/frontmatter";
-
-const STRAPI_URL =
-  process.env.NEXT_PUBLIC_STRAPI_URL ||
-  "https://omlpi-strapi.rnpiobserva.org.br";
-
-function SectionLabel({ children }: { children: React.ReactNode }) {
-  return (
-    <div className="flex items-center gap-2 mb-3">
-      <span className="w-6 h-0.5 bg-primary rounded-full" />
-      <span className="text-xs font-bold uppercase tracking-widest text-primary">
-        {children}
-      </span>
-    </div>
-  );
-}
-
-// ─── renderMarkdown ────────────────────────────────────────────────────────────
-function renderMarkdown(md: string): string {
-  return md
-    .replace(/^### (.+)$/gm, "<h3>$1</h3>")
-    .replace(/^## (.+)$/gm, "<h2>$1</h2>")
-    .replace(/^# (.+)$/gm, "<h1>$1</h1>")
-    .replace(/\*\*(.+?)\*\*/g, "<strong>$1</strong>")
-    .replace(/\*(.+?)\*/g, "<em>$1</em>")
-    .replace(
-      /\[([^\]]+)\]\(([^)\s"]+)(?:\s+"([^"]*)")?\)/g,
-      (_, text, href, title) =>
-        title
-          ? `<a href="${href}" title="${title}" target="_blank" rel="noopener noreferrer" style="color:#f25d27;text-decoration:underline;font-weight:500">${text}</a>`
-          : `<a href="${href}" target="_blank" rel="noopener noreferrer" style="color:#f25d27;text-decoration:underline;font-weight:500">${text}</a>`
-    )
-    .replace(/^- (.+)$/gm, "<li>$1</li>")
-    .replace(/(<li>.*<\/li>\n?)+/g, (m) => `<ul>${m}</ul>`)
-    .replace(/\n\n/g, "</p><p>")
-    .replace(/^(?!<[h|u|o|l])(.+)$/gm, "<p>$1</p>")
-    .replace(/<p><\/p>/g, "");
-}
-
-// ─── buildImageTag ────────────────────────────────────────────────────────────
-function buildImageTag(imageUrl: string, alt: string): string {
-  const src = imageUrl.startsWith("http")
-    ? imageUrl
-    : `${STRAPI_URL}${imageUrl}`;
-  return `<img src="${src}" alt="${alt}" style="width:100%;border-radius:1rem;margin:1.75rem 0;display:block;" />`;
-}
-
-// ─── renderText ───────────────────────────────────────────────────────────────
-function renderText(
-  text: string,
-  imageUrl?: string,
-  imageAlt?: string
-): { html: string; imageFallback: boolean } {
-  const hasMarker = text.includes("{{imagem}}");
-  const hasImage = Boolean(imageUrl);
-
-  let processed = text;
-
-  if (hasMarker && hasImage) {
-    processed = processed.replace(
-      "{{imagem}}",
-      buildImageTag(imageUrl!, imageAlt ?? "")
-    );
-    return { html: renderMarkdown(processed), imageFallback: false };
-  }
-
-  if (hasMarker && !hasImage) {
-    processed = processed.replace(/\n?{{imagem}}\n?/g, "");
-    return { html: renderMarkdown(processed), imageFallback: false };
-  }
-
-  return { html: renderMarkdown(processed), imageFallback: hasImage };
-}
+import { SectionLabel } from "@/components/ui/SectionLabel";
 
 interface Props {
   abas: StrapiSobre[];
 }
 
-export function HistoricoClient({ abas }: Props) {
+/** Bloco de conteúdo já renderizado de uma aba. */
+interface BlocoHistorico {
+  id: number;
+  html: string;
+  imageFallback: boolean;
+  imageSrc: string | null;
+  title?: string;
+}
+
+export function HistoricoClient({ abas }: Props): React.JSX.Element {
   let sectionLabel = "Memória";
   let sectionTitle = "Histórico";
 
-  const historicoContent: {
-    html: string;
-    imageFallback: boolean;
-    imageSrc: string | null;
-    title?: string;
-  }[] = [];
+  const historicoContent: BlocoHistorico[] = [];
 
-  if (abas.length > 0) {
-    abas.forEach((aba) => {
-      const rawText = aba.text ?? "";
-      const { meta, content: parsedContent } = parseSobreText(rawText);
+  abas.forEach((aba) => {
+    const rawText = aba.text ?? "";
+    const { meta, content: parsedContent } = parseSobreText(rawText);
 
-      // Metadados de frontmatter têm precedência
-      if (meta.section_label) {
-        sectionLabel = meta.section_label;
-      }
-      if (meta.section_title) {
-        sectionTitle = meta.section_title;
-      }
+    // Metadados de frontmatter têm precedência
+    if (meta.section_label) {
+      sectionLabel = meta.section_label;
+    }
+    if (meta.section_title) {
+      sectionTitle = meta.section_title;
+    }
 
-      const imageSrc = aba.image?.url
-        ? aba.image.url.startsWith("http")
-          ? aba.image.url
-          : `${STRAPI_URL}${aba.image.url}`
-        : null;
+    const imageSrc = resolveStrapiFileUrl(aba.image?.url);
 
-      let textToRender = parsedContent;
+    let textToRender = parsedContent;
 
-      // Fallback para conteúdo legado que ainda tenha split por '## Histórico'
-      const historicoMatchIndex = textToRender.search(
-        /^##\s*(Histórico|Memória)/m
-      );
-      if (historicoMatchIndex !== -1) {
-        textToRender = textToRender
-          .slice(historicoMatchIndex)
-          .replace(/^##\s*(Histórico|Memória)\s*\n?/, "")
-          .trim();
-      }
+    // Fallback para conteúdo legado que ainda tenha split por '## Histórico'
+    const historicoMatchIndex = textToRender.search(
+      /^##\s*(Histórico|Memória)/m
+    );
+    if (historicoMatchIndex !== -1) {
+      textToRender = textToRender
+        .slice(historicoMatchIndex)
+        .replace(/^##\s*(Histórico|Memória)\s*\n?/, "")
+        .trim();
+    }
 
-      if (textToRender) {
-        const res = renderText(textToRender, aba.image?.url, aba.title ?? "");
-        historicoContent.push({
-          ...res,
-          imageSrc,
-          title: aba.title ?? undefined,
-        });
-      }
-    });
-  }
+    if (textToRender) {
+      const res = renderText(textToRender, aba.image?.url, aba.title ?? "");
+      historicoContent.push({
+        ...res,
+        id: aba.id,
+        imageSrc,
+        title: aba.title ?? undefined,
+      });
+    }
+  });
 
   return (
     <section
@@ -174,16 +106,19 @@ export function HistoricoClient({ abas }: Props) {
           </p>
         ) : (
           <div className="flex flex-col gap-12">
-            {historicoContent.map((item, idx) => (
-              <div key={idx} className="max-w-none">
+            {historicoContent.map((item) => (
+              <div key={item.id} className="max-w-none">
                 {item.imageFallback && item.imageSrc && (
-                  // eslint-disable-next-line @next/next/no-img-element
-                  <img
-                    src={item.imageSrc}
-                    alt={item.title ?? ""}
-                    className="w-full rounded-2xl mb-7"
-                    style={{ display: "block" }}
-                  />
+                  <div className="relative w-full aspect-[16/9] rounded-2xl overflow-hidden mb-7">
+                    <Image
+                      src={item.imageSrc}
+                      alt={item.title ?? ""}
+                      fill
+                      className="object-cover"
+                      sizes="(max-width: 1024px) 100vw, 1200px"
+                      unoptimized
+                    />
+                  </div>
                 )}
                 {item.html && (
                   <div
