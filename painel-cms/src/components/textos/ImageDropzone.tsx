@@ -3,8 +3,7 @@ import { useDropzone } from 'react-dropzone';
 import { X, AlertCircle, RefreshCw } from 'lucide-react';
 import { useUploadSingleFile } from '../../hooks/useUploadSingleFile';
 import type { StrapiFile } from '../../lib/strapi';
-
-const STRAPI_URL = import.meta.env.VITE_STRAPI_URL || 'https://omlpi-strapi.rnpiobserva.org.br';
+import { STRAPI_URL } from '../../lib/api';
 
 interface ImageDropzoneProps {
   file: StrapiFile | null;

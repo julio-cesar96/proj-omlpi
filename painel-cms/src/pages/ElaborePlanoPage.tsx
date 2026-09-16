@@ -1,13 +1,14 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { ExternalLink, AlertCircle, RefreshCw, FileText, Image as ImageIcon, Upload, Trash2 } from 'lucide-react';
+import { ExternalLink, FileText, Image as ImageIcon, Upload, Trash2 } from 'lucide-react';
 import { useElaborePlano } from '../hooks/elabore-plano/useElaborePlano';
 import { useUploadSingleFile } from '../hooks/useUploadSingleFile';
 import { Toast } from '../components/ui/Toast';
 import { MediaPickerModal } from '../components/ui/MediaPickerModal';
+import { SingleTypeLoadingSkeleton, SingleTypeErrorBanner } from '../components/ui/SingleTypeFormStates';
 import type { ElaborePlanoPayload, StrapiFile } from '../lib/strapi';
+import { STRAPI_URL } from '../lib/api';
 
 const SITE_URL = import.meta.env.VITE_SITE_URL as string | undefined;
-const STRAPI_URL = import.meta.env.VITE_STRAPI_URL || 'https://omlpi-strapi.rnpiobserva.org.br';
 
 const MARKDOWN_HELP = `Formatação disponível em Descrição:
   **negrito**   → texto em negrito
@@ -118,86 +119,23 @@ export const ElaborePlanoPage: React.FC = () => {
 
   if (isLoading) {
     return (
-      <div style={{ padding: '40px 48px', maxWidth: '700px' }}>
-        <div
-          style={{
-            height: '28px',
-            width: '240px',
-            background: 'var(--muted)',
-            borderRadius: '8px',
-            marginBottom: '32px',
-            animation: 'pulse 1.5s ease-in-out infinite',
-          }}
-        />
-        {[1, 2, 3].map((i) => (
-          <div key={i} style={{ marginBottom: '24px' }}>
-            <div
-              style={{
-                height: '13px',
-                width: '120px',
-                background: 'var(--muted)',
-                borderRadius: '6px',
-                marginBottom: '8px',
-              }}
-            />
-            <div
-              style={{
-                height: i === 3 ? '120px' : '42px',
-                background: 'var(--muted)',
-                borderRadius: '10px',
-              }}
-            />
-          </div>
-        ))}
-      </div>
+      <SingleTypeLoadingSkeleton
+        rows={3}
+        tallRowIndex={3}
+        tallHeight="120px"
+        labelWidth="120px"
+        maxWidth="700px"
+      />
     );
   }
 
   if (isError) {
     return (
-      <div style={{ padding: '40px 48px' }}>
-        <div
-          style={{
-            display: 'flex',
-            alignItems: 'center',
-            gap: '12px',
-            background: 'rgba(220,60,60,0.08)',
-            border: '1px solid rgba(220,60,60,0.22)',
-            borderRadius: '12px',
-            padding: '18px 20px',
-            maxWidth: '480px',
-          }}
-        >
-          <AlertCircle size={20} color="var(--danger, #dc3c3c)" />
-          <div style={{ flex: 1 }}>
-            <div style={{ fontWeight: 700, fontSize: '14px', color: 'var(--danger, #dc3c3c)' }}>
-              Erro ao carregar dados do Elabore o Plano
-            </div>
-            <div style={{ fontSize: '13px', color: 'var(--text-soft)', marginTop: '2px' }}>
-              Verifique a conexão ou tente recarregar a página.
-            </div>
-          </div>
-          <button
-            onClick={() => refetch()}
-            style={{
-              display: 'flex',
-              alignItems: 'center',
-              gap: '6px',
-              padding: '7px 14px',
-              borderRadius: '8px',
-              background: 'var(--muted)',
-              border: 'none',
-              cursor: 'pointer',
-              fontSize: '13px',
-              fontWeight: 600,
-              color: 'var(--text)',
-            }}
-          >
-            <RefreshCw size={14} />
-            Tentar novamente
-          </button>
-        </div>
-      </div>
+      <SingleTypeErrorBanner
+        title="Erro ao carregar dados do Elabore o Plano"
+        message="Verifique a conexão ou tente recarregar a página."
+        onRetry={() => refetch()}
+      />
     );
   }
 

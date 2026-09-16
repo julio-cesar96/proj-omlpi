@@ -16,6 +16,9 @@ export function useTextos(params: TextosListParams = {}) {
       if (params._start !== undefined) searchParams.append('_start', params._start.toString());
       if (params._limit !== undefined) searchParams.append('_limit', params._limit.toString());
       if (params._q) searchParams.append('_q', params._q);
+      if (params.published_at_null !== undefined) {
+        searchParams.append('published_at_null', String(params.published_at_null));
+      }
 
       const res = await apiFetch(`/paginas-institucionais?${searchParams.toString()}`);
       if (!res.ok) {

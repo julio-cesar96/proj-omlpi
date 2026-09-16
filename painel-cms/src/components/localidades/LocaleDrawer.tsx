@@ -3,8 +3,7 @@ import { X, FileText, Upload, Trash2, ExternalLink, Loader2, AlertCircle, Refres
 import { useUploadFile } from '../../hooks/planos/useUploadFile';
 import { PlanoSelectorModal } from './PlanoSelectorModal';
 import type { Locale, LocaleUpdatePayload, StrapiFile, Plano } from '../../lib/strapi';
-
-const STRAPI_URL = import.meta.env.VITE_STRAPI_URL || 'https://omlpi-strapi.rnpiobserva.org.br';
+import { STRAPI_URL } from '../../lib/api';
 
 interface LocaleDrawerProps {
   isOpen: boolean;
@@ -328,7 +327,7 @@ export const LocaleDrawer: React.FC<LocaleDrawerProps> = ({
                       width: '42px',
                       height: '42px',
                       borderRadius: '10px',
-                      background: '#FDE7DE',
+                      background: 'var(--badge-orange-bg)',
                       color: 'var(--primary)',
                       display: 'flex',
                       alignItems: 'center',

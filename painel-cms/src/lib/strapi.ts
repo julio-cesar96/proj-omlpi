@@ -155,6 +155,7 @@ export interface TextosListParams {
   _sort?: string;
   _q?: string;
   estado_editorial?: EditorialState;
+  published_at_null?: boolean;
 }
 
 // ── Usuários ─────────────────────────────────────────────────────────────────

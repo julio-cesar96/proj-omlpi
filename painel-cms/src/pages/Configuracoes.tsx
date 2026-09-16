@@ -338,7 +338,7 @@ export const Configuracoes: React.FC = () => {
                     fontSize: '10px',
                     fontWeight: 700,
                     letterSpacing: '.3px',
-                    background: '#FDE7DE',
+                    background: 'var(--badge-orange-bg)',
                     color: 'var(--primary)',
                     padding: '2px 7px',
                     borderRadius: '6px',

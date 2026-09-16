@@ -13,7 +13,7 @@ export interface PlanosImportRawRow {
   categoria?: string;
   tags?: string;
   estado_editorial?: string;
-  [key: string]: any;
+  [key: string]: unknown;
 }
 
 const VALID_EDITORIAL_STATES: EditorialState[] = ['rascunho', 'revisao', 'publicado', 'arquivado'];

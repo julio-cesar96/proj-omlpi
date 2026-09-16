@@ -1,5 +1,6 @@
-import { useState, useCallback, useEffect } from 'react';
+import { useState, useCallback } from 'react';
 import { parseSpreadsheetFile, downloadTemplateFile } from '../lib/excelParser';
+import { useImportContextData } from './useImportContextData';
 import type {
   ImportModuleConfig,
   ImportProgress,
@@ -8,44 +9,23 @@ import type {
   ImportSummary,
 } from '../types/import';
 
-export function useSpreadsheetImport<TRow = any, TPayload = any, TContext = any>(
+export function useSpreadsheetImport<TRow, TPayload, TContext>(
   config: ImportModuleConfig<TRow, TPayload, TContext>
 ) {
   const [status, setStatus] = useState<ImportStatus>('idle');
   const [file, setFile] = useState<File | null>(null);
   const [rows, setRows] = useState<ImportRowValidation<TRow, TPayload>[]>([]);
   const [rawRowsCache, setRawRowsCache] = useState<TRow[]>([]);
-  
-  const [contextData, setContextData] = useState<TContext | null>(null);
-  const [isContextLoading, setIsContextLoading] = useState<boolean>(false);
-  const [contextError, setContextError] = useState<string | null>(null);
+
+  // Dados de contexto (ex: lista de categorias e tags existentes)
+  const { contextData, isContextLoading, contextError, loadContext } =
+    useImportContextData(config.fetchContextData);
 
   // Decisão A3: Checkbox para criar categorias e tags inexistentes automaticamente
   const [autoCreateCategoriesTags, setAutoCreateCategoriesTags] = useState<boolean>(false);
 
   const [progress, setProgress] = useState<ImportProgress>({ current: 0, total: 0 });
   const [summary, setSummary] = useState<ImportSummary | null>(null);
-
-  // Carregar dados de contexto (ex: lista de categorias e tags existentes)
-  const loadContext = useCallback(async () => {
-    setIsContextLoading(true);
-    setContextError(null);
-    try {
-      const data = await config.fetchContextData();
-      setContextData(data);
-      return data;
-    } catch (err: any) {
-      setContextError(err?.message || 'Erro ao carregar dados auxiliares do módulo.');
-      return null;
-    } finally {
-      setIsContextLoading(false);
-    }
-  }, [config]);
-
-  // Carregar contexto ao inicializar
-  useEffect(() => {
-    loadContext();
-  }, [loadContext]);
 
   // Re-validar linhas mantidas no cache
   const validateRows = useCallback(
@@ -95,9 +75,9 @@ export function useSpreadsheetImport<TRow = any, TPayload = any, TContext = any>
           await validateRows(parsedRawRows, ctx, autoCreateCategoriesTags);
         }
         setStatus('preview');
-      } catch (err: any) {
+      } catch (err) {
         setStatus('idle');
-        throw new Error(err?.message || 'Erro ao ler arquivo de planilha.');
+        throw new Error(err instanceof Error ? err.message : 'Erro ao ler arquivo de planilha.');
       }
     },
     [contextData, loadContext, validateRows, autoCreateCategoriesTags]
@@ -146,7 +126,7 @@ export function useSpreadsheetImport<TRow = any, TPayload = any, TContext = any>
 
     for (let i = 0; i < importableRows.length; i++) {
       const item = importableRows[i];
-      const title = (item.payload as any)?.titulo || `Linha ${item.rowIndex}`;
+      const title = (item.payload as { titulo?: string } | undefined)?.titulo || `Linha ${item.rowIndex}`;
 
       setProgress({
         current: i + 1,
@@ -166,13 +146,13 @@ export function useSpreadsheetImport<TRow = any, TPayload = any, TContext = any>
           title,
           success: true,
         });
-      } catch (err: any) {
+      } catch (err) {
         errorCount++;
         results.push({
           rowIndex: item.rowIndex,
           title,
           success: false,
-          error: err?.message || 'Erro de criação na API Strapi.',
+          error: err instanceof Error ? err.message : 'Erro de criação na API Strapi.',
         });
       }
     }

@@ -2,19 +2,10 @@ import React, { useState, useEffect } from 'react';
 import { X, KeyRound } from 'lucide-react';
 import { useRoles } from '../../hooks/usuarios/useRoles';
 import type { StrapiUsuario, UsuarioPayload, UsuarioUpdatePayload, RoleLookup } from '../../lib/strapi';
+import { STRAPI_URL } from '../../lib/api';
+import { ROLE_COLOR_HEX, ROLE_DESCRIPTIONS } from '../../lib/roles';
 
 // IDs confirmados em produção: Administrador=3, Editor=4, Revisor=5
-const ROLE_COLORS: Record<string, string> = {
-  Administrador: 'var(--warning, #ca8a04)',
-  Editor: 'var(--success, #16a34a)',
-  Revisor: '#7c3aed',
-};
-
-const ROLE_DESCRIPTIONS: Record<string, string> = {
-  Administrador: 'Acesso total: conteúdo, usuários e configurações.',
-  Editor: 'Cria e edita conteúdo, sem permissão de exclusão.',
-  Revisor: 'Revisa e aprova conteúdo, sem exclusão ou gestão de usuários.',
-};
 
 interface UsuarioDrawerProps {
   isOpen: boolean;
@@ -130,8 +121,7 @@ export const UsuarioDrawer: React.FC<UsuarioDrawerProps> = ({
     }
   };
 
-  const STRAPI_ADMIN_URL =
-    (import.meta.env.VITE_STRAPI_URL || 'https://omlpi-strapi.rnpiobserva.org.br') + '/admin';
+  const STRAPI_ADMIN_URL = `${STRAPI_URL}/admin`;
 
   return (
     <>
@@ -303,7 +293,7 @@ export const UsuarioDrawer: React.FC<UsuarioDrawerProps> = ({
             <div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
               {roles.map((role: RoleLookup) => {
                 const isSelected = roleId === role.id;
-                const color = ROLE_COLORS[role.name] || 'var(--primary)';
+                const color = ROLE_COLOR_HEX[role.name] || 'var(--primary)';
                 const disabled = isSelf; // proteção anti-lockout
                 return (
                   <button

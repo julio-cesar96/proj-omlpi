@@ -18,7 +18,6 @@ export function useMediaTogglePublic() {
     mutationFn: async ({ id, is_public }: { id: number; is_public: boolean }) => {
       const res = await apiFetch(`/midiateca-publica/${id}`, {
         method: 'PUT',
-        headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ is_public }),
       });
       if (!res.ok) {

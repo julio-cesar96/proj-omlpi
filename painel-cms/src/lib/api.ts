@@ -1,4 +1,4 @@
-const STRAPI_URL = import.meta.env.VITE_STRAPI_URL || 'https://omlpi-strapi.rnpiobserva.org.br';
+export const STRAPI_URL = import.meta.env.VITE_STRAPI_URL || 'https://omlpi-strapi.rnpiobserva.org.br';
 
 export async function apiFetch(path: string, init: RequestInit = {}): Promise<Response> {
   const jwt = sessionStorage.getItem('cms_jwt');

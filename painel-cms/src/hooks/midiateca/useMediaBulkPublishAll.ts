@@ -46,7 +46,6 @@ export function useMediaBulkPublishAll(options?: {
 
       const res = await apiFetch('/midiateca-publica/bulk', {
         method: 'PUT',
-        headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
           filter: filterBody,
           is_public,

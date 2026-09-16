@@ -17,9 +17,13 @@ export function useTextosCount(search = '') {
       {
         queryKey: ['textos-count', 'publicados', search],
         queryFn: async () => {
-          // Filtro por publicadas: no Strapi v3 com draftAndPublish, a consulta padrão (sem _publicationState=preview) 
-          // ou usando _publicationState=live retorna apenas publicadas.
-          const params = new URLSearchParams({ _publicationState: 'live' });
+          // CRÍTICO: _publicationState=preview expõe todos os estados ao painel;
+          // published_at_null=false filtra só as publicadas. Mesmo padrão de
+          // useFaqsCount.ts / usePlanosCount.ts.
+          const params = new URLSearchParams({
+            _publicationState: 'preview',
+            published_at_null: 'false',
+          });
           if (search) params.append('_q', search);
           const res = await apiFetch(`/paginas-institucionais/count?${params.toString()}`);
           if (!res.ok) throw new Error('Erro ao buscar contagem de publicadas.');

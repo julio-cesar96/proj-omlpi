@@ -151,8 +151,8 @@ export const TextosEditor: React.FC = () => {
         showToast(labelMap[targetState]);
         navigate(`/textos/${created.id}`, { replace: true });
       }
-    } catch (err: any) {
-      showToast(err.message || 'Erro ao salvar a página.');
+    } catch (err) {
+      showToast(err instanceof Error ? err.message : 'Erro ao salvar a página.');
     }
   };
 

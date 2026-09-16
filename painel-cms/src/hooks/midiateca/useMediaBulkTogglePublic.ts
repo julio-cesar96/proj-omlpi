@@ -17,7 +17,6 @@ export function useMediaBulkTogglePublic(options?: {
     mutationFn: async ({ ids, is_public }: { ids: number[]; is_public: boolean }) => {
       const res = await apiFetch('/midiateca-publica/bulk', {
         method: 'PUT',
-        headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ ids, is_public }),
       });
       if (!res.ok) {

@@ -12,7 +12,7 @@ export interface FaqsImportRawRow {
   resposta?: string;
   categoria?: string;
   ordem?: string | number;
-  [key: string]: any;
+  [key: string]: unknown;
 }
 
 export const faqsImportConfig: ImportModuleConfig<

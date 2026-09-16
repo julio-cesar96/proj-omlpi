@@ -1,6 +1,6 @@
 import React, { useRef, useEffect } from 'react';
 import { Search, Paperclip, Edit3, Copy, ChevronLeft, ChevronRight } from 'lucide-react';
-import { StatusBadge } from '../ui/StatusBadge';
+import { EditorialBadge } from '../ui/EditorialBadge';
 import type { Plano } from '../../lib/strapi';
 
 interface PlanoTableProps {
@@ -220,7 +220,7 @@ export const PlanoTable: React.FC<PlanoTableProps> = ({
                               fontSize: '11px',
                               fontWeight: 700,
                               color: 'var(--primary)',
-                              background: '#FDE7DE',
+                              background: 'var(--badge-orange-bg)',
                               padding: '2px 8px',
                               borderRadius: '6px',
                             }}
@@ -268,7 +268,7 @@ export const PlanoTable: React.FC<PlanoTableProps> = ({
                       {plano.categoria?.nome || '—'}
                     </td>
                     <td style={{ padding: '14px 16px' }}>
-                      <StatusBadge status={plano.estado_editorial} />
+                      <EditorialBadge status={plano.estado_editorial} publishedAt={plano.published_at} />
                     </td>
                     <td style={{ padding: '14px 16px', fontSize: '13px', fontWeight: 600, color: 'var(--text-soft)' }}>
                       {formatDate(plano.updated_at)}

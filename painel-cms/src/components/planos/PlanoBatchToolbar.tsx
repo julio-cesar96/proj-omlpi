@@ -24,7 +24,7 @@ export const PlanoBatchToolbar: React.FC<PlanoBatchToolbarProps> = ({
         alignItems: 'center',
         justifyContent: 'space-between',
         padding: '12px 20px',
-        background: '#FDE7DE',
+        background: 'var(--badge-orange-bg)',
         borderBottom: '1px solid var(--border)',
         gap: '12px',
         flexWrap: 'wrap',

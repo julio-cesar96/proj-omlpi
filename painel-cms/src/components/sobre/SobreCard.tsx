@@ -1,8 +1,7 @@
 import React from 'react';
 import type { Sobre } from '../../lib/strapi';
 import { parseSobreText } from '../../lib/frontmatter';
-
-const STRAPI_URL = import.meta.env.VITE_STRAPI_URL || 'https://omlpi-strapi.rnpiobserva.org.br';
+import { STRAPI_URL } from '../../lib/api';
 
 interface SobreCardProps {
   sobre: Sobre;

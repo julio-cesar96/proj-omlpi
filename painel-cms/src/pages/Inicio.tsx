@@ -1,7 +1,8 @@
 import React, { useState, useEffect } from 'react';
-import { ExternalLink, AlertCircle, RefreshCw } from 'lucide-react';
+import { ExternalLink } from 'lucide-react';
 import { useBanner } from '../hooks/banner/useBanner';
 import { Toast } from '../components/ui/Toast';
+import { SingleTypeLoadingSkeleton, SingleTypeErrorBanner } from '../components/ui/SingleTypeFormStates';
 import type { BannerPayload } from '../lib/strapi';
 
 // URL do site público — configurada via variável de ambiente (VITE_SITE_URL)
@@ -57,87 +58,16 @@ export const Inicio: React.FC = () => {
   // ─── Estados de carregamento / erro ────────────────────────────────────────
 
   if (isLoading) {
-    return (
-      <div style={{ padding: '40px 48px' }}>
-        <div
-          style={{
-            height: '28px',
-            width: '240px',
-            background: 'var(--muted)',
-            borderRadius: '8px',
-            marginBottom: '32px',
-            animation: 'pulse 1.5s ease-in-out infinite',
-          }}
-        />
-        {[1, 2].map((i) => (
-          <div key={i} style={{ marginBottom: '24px' }}>
-            <div
-              style={{
-                height: '13px',
-                width: '100px',
-                background: 'var(--muted)',
-                borderRadius: '6px',
-                marginBottom: '8px',
-              }}
-            />
-            <div
-              style={{
-                height: i === 1 ? '42px' : '90px',
-                background: 'var(--muted)',
-                borderRadius: '10px',
-              }}
-            />
-          </div>
-        ))}
-      </div>
-    );
+    return <SingleTypeLoadingSkeleton rows={2} tallRowIndex={2} tallHeight="90px" labelWidth="100px" />;
   }
 
   if (isError) {
     return (
-      <div style={{ padding: '40px 48px' }}>
-        <div
-          style={{
-            display: 'flex',
-            alignItems: 'center',
-            gap: '12px',
-            background: 'rgba(220,60,60,0.08)',
-            border: '1px solid rgba(220,60,60,0.22)',
-            borderRadius: '12px',
-            padding: '18px 20px',
-            maxWidth: '480px',
-          }}
-        >
-          <AlertCircle size={20} color="var(--danger, #dc3c3c)" />
-          <div style={{ flex: 1 }}>
-            <div style={{ fontWeight: 700, fontSize: '14px', color: 'var(--danger, #dc3c3c)' }}>
-              Erro ao carregar o Banner
-            </div>
-            <div style={{ fontSize: '13px', color: 'var(--text-soft)', marginTop: '2px' }}>
-              Verifique sua conexão ou as permissões do painel.
-            </div>
-          </div>
-          <button
-            onClick={() => refetch()}
-            style={{
-              display: 'flex',
-              alignItems: 'center',
-              gap: '6px',
-              padding: '7px 14px',
-              borderRadius: '8px',
-              background: 'var(--muted)',
-              border: 'none',
-              cursor: 'pointer',
-              fontSize: '13px',
-              fontWeight: 600,
-              color: 'var(--text)',
-            }}
-          >
-            <RefreshCw size={14} />
-            Tentar novamente
-          </button>
-        </div>
-      </div>
+      <SingleTypeErrorBanner
+        title="Erro ao carregar o Banner"
+        message="Verifique sua conexão ou as permissões do painel."
+        onRetry={() => refetch()}
+      />
     );
   }
 
@@ -233,7 +163,7 @@ export const Inicio: React.FC = () => {
               gap: '6px',
               fontSize: '12px',
               fontWeight: 700,
-              color: banner?.published_at ? '#1a7f4b' : 'var(--text-soft)',
+              color: banner?.published_at ? 'var(--success, #1a7f4b)' : 'var(--text-soft)',
               background: banner?.published_at ? 'rgba(26,127,75,0.1)' : 'var(--muted)',
               padding: '4px 10px',
               borderRadius: '20px',
@@ -244,7 +174,7 @@ export const Inicio: React.FC = () => {
                 width: '6px',
                 height: '6px',
                 borderRadius: '50%',
-                background: banner?.published_at ? '#1a7f4b' : 'var(--text-soft)',
+                background: banner?.published_at ? 'var(--success, #1a7f4b)' : 'var(--text-soft)',
                 display: 'inline-block',
               }}
             />

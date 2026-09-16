@@ -61,7 +61,7 @@ export const GuiaModal: React.FC<GuiaModalProps> = ({
       const uploaded = await uploadFile(selected);
       setFileObject(uploaded);
       setFileId(uploaded.id);
-    } catch (err: any) {
+    } catch (err) {
       console.error('Erro no upload:', err);
     }
   };
@@ -88,8 +88,8 @@ export const GuiaModal: React.FC<GuiaModalProps> = ({
         file: fileId,
       });
       onClose();
-    } catch (err: any) {
-      setSubmitError(err.message || 'Erro ao salvar o documento.');
+    } catch (err) {
+      setSubmitError(err instanceof Error ? err.message : 'Erro ao salvar o documento.');
     }
   };
 
@@ -440,7 +440,7 @@ export const GuiaModal: React.FC<GuiaModalProps> = ({
                 boxShadow: 'var(--shadow-btn)',
               }}
             >
-              {isSaving ? 'Salvação em andamento...' : (guia ? 'Atualizar' : 'Salvar')}
+              {isSaving ? 'Salvando...' : (guia ? 'Atualizar' : 'Salvar')}
             </button>
           </div>
         </form>

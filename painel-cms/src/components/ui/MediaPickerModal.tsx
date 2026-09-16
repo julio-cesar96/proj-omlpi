@@ -3,9 +3,7 @@ import { Search, X, ChevronLeft, ChevronRight, Image as ImageIcon, FileText, Fil
 import { useMediaPickerFiles } from '../../hooks/midiateca/useMediaPickerFiles';
 import { getMediaType, formatFileSize } from '../../lib/media';
 import type { StrapiFile, MediaFilterKey } from '../../lib/strapi';
-
-const STRAPI_URL =
-  import.meta.env.VITE_STRAPI_URL || 'https://omlpi-strapi.rnpiobserva.org.br';
+import { STRAPI_URL } from '../../lib/api';
 
 const LIMIT = 20;
 

@@ -1,8 +1,7 @@
 import React, { useRef, useState } from 'react';
 import { Paperclip, Edit3, ChevronLeft, ChevronRight, Upload, ExternalLink, Loader2, AlertCircle } from 'lucide-react';
 import type { Locale } from '../../lib/strapi';
-
-const STRAPI_URL = import.meta.env.VITE_STRAPI_URL || 'https://omlpi-strapi.rnpiobserva.org.br';
+import { STRAPI_URL } from '../../lib/api';
 
 interface LocaleTableProps {
   locales: Locale[];

@@ -4,9 +4,7 @@ import type { StrapiFile } from '../../lib/strapi';
 import { useUploadSingleFile } from '../../hooks/useUploadSingleFile';
 import { parseSobreText, serializeSobreText } from '../../lib/frontmatter';
 import { MediaPickerModal } from '../ui/MediaPickerModal';
-
-const STRAPI_URL =
-  import.meta.env.VITE_STRAPI_URL || 'https://omlpi-strapi.rnpiobserva.org.br';
+import { STRAPI_URL } from '../../lib/api';
 
 interface SobreModalProps {
   open: boolean;

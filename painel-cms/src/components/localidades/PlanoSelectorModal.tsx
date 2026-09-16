@@ -200,7 +200,7 @@ export const PlanoSelectorModal: React.FC<PlanoSelectorModalProps> = ({
                         width: '38px',
                         height: '38px',
                         borderRadius: '8px',
-                        background: '#FDE7DE',
+                        background: 'var(--badge-orange-bg)',
                         color: 'var(--primary)',
                         display: 'flex',
                         alignItems: 'center',

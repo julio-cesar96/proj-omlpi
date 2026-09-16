@@ -5,14 +5,14 @@ import type { ImportModuleConfig } from '../../types/import';
 import { ImportPreviewTable } from './ImportPreviewTable';
 import { ImportReport } from './ImportReport';
 
-interface ImportModalProps<TRow = any, TPayload = any, TContext = any> {
+interface ImportModalProps<TRow, TPayload, TContext> {
   isOpen: boolean;
   onClose: () => void;
   config: ImportModuleConfig<TRow, TPayload, TContext>;
   onImportSuccess?: () => void;
 }
 
-export const ImportModal = <TRow = any, TPayload = any, TContext = any>({
+export const ImportModal = <TRow, TPayload, TContext>({
   isOpen,
   onClose,
   config,

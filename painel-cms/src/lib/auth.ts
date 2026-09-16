@@ -1,3 +1,5 @@
+import { STRAPI_URL } from './api';
+
 export interface AuthPayload {
   identifier: string;
   password: string;
@@ -24,8 +26,6 @@ export interface AuthResponse {
   jwt: string;
   user: StrapiUser;
 }
-
-const STRAPI_URL = import.meta.env.VITE_STRAPI_URL || 'https://omlpi-strapi.rnpiobserva.org.br';
 
 export async function loginUser(payload: AuthPayload): Promise<AuthResponse> {
   const res = await fetch(`${STRAPI_URL}/auth/local`, {

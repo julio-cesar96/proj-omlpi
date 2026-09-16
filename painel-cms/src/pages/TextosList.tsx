@@ -3,6 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import { useTextos } from '../hooks/textos/useTextos';
 import { useTextosCount } from '../hooks/textos/useTextosCount';
 import { TextoList } from '../components/textos/TextoList';
+import type { TextosListParams } from '../lib/strapi';
 
 const PAGE_LIMIT = 20;
 
@@ -39,7 +40,7 @@ export const TextosList: React.FC = () => {
   // published_at_null: no Strapi v3, para buscar rascunhos, podemos fazer `published_at_null=true`.
   // Para buscar publicados, o comportamento padrão (sem _publicationState=preview) ou _publicationState=live
   // só traz publicados.
-  const fetchParams: Record<string, any> = {
+  const fetchParams: TextosListParams = {
     _q: search || undefined,
     _start: (page - 1) * PAGE_LIMIT,
     _limit: PAGE_LIMIT,

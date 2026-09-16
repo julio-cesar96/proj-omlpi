@@ -179,7 +179,7 @@ export const PlanoPdfDropzone: React.FC<PlanoPdfDropzoneProps> = ({
               width: '34px',
               height: '34px',
               borderRadius: '9px',
-              background: '#FDE7DE',
+              background: 'var(--badge-orange-bg)',
               color: '#F25D27',
               display: 'flex',
               alignItems: 'center',

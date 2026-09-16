@@ -3,6 +3,7 @@ import { MoreVertical, Image as ImageIcon, Download, Trash2, Globe, Lock } from 
 import type { StrapiFile } from '../../lib/strapi';
 import { getMediaType, formatFileSize, MEDIA_TYPE_CONFIG } from '../../lib/media';
 import { useMediaTogglePublic } from '../../hooks/midiateca/useMediaTogglePublic';
+import { STRAPI_URL } from '../../lib/api';
 
 interface MediaCardProps {
   file: StrapiFile;
@@ -67,7 +68,6 @@ export const MediaCard: React.FC<MediaCardProps> = ({
       onToggleSelect?.(file.id);
       return;
     }
-    const STRAPI_URL = import.meta.env.VITE_STRAPI_URL || 'https://omlpi-strapi.rnpiobserva.org.br';
     const fileUrl = file.url.startsWith('http') ? file.url : `${STRAPI_URL}${file.url}`;
     window.open(fileUrl, '_blank', 'noopener,noreferrer');
     setMenuOpen(false);
@@ -137,7 +137,7 @@ export const MediaCard: React.FC<MediaCardProps> = ({
               src={
                 file.formats.thumbnail.url.startsWith('http')
                   ? file.formats.thumbnail.url
-                  : `${import.meta.env.VITE_STRAPI_URL || 'https://omlpi-strapi.rnpiobserva.org.br'}${file.formats.thumbnail.url}`
+                  : `${STRAPI_URL}${file.formats.thumbnail.url}`
               }
               alt={file.name}
               style={{

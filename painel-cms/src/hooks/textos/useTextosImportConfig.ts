@@ -11,7 +11,7 @@ export interface TextosImportRawRow {
   estado_editorial?: string;
   seo_meta_titulo?: string;
   seo_meta_descricao?: string;
-  [key: string]: any;
+  [key: string]: unknown;
 }
 
 const VALID_EDITORIAL_STATES: EditorialState[] = ['rascunho', 'revisao', 'publicado', 'arquivado'];

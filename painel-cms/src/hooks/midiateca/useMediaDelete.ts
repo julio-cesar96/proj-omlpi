@@ -20,6 +20,7 @@ export function useMediaDelete() {
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['media-files'] });
       queryClient.invalidateQueries({ queryKey: ['media-count'] });
+      queryClient.invalidateQueries({ queryKey: ['storage-usage'] });
     },
   });
 }

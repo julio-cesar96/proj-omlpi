@@ -117,60 +117,65 @@ export const Faqs: React.FC = () => {
   const showToast = (message: string) => setToast({ visible: true, message });
 
   // ─── Handlers do modal ────────────────────────────────────────────────────
-  const handleSaveDraft = (payload: FaqPayload) => {
-    const mutation = modalState.faq
-      ? updateFaq.mutateAsync({ id: modalState.faq.id, payload })
-      : createFaq.mutateAsync({ payload, faqsAtuais: localFaqs });
-
-    mutation
-      .then(() => {
+  const handleSaveDraft = async (payload: FaqPayload) => {
+    try {
+      if (modalState.faq) {
+        await updateFaq.mutateAsync({ id: modalState.faq.id, payload });
         closeModal();
-        showToast(modalState.faq ? 'FAQ atualizada.' : 'Rascunho de FAQ salvo.');
-      })
-      .catch((err: Error) => showToast(err.message));
+        showToast('FAQ atualizada.');
+      } else {
+        await createFaq.mutateAsync({ payload, faqsAtuais: localFaqs });
+        closeModal();
+        showToast('Rascunho de FAQ salvo.');
+      }
+    } catch (err) {
+      showToast(err instanceof Error ? err.message : 'Erro ao salvar FAQ.');
+    }
   };
 
-  const handlePublish = (payload: FaqPayload) => {
-    const mutation = modalState.faq
-      ? updateFaq.mutateAsync({ id: modalState.faq.id, payload })
-      : createFaq.mutateAsync({ payload, faqsAtuais: localFaqs });
-
-    mutation
-      .then(() => {
+  const handlePublish = async (payload: FaqPayload) => {
+    try {
+      if (modalState.faq) {
+        await updateFaq.mutateAsync({ id: modalState.faq.id, payload });
         closeModal();
-        showToast(modalState.faq ? 'FAQ atualizada.' : 'FAQ criada com sucesso.');
-      })
-      .catch((err: Error) => showToast(err.message));
+        showToast('FAQ atualizada.');
+      } else {
+        await createFaq.mutateAsync({ payload, faqsAtuais: localFaqs });
+        closeModal();
+        showToast('FAQ criada com sucesso.');
+      }
+    } catch (err) {
+      showToast(err instanceof Error ? err.message : 'Erro ao publicar FAQ.');
+    }
   };
 
-  const handleSubmitReview = (payload: FaqPayload) => {
-    const mutation = modalState.faq
-      ? updateFaq.mutateAsync({ id: modalState.faq.id, payload })
-      : createFaq.mutateAsync({ payload, faqsAtuais: localFaqs });
-
-    mutation
-      .then(() => {
-        closeModal();
-        showToast('FAQ enviada para revisão.');
-      })
-      .catch((err: Error) => showToast(err.message));
+  const handleSubmitReview = async (payload: FaqPayload) => {
+    try {
+      if (modalState.faq) {
+        await updateFaq.mutateAsync({ id: modalState.faq.id, payload });
+      } else {
+        await createFaq.mutateAsync({ payload, faqsAtuais: localFaqs });
+      }
+      closeModal();
+      showToast('FAQ enviada para revisão.');
+    } catch (err) {
+      showToast(err instanceof Error ? err.message : 'Erro ao enviar FAQ para revisão.');
+    }
   };
 
   const isSaving = createFaq.isPending || updateFaq.isPending;
 
   // ─── Handler de exclusão ──────────────────────────────────────────────────
-  const handleDeleteConfirm = () => {
+  const handleDeleteConfirm = async () => {
     if (!deleteTarget) return;
-    deleteFaq
-      .mutateAsync({ id: deleteTarget.id })
-      .then(() => {
-        setDeleteTarget(null);
-        showToast('FAQ excluída.');
-      })
-      .catch((err: Error) => {
-        setDeleteTarget(null);
-        showToast(err.message);
-      });
+    try {
+      await deleteFaq.mutateAsync({ id: deleteTarget.id });
+      setDeleteTarget(null);
+      showToast('FAQ excluída.');
+    } catch (err) {
+      setDeleteTarget(null);
+      showToast(err instanceof Error ? err.message : 'Erro ao excluir FAQ.');
+    }
   };
 
   // ─── Handler de drag & drop ───────────────────────────────────────────────

@@ -14,11 +14,10 @@ export const SenhaTemporariaDialog: React.FC<SenhaTemporariaDialogProps> = ({
 }) => {
   const [copied, setCopied] = useState(false);
 
-  const handleCopy = () => {
-    navigator.clipboard.writeText(senha).then(() => {
-      setCopied(true);
-      setTimeout(() => setCopied(false), 2500);
-    });
+  const handleCopy = async () => {
+    await navigator.clipboard.writeText(senha);
+    setCopied(true);
+    setTimeout(() => setCopied(false), 2500);
   };
 
   return (

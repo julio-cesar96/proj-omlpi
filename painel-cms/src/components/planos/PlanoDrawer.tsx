@@ -144,8 +144,9 @@ export const PlanoDrawer: React.FC<PlanoDrawerProps> = ({
 
   const handlePublish = async () => {
     cancelAutosaveTimer();
+    // Botão já fica disabled com tooltip explicativo quando isPublishBlocked —
+    // este guard é só uma proteção extra contra chamadas fora do clique normal.
     if (isPublishBlocked) {
-      alert('A trava de revisão está ativa em Configurações. O conteúdo precisa estar no estado "Em revisão" antes de ser publicado.');
       return;
     }
     setIsSubmitting(true);
@@ -391,7 +392,7 @@ export const PlanoDrawer: React.FC<PlanoDrawerProps> = ({
                           padding: '6px 12px',
                           borderRadius: '8px',
                           border: `1px solid ${isSelected ? 'var(--primary)' : 'var(--border)'}`,
-                          background: isSelected ? '#FDE7DE' : 'var(--card)',
+                          background: isSelected ? 'var(--badge-orange-bg)' : 'var(--card)',
                           color: isSelected ? 'var(--primary)' : 'var(--text)',
                           fontSize: '12px',
                           fontWeight: 700,

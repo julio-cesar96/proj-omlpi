@@ -46,9 +46,11 @@ export const Localidades: React.FC = () => {
   };
 
   // Queries
+  const typeFilter = (selectedType || undefined) as 'city' | 'state' | undefined;
+
   const { data: totalCount = 0 } = useLocalesCount({
     state: selectedState || undefined,
-    type: (selectedType as any) || undefined,
+    type: typeFilter,
     _q: debouncedSearch || undefined,
   });
 
@@ -57,7 +59,7 @@ export const Localidades: React.FC = () => {
     _limit: limit,
     _sort: 'name:ASC',
     state: selectedState || undefined,
-    type: (selectedType as any) || undefined,
+    type: typeFilter,
     _q: debouncedSearch || undefined,
   });
 

@@ -25,8 +25,8 @@ export const Login: React.FC = () => {
     try {
       await login({ identifier, password });
       navigate('/dashboard');
-    } catch (err: any) {
-      setError(err.message || 'Erro ao realizar login. Verifique suas credenciais.');
+    } catch (err) {
+      setError(err instanceof Error ? err.message : 'Erro ao realizar login. Verifique suas credenciais.');
     } finally {
       setIsSubmitting(false);
     }
