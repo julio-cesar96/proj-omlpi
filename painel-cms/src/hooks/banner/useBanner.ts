@@ -23,7 +23,7 @@ export function useBanner() {
   const query = useQuery<Banner>({
     queryKey: BANNER_QUERY_KEY,
     queryFn: async () => {
-      const res = await apiFetch('/banners');
+      const res = await apiFetch('/banners?_publicationState=preview');
       if (!res.ok) throw new Error('Erro ao carregar o Banner da página inicial.');
       return res.json();
     },

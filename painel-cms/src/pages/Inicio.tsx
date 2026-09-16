@@ -233,8 +233,8 @@ export const Inicio: React.FC = () => {
               gap: '6px',
               fontSize: '12px',
               fontWeight: 700,
-              color: '#1a7f4b',
-              background: 'rgba(26,127,75,0.1)',
+              color: banner?.published_at ? '#1a7f4b' : 'var(--text-soft)',
+              background: banner?.published_at ? 'rgba(26,127,75,0.1)' : 'var(--muted)',
               padding: '4px 10px',
               borderRadius: '20px',
             }}
@@ -244,11 +244,11 @@ export const Inicio: React.FC = () => {
                 width: '6px',
                 height: '6px',
                 borderRadius: '50%',
-                background: '#1a7f4b',
+                background: banner?.published_at ? '#1a7f4b' : 'var(--text-soft)',
                 display: 'inline-block',
               }}
             />
-            Publicado
+            {banner?.published_at ? 'Publicado' : 'Rascunho'}
           </span>
         </div>
 

@@ -2,6 +2,8 @@ import React from 'react';
 import type { Sobre } from '../../lib/strapi';
 import { parseSobreText } from '../../lib/frontmatter';
 
+const STRAPI_URL = import.meta.env.VITE_STRAPI_URL || 'https://omlpi-strapi.rnpiobserva.org.br';
+
 interface SobreCardProps {
   sobre: Sobre;
   index: number;
@@ -82,7 +84,7 @@ export const SobreCard: React.FC<SobreCardProps> = ({
           }}
         >
           <img
-            src={sobre.image.url}
+            src={sobre.image.url.startsWith('http') ? sobre.image.url : `${STRAPI_URL}${sobre.image.url}`}
             alt=""
             style={{ width: '100%', height: '100%', objectFit: 'cover' }}
           />

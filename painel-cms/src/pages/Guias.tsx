@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useRef } from 'react';
 import { useGuias } from '../hooks/guias/useGuias';
 import { useGuiaMutations } from '../hooks/guias/useGuiaMutations';
 import type { Guia, GuiaPayload } from '../lib/strapi';
@@ -30,14 +30,15 @@ export const Guias: React.FC = () => {
 
   const { createGuia, updateGuia, deleteGuia, isCreating, isUpdating } = useGuiaMutations();
 
+  const debounceRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+
   const handleSearchChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const val = e.target.value;
     setSearchQuery(val);
-    // Simple debounce
-    const timeout = setTimeout(() => {
+    if (debounceRef.current) clearTimeout(debounceRef.current);
+    debounceRef.current = setTimeout(() => {
       setDebouncedSearch(val);
     }, 300);
-    return () => clearTimeout(timeout);
   };
 
   const handleOpenCreateModal = () => {

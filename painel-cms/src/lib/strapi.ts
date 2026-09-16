@@ -382,7 +382,8 @@ export interface ElaborePlanoPayload {
   capa?: number | null; // ID do StrapiFile
   arquivo?: number | null; // ID do StrapiFile
   image_position?: 'topo' | 'esquerda' | 'direita' | null;
-  published_at?: string | null;
+  // CRÍTICO: nunca omitir — repassar exatamente o published_at lido do GET.
+  published_at: string | null;
 }
 
 
