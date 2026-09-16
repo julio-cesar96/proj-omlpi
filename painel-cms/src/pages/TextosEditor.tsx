@@ -1,11 +1,12 @@
-import React, { useState, useEffect, useMemo } from 'react';
+import React, { useState, useMemo } from 'react';
 import { useParams, useNavigate, Link } from 'react-router-dom';
 import { ArrowLeft } from 'lucide-react';
 import { useTexto } from '../hooks/textos/useTexto';
 import { useTextoMutations } from '../hooks/textos/useTextoMutations';
-import { TextoEditor, slugify } from '../components/textos/TextoEditor';
+import { useTextoEditorForm, slugify } from '../hooks/textos/useTextoEditorForm';
+import { TextoEditor } from '../components/textos/TextoEditor';
 import { Toast } from '../components/ui/Toast';
-import type { PaginaInstitucionalPayload, StrapiFile, EditorialState } from '../lib/strapi';
+import type { PaginaInstitucionalPayload, EditorialState } from '../lib/strapi';
 import { useAutosave } from '../hooks/configuracoes/useAutosave';
 import { useConfiguracoes } from '../hooks/configuracoes/useConfiguracoes';
 import { EditorialBadge } from '../components/ui/EditorialBadge';
@@ -28,15 +29,9 @@ export const TextosEditor: React.FC = () => {
   const requireReview = config?.require_review ?? false;
   const isPublishBlocked = requireReview && currentStatus !== 'revisao';
 
-  // Estados locais do formulário
-  const [titulo, setTitulo] = useState('');
-  const [slug, setSlug] = useState('');
-  const [slugEditadoManualmente, setSlugEditadoManualmente] = useState(false);
-  const [isEditingSlugInline, setIsEditingSlugInline] = useState(false);
-  const [conteudo, setConteudo] = useState('');
-  const [capa, setCapa] = useState<StrapiFile | null>(null);
-  const [seoTitulo, setSeoTitulo] = useState('');
-  const [seoDescricao, setSeoDescricao] = useState('');
+  // Estado do formulário
+  const { form, updateField, handleTituloChange, handleSlugChange, handleResetSlug } =
+    useTextoEditorForm(pagina, isEditing);
 
   // Toast State
   const [toast, setToast] = useState<{ visible: boolean; message: string }>({
@@ -48,8 +43,13 @@ export const TextosEditor: React.FC = () => {
 
   // ─── Autosave ──────────────────────────────────────────────────────────────
   const autosaveDraft = useMemo(() => ({
-    titulo, slug, conteudo, capaId: capa?.id ?? null, seoTitulo, seoDescricao,
-  }), [titulo, slug, conteudo, capa, seoTitulo, seoDescricao]);
+    titulo: form.titulo,
+    slug: form.slug,
+    conteudo: form.conteudo,
+    capaId: form.capa?.id ?? null,
+    seoTitulo: form.seoTitulo,
+    seoDescricao: form.seoDescricao,
+  }), [form.titulo, form.slug, form.conteudo, form.capa, form.seoTitulo, form.seoDescricao]);
 
   const { cancelTimer: cancelAutosaveTimer } = useAutosave({
     data: autosaveDraft,
@@ -73,30 +73,9 @@ export const TextosEditor: React.FC = () => {
   });
   // ──────────────────────────────────────────────────────────────
 
-  // Sincronizar dados iniciais
-  useEffect(() => {
-    if (isEditing && pagina) {
-      setTitulo(pagina.titulo);
-      setSlug(pagina.slug);
-      setConteudo(pagina.conteudo || '');
-      setCapa(pagina.capa || null);
-      setSeoTitulo(pagina.seo_meta_titulo || '');
-      setSeoDescricao(pagina.seo_meta_descricao || '');
-      setSlugEditadoManualmente(false);
-    } else if (!isEditing) {
-      setTitulo('');
-      setSlug('');
-      setConteudo('');
-      setCapa(null);
-      setSeoTitulo('');
-      setSeoDescricao('');
-      setSlugEditadoManualmente(false);
-    }
-  }, [isEditing, pagina]);
-
   const handleSave = async (targetState: 'rascunho' | 'revisao' | 'publicado') => {
     cancelAutosaveTimer();
-    if (!titulo.trim()) {
+    if (!form.titulo.trim()) {
       showToast('O título é obrigatório.');
       return;
     }
@@ -106,7 +85,7 @@ export const TextosEditor: React.FC = () => {
       return;
     }
 
-    const finalSlug = slug.trim() || slugify(titulo);
+    const finalSlug = form.slug.trim() || slugify(form.titulo);
     const wasPublished = isEditing && pagina?.published_at !== null && pagina?.published_at !== undefined;
     const slugChanged = wasPublished && finalSlug !== pagina.slug;
 
@@ -118,12 +97,12 @@ export const TextosEditor: React.FC = () => {
     }
 
     const payload: PaginaInstitucionalPayload = {
-      titulo: titulo.trim(),
+      titulo: form.titulo.trim(),
       slug: finalSlug,
-      conteudo,
-      capa: capa ? capa.id : null,
-      seo_meta_titulo: seoTitulo.trim() || null,
-      seo_meta_descricao: seoDescricao.trim() || null,
+      conteudo: form.conteudo,
+      capa: form.capa ? form.capa.id : null,
+      seo_meta_titulo: form.seoTitulo.trim() || null,
+      seo_meta_descricao: form.seoDescricao.trim() || null,
       estado_editorial: targetState,
       published_at: publishedAt,
     };
@@ -285,22 +264,15 @@ export const TextosEditor: React.FC = () => {
       {/* Editor Grid */}
       <TextoEditor
         pagina={pagina || null}
-        titulo={titulo}
-        setTitulo={setTitulo}
-        slug={slug}
-        setSlug={setSlug}
-        slugEditadoManualmente={slugEditadoManualmente}
-        setSlugEditadoManualmente={setSlugEditadoManualmente}
-        isEditingSlugInline={isEditingSlugInline}
-        setIsEditingSlugInline={setIsEditingSlugInline}
-        conteudo={conteudo}
-        setConteudo={setConteudo}
-        capa={capa}
-        setCapa={setCapa}
-        seoTitulo={seoTitulo}
-        setSeoTitulo={setSeoTitulo}
-        seoDescricao={seoDescricao}
-        setSeoDescricao={setSeoDescricao}
+        form={form}
+        onTituloChange={handleTituloChange}
+        onSlugChange={handleSlugChange}
+        onResetSlug={handleResetSlug}
+        onToggleSlugEdit={(val) => updateField('isEditingSlugInline', val)}
+        onConteudoChange={(val) => updateField('conteudo', val)}
+        onCapaChange={(file) => updateField('capa', file)}
+        onSeoTituloChange={(val) => updateField('seoTitulo', val)}
+        onSeoDescricaoChange={(val) => updateField('seoDescricao', val)}
       />
 
       {/* Toast Alert */}

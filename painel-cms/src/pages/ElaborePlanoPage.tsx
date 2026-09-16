@@ -1,70 +1,32 @@
-import React, { useState, useEffect, useRef } from 'react';
-import { ExternalLink, FileText, Image as ImageIcon, Upload, Trash2 } from 'lucide-react';
+import React, { useEffect, useState } from 'react';
 import { useElaborePlano } from '../hooks/elabore-plano/useElaborePlano';
-import { useUploadSingleFile } from '../hooks/useUploadSingleFile';
+import { useElaborePlanoForm } from '../hooks/elabore-plano/useElaborePlanoForm';
+import { useElaborePlanoCapaUpload } from '../hooks/elabore-plano/useElaborePlanoCapaUpload';
+import { useElaborePlanoArquivoUpload } from '../hooks/elabore-plano/useElaborePlanoArquivoUpload';
 import { Toast } from '../components/ui/Toast';
-import { MediaPickerModal } from '../components/ui/MediaPickerModal';
-import { SingleTypeLoadingSkeleton, SingleTypeErrorBanner } from '../components/ui/SingleTypeFormStates';
-import type { ElaborePlanoPayload, StrapiFile } from '../lib/strapi';
-import { STRAPI_URL } from '../lib/api';
-
-const SITE_URL = import.meta.env.VITE_SITE_URL as string | undefined;
-
-const MARKDOWN_HELP = `Formatação disponível em Descrição:
-  **negrito**   → texto em negrito
-  *itálico*     → texto em itálico
-  ## Título     → subtítulo
-  - item        → lista com marcadores
-  [texto](https://url.com "Dica ao passar o mouse") → link com tooltip`;
+import { ElaborePlanoHeader } from '../components/elabore-plano/ElaborePlanoHeader';
+import { ElaborePlanoLoadingSkeleton } from '../components/elabore-plano/ElaborePlanoLoadingSkeleton';
+import { ElaborePlanoErrorState } from '../components/elabore-plano/ElaborePlanoErrorState';
+import { ElaborePlanoTextInputField } from '../components/elabore-plano/ElaborePlanoTextInputField';
+import { ElaborePlanoDescricaoField } from '../components/elabore-plano/ElaborePlanoDescricaoField';
+import { ElaborePlanoCapaField } from '../components/elabore-plano/ElaborePlanoCapaField';
+import { ElaborePlanoImagePositionField } from '../components/elabore-plano/ElaborePlanoImagePositionField';
+import { ElaborePlanoArquivoField } from '../components/elabore-plano/ElaborePlanoArquivoField';
+import { ElaborePlanoSaveButton } from '../components/elabore-plano/ElaborePlanoSaveButton';
+import type { ElaborePlanoPayload } from '../lib/strapi';
 
 export const ElaborePlanoPage: React.FC = () => {
   const { data, isLoading, isError, refetch, saveElaborePlano, isSaving, saveError } =
     useElaborePlano();
 
-  const [tituloSecao, setTituloSecao] = useState('');
-  const [tituloGuia, setTituloGuia] = useState('');
-  const [descricao, setDescricao] = useState('');
-  const [imagePosition, setImagePosition] = useState<'topo' | 'esquerda' | 'direita'>('topo');
-  const [capaFile, setCapaFile] = useState<StrapiFile | null>(null);
-  const [arquivoFile, setArquivoFile] = useState<StrapiFile | null>(null);
-  const [capaPickerOpen, setCapaPickerOpen] = useState(false);
-  const [arquivoPickerOpen, setArquivoPickerOpen] = useState(false);
+  const { form, updateField } = useElaborePlanoForm(data);
+  const capa = useElaborePlanoCapaUpload(data);
+  const arquivo = useElaborePlanoArquivoUpload(data);
 
   const [toast, setToast] = useState<{ visible: boolean; message: string }>({
     visible: false,
     message: '',
   });
-
-  const capaInputRef = useRef<HTMLInputElement>(null);
-  const arquivoInputRef = useRef<HTMLInputElement>(null);
-
-  const imageUploader = useUploadSingleFile({
-    allowedTypes: ['image/*'],
-    maxMB: 10,
-    typeErrorMessage: 'Apenas imagens são permitidas (PNG, JPG, WebP…).',
-  });
-
-  const fileUploader = useUploadSingleFile({
-    allowedTypes: [
-      'application/pdf',
-      'application/msword',
-      'application/vnd.openxmlformats-officedocument.wordprocessingml.document',
-    ],
-    maxMB: 50,
-    typeErrorMessage: 'Apenas arquivos PDF ou Word são permitidos.',
-  });
-
-  // Preencher formulário ao carregar dados do Strapi
-  useEffect(() => {
-    if (data) {
-      setTituloSecao(data.titulo_secao ?? '');
-      setTituloGuia(data.titulo_guia ?? '');
-      setDescricao(data.descricao ?? '');
-      setImagePosition(data.image_position ?? 'topo');
-      setCapaFile(data.capa ?? null);
-      setArquivoFile(data.arquivo ?? null);
-    }
-  }, [data]);
 
   // Exibir erros de salvamento em toast
   useEffect(() => {
@@ -73,631 +35,110 @@ export const ElaborePlanoPage: React.FC = () => {
     }
   }, [saveError]);
 
-  const handleCapaSelect = async (e: React.ChangeEvent<HTMLInputElement>) => {
-    const file = e.target.files?.[0];
-    if (!file) return;
-    try {
-      const uploaded = await imageUploader.uploadFile(file);
-      setCapaFile(uploaded);
-    } catch {
-      // erro mantido no hook
-    }
-    if (capaInputRef.current) capaInputRef.current.value = '';
-  };
-
-  const handleArquivoSelect = async (e: React.ChangeEvent<HTMLInputElement>) => {
-    const file = e.target.files?.[0];
-    if (!file) return;
-    try {
-      const uploaded = await fileUploader.uploadFile(file);
-      setArquivoFile(uploaded);
-    } catch {
-      // erro mantido no hook
-    }
-    if (arquivoInputRef.current) arquivoInputRef.current.value = '';
-  };
-
   const handleSave = async () => {
     const payload: ElaborePlanoPayload = {
-      titulo_secao: tituloSecao.trim() || null,
-      titulo_guia: tituloGuia.trim() || null,
-      descricao: descricao.trim() || null,
-      capa: capaFile ? capaFile.id : null,
-      arquivo: arquivoFile ? arquivoFile.id : null,
-      image_position: imagePosition,
+      titulo_secao: form.tituloSecao.trim() || null,
+      titulo_guia: form.tituloGuia.trim() || null,
+      descricao: form.descricao.trim() || null,
+      capa: capa.file ? capa.file.id : null,
+      arquivo: arquivo.file ? arquivo.file.id : null,
+      image_position: form.imagePosition,
       published_at: data?.published_at || new Date().toISOString(),
     };
-
 
     try {
       await saveElaborePlano(payload);
       setToast({ visible: true, message: 'Elabore o Plano atualizado com sucesso!' });
     } catch {
-      // Trado via useEffect (saveError)
+      // Tratado via useEffect (saveError)
     }
   };
 
-  if (isLoading) {
-    return (
-      <SingleTypeLoadingSkeleton
-        rows={3}
-        tallRowIndex={3}
-        tallHeight="120px"
-        labelWidth="120px"
-        maxWidth="700px"
-      />
-    );
-  }
+  if (isLoading) return <ElaborePlanoLoadingSkeleton />;
+  if (isError) return <ElaborePlanoErrorState onRetry={() => refetch()} />;
 
-  if (isError) {
-    return (
-      <SingleTypeErrorBanner
-        title="Erro ao carregar dados do Elabore o Plano"
-        message="Verifique a conexão ou tente recarregar a página."
-        onRetry={() => refetch()}
-      />
-    );
-  }
-
-  const inputStyle: React.CSSProperties = {
-    width: '100%',
-    padding: '10px 14px',
-    borderRadius: '10px',
-    border: '1px solid var(--border)',
-    background: 'var(--bg)',
-    color: 'var(--text)',
-    fontSize: '14px',
-    fontFamily: 'var(--font-body)',
-    boxSizing: 'border-box',
-    outline: 'none',
-    transition: 'border-color 0.15s ease',
-  };
-
-  const labelStyle: React.CSSProperties = {
-    display: 'block',
-    fontSize: '13px',
-    fontWeight: 700,
-    color: 'var(--text)',
-    marginBottom: '6px',
-  };
+  const saveDisabled = isSaving || capa.uploading || arquivo.uploading;
 
   return (
     <>
       <div style={{ padding: '40px 48px', maxWidth: '720px' }}>
-        {/* Cabeçalho */}
-        <div
-          style={{
-            display: 'flex',
-            alignItems: 'flex-start',
-            justifyContent: 'space-between',
-            marginBottom: '32px',
-            gap: '16px',
-          }}
-        >
-          <div>
-            <h1
-              style={{
-                fontFamily: 'var(--font-heading)',
-                fontSize: '24px',
-                fontWeight: 900,
-                letterSpacing: '-.4px',
-                color: 'var(--text)',
-                margin: '0 0 6px',
-              }}
-            >
-              Elabore o Plano
-            </h1>
-            <p style={{ margin: 0, fontSize: '14px', color: 'var(--text-soft)', fontWeight: 500 }}>
-              Edite as informações da seção "Elabore o plano do seu município" exibida na página inicial.
-            </p>
-          </div>
+        <ElaborePlanoHeader />
 
-          {SITE_URL && (
-            <a
-              href={`${SITE_URL}#elabore-plano`}
-              target="_blank"
-              rel="noopener noreferrer"
-              style={{
-                display: 'inline-flex',
-                alignItems: 'center',
-                gap: '6px',
-                padding: '8px 14px',
-                borderRadius: '9px',
-                border: '1px solid var(--border)',
-                background: 'var(--card)',
-                color: 'var(--text-soft)',
-                fontSize: '13px',
-                fontWeight: 600,
-                textDecoration: 'none',
-                flexShrink: 0,
-                transition: 'border-color 0.15s ease, color 0.15s ease',
-              }}
-            >
-              Ver no site
-              <ExternalLink size={13} />
-            </a>
-          )}
-        </div>
-
-        {/* Form Container */}
         <div style={{ display: 'flex', flexDirection: 'column', gap: '24px' }}>
-          {/* Título da Seção */}
-          <div>
-            <label htmlFor="titulo-secao" style={labelStyle}>
-              Título da Seção
-            </label>
-            <input
-              id="titulo-secao"
-              type="text"
-              value={tituloSecao}
-              onChange={(e) => setTituloSecao(e.target.value)}
-              disabled={isSaving}
-              style={inputStyle}
-              placeholder="Ex: Elabore o plano do seu município"
-            />
-            <p style={{ margin: '5px 0 0', fontSize: '12px', color: 'var(--text-soft)' }}>
-              Título exibido no cabeçalho da seção na home.
-            </p>
-          </div>
+          <ElaborePlanoTextInputField
+            id="titulo-secao"
+            label="Título da Seção"
+            value={form.tituloSecao}
+            onChange={(value) => updateField('tituloSecao', value)}
+            disabled={isSaving}
+            placeholder="Ex: Elabore o plano do seu município"
+            helperText="Título exibido no cabeçalho da seção na home."
+          />
 
-          {/* Título do Guia */}
-          <div>
-            <label htmlFor="titulo-guia" style={labelStyle}>
-              Título do Guia
-            </label>
-            <input
-              id="titulo-guia"
-              type="text"
-              value={tituloGuia}
-              onChange={(e) => setTituloGuia(e.target.value)}
-              disabled={isSaving}
-              style={inputStyle}
-              placeholder="Ex: Guia para elaboração de Planos Intersetoriais para a Primeira Infância"
-            />
-            <p style={{ margin: '5px 0 0', fontSize: '12px', color: 'var(--text-soft)' }}>
-              Título em negrito exibido acima da descrição do guia.
-            </p>
-          </div>
+          <ElaborePlanoTextInputField
+            id="titulo-guia"
+            label="Título do Guia"
+            value={form.tituloGuia}
+            onChange={(value) => updateField('tituloGuia', value)}
+            disabled={isSaving}
+            placeholder="Ex: Guia para elaboração de Planos Intersetoriais para a Primeira Infância"
+            helperText="Título em negrito exibido acima da descrição do guia."
+          />
 
-          {/* Descrição */}
-          <div>
-            <label htmlFor="descricao" style={labelStyle}>
-              Descrição (Richtext / Markdown)
-            </label>
-            <textarea
-              id="descricao"
-              value={descricao}
-              onChange={(e) => setDescricao(e.target.value)}
-              disabled={isSaving}
-              rows={7}
-              style={{ ...inputStyle, resize: 'vertical', lineHeight: 1.6 }}
-              placeholder="Texto descritivo do guia..."
-            />
-            <pre
-              style={{
-                marginTop: '8px',
-                padding: '10px 14px',
-                borderRadius: '9px',
-                background: 'var(--muted)',
-                fontSize: '11.5px',
-                color: 'var(--text-soft)',
-                fontFamily: 'monospace',
-                lineHeight: 1.65,
-                whiteSpace: 'pre-wrap',
-                wordBreak: 'break-word',
-              }}
-            >
-              {MARKDOWN_HELP}
-            </pre>
-          </div>
+          <ElaborePlanoDescricaoField
+            value={form.descricao}
+            onChange={(value) => updateField('descricao', value)}
+            disabled={isSaving}
+          />
 
-          {/* Imagem de Capa */}
-          <div>
-            <label style={labelStyle}>Imagem de Capa</label>
-            {capaFile ? (
-              <div
-                style={{
-                  display: 'flex',
-                  alignItems: 'center',
-                  gap: '14px',
-                  padding: '12px 14px',
-                  borderRadius: '12px',
-                  border: '1px solid var(--border)',
-                  background: 'var(--card)',
-                }}
-              >
-                <img
-                  src={capaFile.url.startsWith('http') ? capaFile.url : `${STRAPI_URL}${capaFile.url}`}
-                  alt="Capa"
-                  style={{
-                    width: '64px',
-                    height: '64px',
-                    objectFit: 'cover',
-                    borderRadius: '8px',
-                    flexShrink: 0,
-                    border: '1px solid var(--border)',
-                  }}
-                />
-                <div style={{ flex: 1, minWidth: 0 }}>
-                  <div
-                    style={{
-                      fontSize: '13.5px',
-                      fontWeight: 700,
-                      color: 'var(--text)',
-                      overflow: 'hidden',
-                      textOverflow: 'ellipsis',
-                      whiteSpace: 'nowrap',
-                    }}
-                  >
-                    {capaFile.name}
-                  </div>
-                  <div style={{ fontSize: '12px', color: 'var(--text-soft)', marginTop: '2px' }}>
-                    {(capaFile.size / 1024).toFixed(2)} MB
-                  </div>
-                </div>
-                <button
-                  type="button"
-                  onClick={() => setCapaFile(null)}
-                  style={{
-                    padding: '8px 12px',
-                    borderRadius: '9px',
-                    border: '1px solid var(--border)',
-                    background: 'transparent',
-                    color: 'var(--danger, #dc3c3c)',
-                    fontSize: '12.5px',
-                    fontWeight: 700,
-                    cursor: 'pointer',
-                    display: 'flex',
-                    alignItems: 'center',
-                    gap: '6px',
-                  }}
-                >
-                  <Trash2 size={14} />
-                  Remover
-                </button>
-              </div>
-            ) : (
-              <div style={{ display: 'flex', gap: '10px', flexWrap: 'wrap' }}>
-                <input
-                  ref={capaInputRef}
-                  type="file"
-                  accept="image/*"
-                  onChange={handleCapaSelect}
-                  style={{ display: 'none' }}
-                />
-                {/* Botão: subir novo arquivo */}
-                <button
-                  type="button"
-                  onClick={() => capaInputRef.current?.click()}
-                  disabled={imageUploader.uploading || isSaving}
-                  style={{
-                    padding: '12px 18px',
-                    borderRadius: '11px',
-                    border: '1px dashed var(--border)',
-                    background: 'var(--bg)',
-                    color: 'var(--text)',
-                    fontSize: '13.5px',
-                    fontWeight: 600,
-                    cursor: imageUploader.uploading || isSaving ? 'not-allowed' : 'pointer',
-                    display: 'flex',
-                    alignItems: 'center',
-                    gap: '8px',
-                  }}
-                >
-                  <ImageIcon size={18} color="var(--primary)" />
-                  {imageUploader.uploading
-                    ? `Enviando capa… ${imageUploader.progress}%`
-                    : 'Subir imagem de capa'}
-                </button>
+          <ElaborePlanoCapaField
+            file={capa.file}
+            uploading={capa.uploading}
+            progress={capa.progress}
+            uploadError={capa.uploadError}
+            pickerOpen={capa.pickerOpen}
+            inputRef={capa.inputRef}
+            disabled={isSaving}
+            onFileSelect={capa.handleFileSelect}
+            onRemove={capa.handleRemove}
+            onOpenPicker={capa.openPicker}
+            onClosePicker={capa.closePicker}
+            onSelectFromPicker={capa.selectFromPicker}
+          />
 
-                {/* Botão: escolher da Midiateca */}
-                <button
-                  type="button"
-                  onClick={() => setCapaPickerOpen(true)}
-                  disabled={imageUploader.uploading || isSaving}
-                  style={{
-                    padding: '12px 18px',
-                    borderRadius: '11px',
-                    border: '1px solid var(--border)',
-                    background: 'var(--muted)',
-                    color: 'var(--text)',
-                    fontSize: '13.5px',
-                    fontWeight: 600,
-                    cursor: imageUploader.uploading || isSaving ? 'not-allowed' : 'pointer',
-                    display: 'flex',
-                    alignItems: 'center',
-                    gap: '8px',
-                    transition: 'border-color .15s ease, background .15s ease',
-                  }}
-                  onMouseEnter={(e) => {
-                    if (!imageUploader.uploading && !isSaving) {
-                      e.currentTarget.style.borderColor = 'var(--primary)';
-                      e.currentTarget.style.background = 'var(--card)';
-                    }
-                  }}
-                  onMouseLeave={(e) => {
-                    e.currentTarget.style.borderColor = 'var(--border)';
-                    e.currentTarget.style.background = 'var(--muted)';
-                  }}
-                >
-                  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                    <rect x="3" y="3" width="18" height="18" rx="2" />
-                    <circle cx="8.5" cy="8.5" r="1.5" />
-                    <polyline points="21 15 16 10 5 21" />
-                  </svg>
-                  Da Midiateca
-                </button>
-              </div>
-            )}
-            {imageUploader.error && (
-              <p style={{ margin: '6px 0 0', fontSize: '12px', color: 'var(--danger, #dc3c3c)', fontWeight: 600 }}>
-                {imageUploader.error}
-              </p>
-            )}
-          </div>
+          <ElaborePlanoImagePositionField
+            value={form.imagePosition}
+            onChange={(value) => updateField('imagePosition', value)}
+            disabled={isSaving}
+          />
 
-          {/* Posição da Imagem de Capa */}
-          <div>
-            <label htmlFor="image-position" style={labelStyle}>
-              Posição da Imagem de Capa
-            </label>
-            <select
-              id="image-position"
-              value={imagePosition}
-              onChange={(e) => setImagePosition(e.target.value as 'topo' | 'esquerda' | 'direita')}
-              disabled={isSaving}
-              style={inputStyle}
-            >
-              <option value="topo">Topo — imagem acima do texto (padrão)</option>
-              <option value="esquerda">Esquerda — imagem à esquerda, texto à direita</option>
-              <option value="direita">Direita — imagem à direita, texto à esquerda</option>
-            </select>
-            <p style={{ margin: '5px 0 0', fontSize: '12px', color: 'var(--text-soft)' }}>
-              Define o layout da seção no site. Requer uma imagem de capa carregada para ter efeito.
-            </p>
-          </div>
+          <ElaborePlanoArquivoField
+            file={arquivo.file}
+            uploading={arquivo.uploading}
+            progress={arquivo.progress}
+            uploadError={arquivo.uploadError}
+            pickerOpen={arquivo.pickerOpen}
+            inputRef={arquivo.inputRef}
+            disabled={isSaving}
+            onFileSelect={arquivo.handleFileSelect}
+            onRemove={arquivo.handleRemove}
+            onOpenPicker={arquivo.openPicker}
+            onClosePicker={arquivo.closePicker}
+            onSelectFromPicker={arquivo.selectFromPicker}
+          />
 
-          {/* Arquivo do Guia (PDF/Doc) */}
-          <div>
-            <label style={labelStyle}>Arquivo do Guia (PDF / Documento)</label>
-            {arquivoFile ? (
-              <div
-                style={{
-                  display: 'flex',
-                  alignItems: 'center',
-                  gap: '14px',
-                  padding: '12px 14px',
-                  borderRadius: '12px',
-                  border: '1px solid var(--border)',
-                  background: 'var(--card)',
-                }}
-              >
-                <div
-                  style={{
-                    width: '44px',
-                    height: '44px',
-                    borderRadius: '10px',
-                    background: 'rgba(242,93,39,0.1)',
-                    display: 'flex',
-                    alignItems: 'center',
-                    justifyContent: 'center',
-                    flexShrink: 0,
-                  }}
-                >
-                  <FileText size={22} color="var(--primary)" />
-                </div>
-                <div style={{ flex: 1, minWidth: 0 }}>
-                  <div
-                    style={{
-                      fontSize: '13.5px',
-                      fontWeight: 700,
-                      color: 'var(--text)',
-                      overflow: 'hidden',
-                      textOverflow: 'ellipsis',
-                      whiteSpace: 'nowrap',
-                    }}
-                  >
-                    {arquivoFile.name}
-                  </div>
-                  <div style={{ fontSize: '12px', color: 'var(--text-soft)', marginTop: '2px' }}>
-                    {(arquivoFile.size / 1024).toFixed(2)} MB
-                  </div>
-                </div>
-                <a
-                  href={
-                    arquivoFile.url.startsWith('http')
-                      ? arquivoFile.url
-                      : `${STRAPI_URL}${arquivoFile.url}`
-                  }
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  style={{
-                    padding: '8px 12px',
-                    borderRadius: '9px',
-                    border: '1px solid var(--border)',
-                    background: 'var(--muted)',
-                    color: 'var(--text)',
-                    fontSize: '12.5px',
-                    fontWeight: 600,
-                    textDecoration: 'none',
-                    display: 'flex',
-                    alignItems: 'center',
-                    gap: '6px',
-                  }}
-                >
-                  <ExternalLink size={14} />
-                  Baixar
-                </a>
-                <button
-                  type="button"
-                  onClick={() => setArquivoFile(null)}
-                  style={{
-                    padding: '8px 12px',
-                    borderRadius: '9px',
-                    border: '1px solid var(--border)',
-                    background: 'transparent',
-                    color: 'var(--danger, #dc3c3c)',
-                    fontSize: '12.5px',
-                    fontWeight: 700,
-                    cursor: 'pointer',
-                    display: 'flex',
-                    alignItems: 'center',
-                    gap: '6px',
-                  }}
-                >
-                  <Trash2 size={14} />
-                  Remover
-                </button>
-              </div>
-            ) : (
-              <div style={{ display: 'flex', gap: '10px', flexWrap: 'wrap' }}>
-                <input
-                  ref={arquivoInputRef}
-                  type="file"
-                  accept=".pdf,.doc,.docx"
-                  onChange={handleArquivoSelect}
-                  style={{ display: 'none' }}
-                />
-                {/* Botão: subir novo arquivo */}
-                <button
-                  type="button"
-                  onClick={() => arquivoInputRef.current?.click()}
-                  disabled={fileUploader.uploading || isSaving}
-                  style={{
-                    padding: '12px 18px',
-                    borderRadius: '11px',
-                    border: '1px dashed var(--border)',
-                    background: 'var(--bg)',
-                    color: 'var(--text)',
-                    fontSize: '13.5px',
-                    fontWeight: 600,
-                    cursor: fileUploader.uploading || isSaving ? 'not-allowed' : 'pointer',
-                    display: 'flex',
-                    alignItems: 'center',
-                    gap: '8px',
-                  }}
-                >
-                  <Upload size={18} color="var(--primary)" />
-                  {fileUploader.uploading
-                    ? `Enviando arquivo… ${fileUploader.progress}%`
-                    : 'Subir arquivo (PDF)'}
-                </button>
-
-                {/* Botão: escolher da Midiateca */}
-                <button
-                  type="button"
-                  onClick={() => setArquivoPickerOpen(true)}
-                  disabled={fileUploader.uploading || isSaving}
-                  style={{
-                    padding: '12px 18px',
-                    borderRadius: '11px',
-                    border: '1px solid var(--border)',
-                    background: 'var(--muted)',
-                    color: 'var(--text)',
-                    fontSize: '13.5px',
-                    fontWeight: 600,
-                    cursor: fileUploader.uploading || isSaving ? 'not-allowed' : 'pointer',
-                    display: 'flex',
-                    alignItems: 'center',
-                    gap: '8px',
-                    transition: 'border-color .15s ease, background .15s ease',
-                  }}
-                  onMouseEnter={(e) => {
-                    if (!fileUploader.uploading && !isSaving) {
-                      e.currentTarget.style.borderColor = 'var(--primary)';
-                      e.currentTarget.style.background = 'var(--card)';
-                    }
-                  }}
-                  onMouseLeave={(e) => {
-                    e.currentTarget.style.borderColor = 'var(--border)';
-                    e.currentTarget.style.background = 'var(--muted)';
-                  }}
-                >
-                  <FileText size={18} color="var(--primary)" />
-                  Da Midiateca
-                </button>
-              </div>
-            )}
-            {fileUploader.error && (
-              <p style={{ margin: '6px 0 0', fontSize: '12px', color: 'var(--danger, #dc3c3c)', fontWeight: 600 }}>
-                {fileUploader.error}
-              </p>
-            )}
-          </div>
-
-          {/* Botão de Salvar */}
-          <div style={{ marginTop: '12px', display: 'flex', alignItems: 'center', gap: '14px' }}>
-            <button
-              id="elabore-plano-save-btn"
-              onClick={handleSave}
-              disabled={isSaving || imageUploader.uploading || fileUploader.uploading}
-              style={{
-                padding: '12px 26px',
-                borderRadius: '11px',
-                border: 'none',
-                background:
-                  isSaving || imageUploader.uploading || fileUploader.uploading
-                    ? 'var(--muted)'
-                    : 'var(--primary)',
-                color: isSaving || imageUploader.uploading || fileUploader.uploading ? 'var(--text-soft)' : '#FFFFFF',
-                fontSize: '14px',
-                fontWeight: 700,
-                cursor: isSaving || imageUploader.uploading || fileUploader.uploading ? 'not-allowed' : 'pointer',
-                display: 'flex',
-                alignItems: 'center',
-                gap: '8px',
-                transition: 'background 0.15s ease',
-                boxShadow: isSaving ? 'none' : 'var(--shadow-btn)',
-              }}
-            >
-              {isSaving && (
-                <span
-                  style={{
-                    width: '14px',
-                    height: '14px',
-                    border: '2px solid rgba(255,255,255,0.3)',
-                    borderTopColor: '#fff',
-                    borderRadius: '50%',
-                    animation: 'spin 0.7s linear infinite',
-                    display: 'inline-block',
-                  }}
-                />
-              )}
-              {isSaving ? 'Salvando…' : 'Salvar'}
-            </button>
-          </div>
+          <ElaborePlanoSaveButton
+            onClick={handleSave}
+            disabled={saveDisabled}
+            isSaving={isSaving}
+          />
         </div>
       </div>
 
-      {/* Toast */}
       <Toast
         visible={toast.visible}
         message={toast.message}
         onClose={() => setToast((t) => ({ ...t, visible: false }))}
-      />
-
-      {/* Media Picker — Imagem de Capa */}
-      <MediaPickerModal
-        open={capaPickerOpen}
-        onClose={() => setCapaPickerOpen(false)}
-        onSelect={(file) => {
-          setCapaFile(file);
-          setCapaPickerOpen(false);
-        }}
-        filterType="img"
-        title="Selecionar imagem de capa da Midiateca"
-      />
-
-      {/* Media Picker — Arquivo do Guia */}
-      <MediaPickerModal
-        open={arquivoPickerOpen}
-        onClose={() => setArquivoPickerOpen(false)}
-        onSelect={(file) => {
-          setArquivoFile(file);
-          setArquivoPickerOpen(false);
-        }}
-        filterType="doc"
-        title="Selecionar arquivo da Midiateca"
       />
     </>
   );
