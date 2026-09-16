@@ -25,35 +25,13 @@ function getThumbnailUrl(file: StrapiFile): string | null {
 function DocIcon({ mime }: { mime: string }) {
   if (mime.startsWith('video/')) {
     return (
-      <div
-        style={{
-          width: '40px',
-          height: '40px',
-          borderRadius: '10px',
-          background: '#efe6fb',
-          display: 'flex',
-          alignItems: 'center',
-          justifyContent: 'center',
-          flexShrink: 0,
-        }}
-      >
+      <div className="w-10 h-10 rounded-[10px] bg-[var(--badge-purple-bg)] flex items-center justify-center shrink-0">
         <Film size={20} color="#8a6bd6" />
       </div>
     );
   }
   return (
-    <div
-      style={{
-        width: '40px',
-        height: '40px',
-        borderRadius: '10px',
-        background: 'rgba(242,93,39,0.1)',
-        display: 'flex',
-        alignItems: 'center',
-        justifyContent: 'center',
-        flexShrink: 0,
-      }}
-    >
+    <div className="w-10 h-10 rounded-[10px] bg-[rgba(242,93,39,0.1)] flex items-center justify-center shrink-0">
       <FileText size={20} color="var(--primary)" />
     </div>
   );
@@ -133,48 +111,17 @@ export const MediaPickerModal: React.FC<MediaPickerModalProps> = ({
         onClick={onClose}
         onKeyDown={handleOverlayKey}
         tabIndex={-1}
-        style={{
-          position: 'fixed',
-          inset: 0,
-          background: 'rgba(20,20,20,.55)',
-          zIndex: 400,
-          animation: 'fadeIn .18s ease',
-        }}
+        className="fixed inset-0 bg-[rgba(20,20,20,0.55)] z-[400] animate-[fadeIn_.18s_ease]"
       />
 
       {/* Panel */}
       <div
         onClick={(e) => e.stopPropagation()}
-        style={{
-          position: 'fixed',
-          top: '50%',
-          left: '50%',
-          transform: 'translate(-50%, -50%)',
-          width: '860px',
-          maxWidth: '96vw',
-          maxHeight: '88vh',
-          background: 'var(--card)',
-          borderRadius: '18px',
-          boxShadow: '0 24px 60px rgba(0,0,0,.3)',
-          zIndex: 401,
-          display: 'flex',
-          flexDirection: 'column',
-          overflow: 'hidden',
-          animation: 'slideIn .22s ease',
-        }}
+        className="fixed top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[860px] max-w-[96vw] max-h-[88vh] bg-card rounded-[18px] shadow-[0_24px_60px_rgba(0,0,0,0.3)] z-[401] flex flex-col overflow-hidden animate-[slideIn_.22s_ease]"
       >
         {/* Header */}
-        <div
-          style={{
-            display: 'flex',
-            alignItems: 'center',
-            justifyContent: 'space-between',
-            padding: '18px 22px',
-            borderBottom: '1px solid var(--border)',
-            flexShrink: 0,
-          }}
-        >
-          <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
+        <div className="flex items-center justify-between py-[18px] px-[22px] border-b border-border shrink-0">
+          <div className="flex items-center gap-2.5">
             {filterType === 'img' ? (
               <ImageIcon size={18} color="var(--primary)" />
             ) : filterType === 'video' ? (
@@ -182,70 +129,25 @@ export const MediaPickerModal: React.FC<MediaPickerModalProps> = ({
             ) : (
               <FileText size={18} color="var(--primary)" />
             )}
-            <h2
-              style={{
-                margin: 0,
-                fontSize: '16px',
-                fontWeight: 800,
-                color: 'var(--text)',
-                fontFamily: 'var(--font-heading)',
-                letterSpacing: '-.3px',
-              }}
-            >
+            <h2 className="m-0 text-[16px] font-extrabold text-foreground font-heading tracking-[-0.3px]">
               {modalTitle}
             </h2>
           </div>
           <button
             type="button"
             onClick={onClose}
-            style={{
-              width: '32px',
-              height: '32px',
-              borderRadius: '9px',
-              border: 'none',
-              background: 'transparent',
-              color: 'var(--text-soft)',
-              cursor: 'pointer',
-              display: 'flex',
-              alignItems: 'center',
-              justifyContent: 'center',
-              transition: 'background .15s ease',
-            }}
-            onMouseEnter={(e) => {
-              e.currentTarget.style.background = 'var(--muted)';
-            }}
-            onMouseLeave={(e) => {
-              e.currentTarget.style.background = 'transparent';
-            }}
+            className="w-8 h-8 rounded-[9px] border-0 bg-transparent text-muted-foreground cursor-pointer flex items-center justify-center transition-colors duration-150 ease-in-out hover:bg-muted"
           >
             <X size={18} />
           </button>
         </div>
 
         {/* Search */}
-        <div
-          style={{
-            padding: '14px 22px 12px',
-            flexShrink: 0,
-            borderBottom: '1px solid var(--border)',
-          }}
-        >
-          <div
-            style={{
-              position: 'relative',
-              maxWidth: '400px',
-            }}
-          >
+        <div className="pt-[14px] px-[22px] pb-3 shrink-0 border-b border-border">
+          <div className="relative max-w-[400px]">
             <Search
               size={15}
-              style={{
-                position: 'absolute',
-                left: '12px',
-                top: '50%',
-                transform: 'translateY(-50%)',
-                color: 'var(--text-soft)',
-                pointerEvents: 'none',
-              }}
+              className="absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground pointer-events-none"
             />
             <input
               ref={searchRef}
@@ -253,39 +155,13 @@ export const MediaPickerModal: React.FC<MediaPickerModalProps> = ({
               value={searchInput}
               onChange={(e) => setSearchInput(e.target.value)}
               placeholder="Buscar por nome…"
-              style={{
-                width: '100%',
-                height: '38px',
-                padding: '0 12px 0 36px',
-                borderRadius: '10px',
-                border: '1px solid var(--border)',
-                background: 'var(--bg)',
-                color: 'var(--text)',
-                fontSize: '13.5px',
-                fontFamily: 'var(--font-body)',
-                outline: 'none',
-                boxSizing: 'border-box',
-                transition: 'border-color .15s ease',
-              }}
-              onFocus={(e) => {
-                e.currentTarget.style.borderColor = 'var(--primary)';
-              }}
-              onBlur={(e) => {
-                e.currentTarget.style.borderColor = 'var(--border)';
-              }}
+              className="w-full h-[38px] pl-9 pr-3 py-0 rounded-[10px] border border-border bg-background text-foreground text-[13.5px] outline-none box-border transition-colors duration-150 ease-in-out focus:border-primary"
             />
           </div>
         </div>
 
         {/* Grid / List */}
-        <div
-          style={{
-            flex: 1,
-            overflowY: 'auto',
-            padding: '18px 22px',
-            minHeight: 0,
-          }}
-        >
+        <div className="flex-1 overflow-y-auto py-[18px] px-[22px] min-h-0">
           {isLoading ? (
             <SkeletonGrid isImageMode={isImageMode} />
           ) : files.length === 0 ? (
@@ -299,67 +175,23 @@ export const MediaPickerModal: React.FC<MediaPickerModalProps> = ({
 
         {/* Pagination */}
         {!isLoading && files.length > 0 && (
-          <div
-            style={{
-              display: 'flex',
-              alignItems: 'center',
-              justifyContent: 'center',
-              gap: '12px',
-              padding: '12px 22px',
-              borderTop: '1px solid var(--border)',
-              flexShrink: 0,
-            }}
-          >
+          <div className="flex items-center justify-center gap-3 py-3 px-[22px] border-t border-border shrink-0">
             <button
               type="button"
               disabled={!hasPrev}
               onClick={() => setPage((p) => Math.max(1, p - 1))}
-              style={{
-                display: 'flex',
-                alignItems: 'center',
-                justifyContent: 'center',
-                width: '32px',
-                height: '32px',
-                borderRadius: '8px',
-                border: '1px solid var(--border)',
-                background: 'var(--card)',
-                color: hasPrev ? 'var(--text)' : 'var(--text-soft)',
-                cursor: hasPrev ? 'pointer' : 'not-allowed',
-                opacity: hasPrev ? 1 : 0.4,
-                transition: 'all .15s ease',
-              }}
+              className="flex items-center justify-center w-8 h-8 rounded-lg border border-border bg-card text-foreground cursor-pointer transition-all duration-150 ease-in-out disabled:text-muted-foreground disabled:cursor-not-allowed disabled:opacity-40"
             >
               <ChevronLeft size={16} />
             </button>
-            <span
-              style={{
-                fontSize: '13px',
-                fontWeight: 700,
-                color: 'var(--text-soft)',
-                minWidth: '40px',
-                textAlign: 'center',
-              }}
-            >
+            <span className="text-[13px] font-bold text-muted-foreground min-w-[40px] text-center">
               {page}
             </span>
             <button
               type="button"
               disabled={!hasNext}
               onClick={() => setPage((p) => p + 1)}
-              style={{
-                display: 'flex',
-                alignItems: 'center',
-                justifyContent: 'center',
-                width: '32px',
-                height: '32px',
-                borderRadius: '8px',
-                border: '1px solid var(--border)',
-                background: 'var(--card)',
-                color: hasNext ? 'var(--text)' : 'var(--text-soft)',
-                cursor: hasNext ? 'pointer' : 'not-allowed',
-                opacity: hasNext ? 1 : 0.4,
-                transition: 'all .15s ease',
-              }}
+              className="flex items-center justify-center w-8 h-8 rounded-lg border border-border bg-card text-foreground cursor-pointer transition-all duration-150 ease-in-out disabled:text-muted-foreground disabled:cursor-not-allowed disabled:opacity-40"
             >
               <ChevronRight size={16} />
             </button>
@@ -376,13 +208,7 @@ const ImageGrid: React.FC<{ files: StrapiFile[]; onSelect: (f: StrapiFile) => vo
   files,
   onSelect,
 }) => (
-  <div
-    style={{
-      display: 'grid',
-      gridTemplateColumns: 'repeat(auto-fill, minmax(152px, 1fr))',
-      gap: '12px',
-    }}
-  >
+  <div className="grid grid-cols-[repeat(auto-fill,minmax(152px,1fr))] gap-3">
     {files.map((file) => (
       <ImageTile key={file.id} file={file} onSelect={onSelect} />
     ))}
@@ -393,105 +219,43 @@ const ImageTile: React.FC<{ file: StrapiFile; onSelect: (f: StrapiFile) => void 
   file,
   onSelect,
 }) => {
-  const [hovered, setHovered] = useState(false);
   const thumbUrl = getThumbnailUrl(file);
 
   return (
     <button
       type="button"
       onClick={() => onSelect(file)}
-      onMouseEnter={() => setHovered(true)}
-      onMouseLeave={() => setHovered(false)}
       title={file.name}
-      style={{
-        position: 'relative',
-        borderRadius: '12px',
-        border: `2px solid ${hovered ? 'var(--primary)' : 'var(--border)'}`,
-        background: 'var(--muted)',
-        cursor: 'pointer',
-        overflow: 'hidden',
-        padding: 0,
-        display: 'flex',
-        flexDirection: 'column',
-        transition: 'border-color .15s ease, transform .15s ease, box-shadow .15s ease',
-        transform: hovered ? 'translateY(-2px)' : 'none',
-        boxShadow: hovered ? '0 6px 20px rgba(242,93,39,.2)' : 'none',
-      }}
+      className="group relative rounded-xl border-2 border-border bg-muted cursor-pointer overflow-hidden p-0 flex flex-col transition-[border-color,transform,box-shadow] duration-150 ease-in-out hover:border-primary hover:-translate-y-0.5 hover:shadow-[0_6px_20px_rgba(242,93,39,0.2)]"
     >
       {/* Thumbnail */}
-      <div style={{ width: '100%', aspectRatio: '1', overflow: 'hidden', flexShrink: 0 }}>
+      <div className="w-full aspect-square overflow-hidden shrink-0">
         {thumbUrl ? (
           <img
             src={thumbUrl}
             alt={file.alternativeText || file.name}
-            style={{ width: '100%', height: '100%', objectFit: 'cover', display: 'block' }}
+            className="w-full h-full object-cover block"
           />
         ) : (
-          <div
-            style={{
-              width: '100%',
-              height: '100%',
-              display: 'flex',
-              alignItems: 'center',
-              justifyContent: 'center',
-              background: 'var(--muted)',
-            }}
-          >
+          <div className="w-full h-full flex items-center justify-center bg-muted">
             <ImageIcon size={32} color="var(--text-soft)" />
           </div>
         )}
       </div>
 
       {/* Overlay "Selecionar" no hover */}
-      {hovered && (
-        <div
-          style={{
-            position: 'absolute',
-            inset: 0,
-            background: 'rgba(242,93,39,.18)',
-            display: 'flex',
-            alignItems: 'center',
-            justifyContent: 'center',
-          }}
-        >
-          <span
-            style={{
-              background: 'var(--primary)',
-              color: '#fff',
-              fontSize: '11px',
-              fontWeight: 800,
-              padding: '4px 10px',
-              borderRadius: '20px',
-              letterSpacing: '.3px',
-            }}
-          >
-            Selecionar
-          </span>
-        </div>
-      )}
+      <div className="hidden group-hover:flex absolute inset-0 bg-[rgba(242,93,39,0.18)] items-center justify-center">
+        <span className="bg-primary text-white text-[11px] font-extrabold py-1 px-2.5 rounded-full tracking-[0.3px]">
+          Selecionar
+        </span>
+      </div>
 
       {/* Nome */}
-      <div
-        style={{
-          padding: '7px 8px 8px',
-          background: 'var(--card)',
-          borderTop: '1px solid var(--border)',
-        }}
-      >
-        <div
-          style={{
-            fontSize: '11.5px',
-            fontWeight: 600,
-            color: 'var(--text)',
-            overflow: 'hidden',
-            textOverflow: 'ellipsis',
-            whiteSpace: 'nowrap',
-            textAlign: 'left',
-          }}
-        >
+      <div className="pt-[7px] px-2 pb-2 bg-card border-t border-border">
+        <div className="text-[11.5px] font-semibold text-foreground truncate text-left">
           {file.name}
         </div>
-        <div style={{ fontSize: '10.5px', color: 'var(--text-soft)', marginTop: '1px', textAlign: 'left' }}>
+        <div className="text-[10.5px] text-muted-foreground mt-px text-left">
           {formatFileSize(file.size)}
         </div>
       </div>
@@ -503,7 +267,7 @@ const DocList: React.FC<{ files: StrapiFile[]; onSelect: (f: StrapiFile) => void
   files,
   onSelect,
 }) => (
-  <div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
+  <div className="flex flex-col gap-2">
     {files.map((file) => (
       <DocRow key={file.id} file={file} onSelect={onSelect} />
     ))}
@@ -514,61 +278,27 @@ const DocRow: React.FC<{ file: StrapiFile; onSelect: (f: StrapiFile) => void }> 
   file,
   onSelect,
 }) => {
-  const [hovered, setHovered] = useState(false);
   const mediaType = getMediaType(file.mime);
 
   return (
     <button
       type="button"
       onClick={() => onSelect(file)}
-      onMouseEnter={() => setHovered(true)}
-      onMouseLeave={() => setHovered(false)}
       title={file.name}
-      style={{
-        display: 'flex',
-        alignItems: 'center',
-        gap: '14px',
-        padding: '10px 14px',
-        borderRadius: '12px',
-        border: `1px solid ${hovered ? 'var(--primary)' : 'var(--border)'}`,
-        background: hovered ? 'rgba(242,93,39,.04)' : 'var(--bg)',
-        cursor: 'pointer',
-        textAlign: 'left',
-        width: '100%',
-        transition: 'border-color .15s ease, background .15s ease',
-      }}
+      className="group flex items-center gap-3.5 py-2.5 px-3.5 rounded-xl border border-border bg-background cursor-pointer text-left w-full transition-[border-color,background-color] duration-150 ease-in-out hover:border-primary hover:bg-[rgba(242,93,39,0.04)]"
     >
       <DocIcon mime={file.mime} />
-      <div style={{ flex: 1, minWidth: 0 }}>
-        <div
-          style={{
-            fontSize: '13.5px',
-            fontWeight: 600,
-            color: 'var(--text)',
-            overflow: 'hidden',
-            textOverflow: 'ellipsis',
-            whiteSpace: 'nowrap',
-          }}
-        >
+      <div className="flex-1 min-w-0">
+        <div className="text-[13.5px] font-semibold text-foreground truncate">
           {file.name}
         </div>
-        <div style={{ fontSize: '12px', color: 'var(--text-soft)', marginTop: '2px' }}>
+        <div className="text-xs text-muted-foreground mt-0.5">
           {mediaType.toUpperCase()} · {formatFileSize(file.size)}
         </div>
       </div>
-      {hovered && (
-        <span
-          style={{
-            fontSize: '12px',
-            fontWeight: 700,
-            color: 'var(--primary)',
-            flexShrink: 0,
-            paddingRight: '4px',
-          }}
-        >
-          Selecionar →
-        </span>
-      )}
+      <span className="hidden group-hover:inline-flex text-xs font-bold text-primary shrink-0 pr-1">
+        Selecionar →
+      </span>
     </button>
   );
 };
@@ -576,40 +306,12 @@ const DocRow: React.FC<{ file: StrapiFile; onSelect: (f: StrapiFile) => void }> 
 function SkeletonGrid({ isImageMode }: { isImageMode: boolean }) {
   if (isImageMode) {
     return (
-      <div
-        style={{
-          display: 'grid',
-          gridTemplateColumns: 'repeat(auto-fill, minmax(152px, 1fr))',
-          gap: '12px',
-        }}
-      >
+      <div className="grid grid-cols-[repeat(auto-fill,minmax(152px,1fr))] gap-3">
         {Array.from({ length: 12 }).map((_, i) => (
-          <div
-            key={i}
-            style={{
-              borderRadius: '12px',
-              border: '1px solid var(--border)',
-              overflow: 'hidden',
-              background: 'var(--card)',
-            }}
-          >
-            <div
-              style={{
-                aspectRatio: '1',
-                background: 'var(--muted)',
-                animation: 'pulse 1.5s ease infinite',
-              }}
-            />
-            <div style={{ padding: '7px 8px 8px' }}>
-              <div
-                style={{
-                  height: '11px',
-                  width: '80%',
-                  background: 'var(--muted)',
-                  borderRadius: '4px',
-                  animation: 'pulse 1.5s ease infinite',
-                }}
-              />
+          <div key={i} className="rounded-xl border border-border overflow-hidden bg-card">
+            <div className="aspect-square bg-muted animate-pulse" />
+            <div className="pt-[7px] px-2 pb-2">
+              <div className="h-[11px] w-4/5 bg-muted rounded-[4px] animate-pulse" />
             </div>
           </div>
         ))}
@@ -617,17 +319,9 @@ function SkeletonGrid({ isImageMode }: { isImageMode: boolean }) {
     );
   }
   return (
-    <div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
+    <div className="flex flex-col gap-2">
       {Array.from({ length: 6 }).map((_, i) => (
-        <div
-          key={i}
-          style={{
-            height: '64px',
-            borderRadius: '12px',
-            background: 'var(--muted)',
-            animation: 'pulse 1.5s ease infinite',
-          }}
-        />
+        <div key={i} className="h-16 rounded-xl bg-muted animate-pulse" />
       ))}
     </div>
   );
@@ -635,20 +329,10 @@ function SkeletonGrid({ isImageMode }: { isImageMode: boolean }) {
 
 function EmptyState() {
   return (
-    <div
-      style={{
-        display: 'flex',
-        flexDirection: 'column',
-        alignItems: 'center',
-        justifyContent: 'center',
-        padding: '60px 24px',
-        color: 'var(--text-soft)',
-        gap: '10px',
-      }}
-    >
-      <div style={{ fontSize: '36px' }}>🗂</div>
-      <p style={{ margin: 0, fontSize: '14px', fontWeight: 700 }}>Nenhum arquivo encontrado</p>
-      <p style={{ margin: 0, fontSize: '13px' }}>
+    <div className="flex flex-col items-center justify-center py-[60px] px-6 text-muted-foreground gap-2.5">
+      <div className="text-[36px]">🗂</div>
+      <p className="m-0 text-sm font-bold">Nenhum arquivo encontrado</p>
+      <p className="m-0 text-[13px]">
         Tente outro termo de busca ou envie arquivos pela Midiateca.
       </p>
     </div>

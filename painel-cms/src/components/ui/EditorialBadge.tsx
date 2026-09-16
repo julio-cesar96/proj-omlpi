@@ -7,30 +7,30 @@ interface EditorialBadgeProps {
   size?: 'sm' | 'md';
 }
 
-const statusConfig: Record<EditorialState, { label: string; bg: string; color: string; dot: string }> = {
+const statusConfig: Record<EditorialState, { label: string; bgClass: string; colorClass: string; dotClass: string }> = {
   rascunho: {
     label: 'Rascunho',
-    bg: '#F3F0E6',
-    color: '#605B4E',
-    dot: '#A49A87',
+    bgClass: 'bg-[#F3F0E6]',
+    colorClass: 'text-[#605B4E]',
+    dotClass: 'bg-[#A49A87]',
   },
   revisao: {
     label: 'Em revisão',
-    bg: '#FEF3EB',
-    color: '#C84517',
-    dot: '#F25D27',
+    bgClass: 'bg-[#FEF3EB]',
+    colorClass: 'text-[#C84517]',
+    dotClass: 'bg-primary',
   },
   publicado: {
     label: 'Publicado',
-    bg: '#EBF7EE',
-    color: '#117835',
-    dot: '#009045',
+    bgClass: 'bg-[#EBF7EE]',
+    colorClass: 'text-[#117835]',
+    dotClass: 'bg-secondary',
   },
   arquivado: {
     label: 'Arquivado',
-    bg: '#FBF0F0',
-    color: '#9C3D3D',
-    dot: '#C08585',
+    bgClass: 'bg-[#FBF0F0]',
+    colorClass: 'text-[#9C3D3D]',
+    dotClass: 'bg-[#C08585]',
   },
 };
 
@@ -49,27 +49,11 @@ export const EditorialBadge: React.FC<EditorialBadgeProps> = ({
 
   return (
     <span
-      style={{
-        display: 'inline-flex',
-        alignItems: 'center',
-        gap: isSmall ? '4px' : '6px',
-        padding: isSmall ? '2px 8px' : '4px 10px',
-        borderRadius: '20px',
-        background: config.bg,
-        color: config.color,
-        fontSize: isSmall ? '11px' : '12px',
-        fontWeight: 700,
-        whiteSpace: 'nowrap',
-      }}
+      className={`inline-flex items-center rounded-full font-bold whitespace-nowrap ${config.bgClass} ${config.colorClass} ${
+        isSmall ? 'gap-1 px-2 py-0.5 text-[11px]' : 'gap-1.5 px-2.5 py-1 text-xs'
+      }`}
     >
-      <span
-        style={{
-          width: isSmall ? '5px' : '6px',
-          height: isSmall ? '5px' : '6px',
-          borderRadius: '50%',
-          background: config.dot,
-        }}
-      />
+      <span className={`rounded-full ${config.dotClass} ${isSmall ? 'w-[5px] h-[5px]' : 'w-1.5 h-1.5'}`} />
       {config.label}
     </span>
   );

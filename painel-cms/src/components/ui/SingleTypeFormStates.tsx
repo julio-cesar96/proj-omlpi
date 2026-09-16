@@ -22,34 +22,14 @@ export const SingleTypeLoadingSkeleton: React.FC<SingleTypeLoadingSkeletonProps>
   labelWidth = '100px',
   maxWidth,
 }) => (
-  <div style={{ padding: '40px 48px', ...(maxWidth ? { maxWidth } : {}) }}>
-    <div
-      style={{
-        height: '28px',
-        width: '240px',
-        background: 'var(--muted)',
-        borderRadius: '8px',
-        marginBottom: '32px',
-        animation: 'pulse 1.5s ease-in-out infinite',
-      }}
-    />
+  <div className="py-10 px-12" style={maxWidth ? { maxWidth } : undefined}>
+    <div className="h-7 w-60 bg-muted rounded-lg mb-8 animate-pulse" />
     {Array.from({ length: rows }, (_, idx) => idx + 1).map((i) => (
-      <div key={i} style={{ marginBottom: '24px' }}>
+      <div key={i} className="mb-6">
+        <div className="h-[13px] bg-muted rounded-md mb-2" style={{ width: labelWidth }} />
         <div
-          style={{
-            height: '13px',
-            width: labelWidth,
-            background: 'var(--muted)',
-            borderRadius: '6px',
-            marginBottom: '8px',
-          }}
-        />
-        <div
-          style={{
-            height: i === tallRowIndex ? tallHeight : '42px',
-            background: 'var(--muted)',
-            borderRadius: '10px',
-          }}
+          className="bg-muted rounded-[10px]"
+          style={{ height: i === tallRowIndex ? tallHeight : '42px' }}
         />
       </div>
     ))}
@@ -71,43 +51,20 @@ export const SingleTypeErrorBanner: React.FC<SingleTypeErrorBannerProps> = ({
   message,
   onRetry,
 }) => (
-  <div style={{ padding: '40px 48px' }}>
-    <div
-      style={{
-        display: 'flex',
-        alignItems: 'center',
-        gap: '12px',
-        background: 'rgba(220,60,60,0.08)',
-        border: '1px solid rgba(220,60,60,0.22)',
-        borderRadius: '12px',
-        padding: '18px 20px',
-        maxWidth: '480px',
-      }}
-    >
+  <div className="py-10 px-12">
+    <div className="flex items-center gap-3 bg-[rgba(220,60,60,0.08)] border border-[rgba(220,60,60,0.22)] rounded-xl py-[18px] px-5 max-w-[480px]">
       <AlertCircle size={20} color="var(--danger, #dc3c3c)" />
-      <div style={{ flex: 1 }}>
-        <div style={{ fontWeight: 700, fontSize: '14px', color: 'var(--danger, #dc3c3c)' }}>
+      <div className="flex-1">
+        <div className="font-bold text-sm text-[var(--danger,#dc3c3c)]">
           {title}
         </div>
-        <div style={{ fontSize: '13px', color: 'var(--text-soft)', marginTop: '2px' }}>
+        <div className="text-[13px] text-muted-foreground mt-0.5">
           {message}
         </div>
       </div>
       <button
         onClick={onRetry}
-        style={{
-          display: 'flex',
-          alignItems: 'center',
-          gap: '6px',
-          padding: '7px 14px',
-          borderRadius: '8px',
-          background: 'var(--muted)',
-          border: 'none',
-          cursor: 'pointer',
-          fontSize: '13px',
-          fontWeight: 600,
-          color: 'var(--text)',
-        }}
+        className="flex items-center gap-1.5 py-[7px] px-3.5 rounded-lg bg-muted border-0 cursor-pointer text-[13px] font-semibold text-foreground"
       >
         <RefreshCw size={14} />
         Tentar novamente

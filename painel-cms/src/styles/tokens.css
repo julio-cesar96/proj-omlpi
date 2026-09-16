@@ -13,6 +13,13 @@
   --destructive: #D4183D;
   --border: rgba(164, 154, 135, 0.2);
 
+  /* Aliases p/ preset Tailwind compartilhado (packages/tailwind-config) —
+     nomes que o preset espera, mesmos valores de --bg/--text/--text-soft */
+  --background: var(--bg);
+  --background-alt: #F5F0E8;
+  --foreground: var(--text);
+  --muted-foreground: var(--text-soft);
+
   /* Cores semânticas / Badges */
   --badge-orange-bg: #FDE7DE;
   --badge-orange-bg-soft: #FDF2ED;

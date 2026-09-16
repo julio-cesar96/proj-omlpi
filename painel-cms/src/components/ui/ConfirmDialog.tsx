@@ -28,94 +28,26 @@ export const ConfirmDialog: React.FC<ConfirmDialogProps> = ({
     <AlertDialog.Root open={open} onOpenChange={onOpenChange}>
       <AlertDialog.Portal>
         {/* Overlay com fundo escurecido semi-transparente */}
-        <AlertDialog.Overlay
-          style={{
-            position: 'fixed',
-            inset: 0,
-            background: 'rgba(44,44,20,.32)',
-            zIndex: 1000,
-            animation: 'fadeIn .2s ease',
-          }}
-        />
-        
+        <AlertDialog.Overlay className="fixed inset-0 bg-[rgba(44,44,20,0.32)] z-[1000] animate-[fadeIn_.2s_ease]" />
+
         {/* Conteúdo centralizado */}
-        <AlertDialog.Content
-          style={{
-            position: 'fixed',
-            top: '50%',
-            left: '50%',
-            transform: 'translate(-50%, -50%)',
-            width: '460px',
-            maxWidth: '92vw',
-            background: 'var(--card)',
-            borderRadius: '16px', // var(--radius) do tokens.css
-            boxShadow: 'var(--shadow-lg)', // var(--shadow-lg) do tokens.css
-            zIndex: 1001,
-            padding: '24px',
-            display: 'flex',
-            flexDirection: 'column',
-            gap: '16px',
-            animation: 'slideIn .25s ease',
-            outline: 'none',
-          }}
-        >
+        <AlertDialog.Content className="fixed top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[460px] max-w-[92vw] bg-card rounded shadow-[var(--shadow-lg)] z-[1001] p-6 flex flex-col gap-4 animate-[slideIn_.25s_ease] outline-none">
           {/* Título do Modal */}
-          <AlertDialog.Title
-            style={{
-              fontFamily: 'var(--font-heading)',
-              fontSize: '19px',
-              fontWeight: 800,
-              color: 'var(--text-h)',
-              margin: 0,
-              letterSpacing: '-.3px',
-            }}
-          >
+          <AlertDialog.Title className="font-heading text-[19px] font-extrabold text-[var(--text-h)] m-0 tracking-[-0.3px]">
             {title}
           </AlertDialog.Title>
 
           {/* Descrição do Modal */}
-          <AlertDialog.Description
-            style={{
-              fontFamily: 'var(--font-body)',
-              fontSize: '13.5px',
-              color: 'var(--text-soft)',
-              lineHeight: 1.45,
-              margin: 0,
-            }}
-          >
+          <AlertDialog.Description className="text-[13.5px] text-muted-foreground leading-[1.45] m-0">
             {description}
           </AlertDialog.Description>
 
           {/* Botões de Ação */}
-          <div
-            style={{
-              display: 'flex',
-              justifyContent: 'flex-end',
-              gap: '10px',
-              marginTop: '8px',
-            }}
-          >
+          <div className="flex justify-end gap-2.5 mt-2">
             <AlertDialog.Cancel asChild>
               <button
                 type="button"
-                style={{
-                  height: '40px',
-                  padding: '0 16px',
-                  borderRadius: '11px',
-                  border: '1px solid var(--border)',
-                  background: 'var(--card)',
-                  color: 'var(--text)',
-                  fontSize: '13px',
-                  fontWeight: 700,
-                  cursor: 'pointer',
-                  transition: 'background 0.2s ease',
-                }}
-                onMouseEnter={(e) => {
-                  (e.currentTarget as HTMLButtonElement).style.background = 'var(--muted)';
-                }}
-                onMouseLeave={(e) => {
-                  (e.currentTarget as HTMLButtonElement).style.background = 'var(--card)';
-                }}
+                className="h-10 px-4 rounded-[11px] border border-border bg-card text-foreground text-[13px] font-bold cursor-pointer transition-colors duration-200 ease-in-out hover:bg-muted"
               >
                 {cancelLabel}
               </button>
@@ -125,31 +57,11 @@ export const ConfirmDialog: React.FC<ConfirmDialogProps> = ({
               <button
                 type="button"
                 onClick={onConfirm}
-                style={{
-                  height: '40px',
-                  padding: '0 20px',
-                  borderRadius: '11px',
-                  background: isDestructive ? 'var(--destructive)' : 'var(--primary)',
-                  color: '#FFFFFF',
-                  fontSize: '13px',
-                  fontWeight: 800,
-                  boxShadow: isDestructive 
-                    ? '0 4px 12px rgba(212,24,61,.28)' 
-                    : 'var(--shadow-btn)',
-                  border: 'none',
-                  cursor: 'pointer',
-                  transition: 'background 0.2s ease',
-                }}
-                onMouseEnter={(e) => {
-                  (e.currentTarget as HTMLButtonElement).style.background = isDestructive 
-                    ? '#be1232' 
-                    : 'var(--primary-hover)';
-                }}
-                onMouseLeave={(e) => {
-                  (e.currentTarget as HTMLButtonElement).style.background = isDestructive 
-                    ? 'var(--destructive)' 
-                    : 'var(--primary)';
-                }}
+                className={`h-10 px-5 rounded-[11px] text-white text-[13px] font-extrabold border-0 cursor-pointer transition-colors duration-200 ease-in-out ${
+                  isDestructive
+                    ? 'bg-destructive shadow-[0_4px_12px_rgba(212,24,61,0.28)] hover:bg-[#be1232]'
+                    : 'bg-primary shadow-[var(--shadow-btn)] hover:bg-primary-hover'
+                }`}
               >
                 {confirmLabel}
               </button>

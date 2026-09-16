@@ -20,24 +20,7 @@ export const Toast: React.FC<ToastProps> = ({ message, visible = true, onClose }
 
   return (
     <div
-      style={{
-        position: 'fixed',
-        bottom: '24px',
-        left: '50%',
-        transform: 'translateX(-50%)',
-        background: 'var(--text)',
-        color: '#FFFFFF',
-        padding: '10px 18px',
-        borderRadius: '12px',
-        display: 'flex',
-        alignItems: 'center',
-        gap: '9px',
-        fontSize: '13.5px',
-        fontWeight: 600,
-        boxShadow: '0 8px 24px rgba(0,0,0,0.18)',
-        zIndex: 1000,
-        animation: 'slideIn .25s ease',
-      }}
+      className="fixed bottom-6 left-1/2 -translate-x-1/2 bg-foreground text-white px-[18px] py-2.5 rounded-xl flex items-center gap-[9px] text-[13.5px] font-semibold shadow-[0_8px_24px_rgba(0,0,0,0.18)] z-[1000] animate-[slideIn_.25s_ease]"
     >
       <CheckCircle2 size={18} color="var(--secondary)" />
       <span>{message}</span>
