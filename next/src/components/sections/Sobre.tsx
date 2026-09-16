@@ -12,7 +12,7 @@
 import { getSobres, StrapiSobre } from "@/lib/strapi";
 import { SobreClient } from "./SobreClient";
 
-export async function Sobre() {
+export async function Sobre(): Promise<React.JSX.Element> {
   let abas: StrapiSobre[] = [];
 
   try {

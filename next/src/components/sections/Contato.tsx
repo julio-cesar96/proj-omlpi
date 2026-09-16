@@ -66,7 +66,7 @@ const SUBJECT_OPTIONS: string[] = [
 // ─── Estilos de campo reutilizáveis ──────────────────────────────────────────
 
 const inputClass =
-  "w-full px-4 py-3 rounded-xl border border-[rgba(164,154,135,0.25)] bg-background text-sm text-foreground placeholder:text-muted-foreground focus:outline-none focus:border-primary transition-colors";
+  "w-full px-4 py-3 rounded-xl border border-border bg-background text-sm text-foreground placeholder:text-muted-foreground focus:outline-none focus:border-primary transition-colors";
 
 const labelClass =
   "block text-[11px] font-bold text-muted-foreground mb-2 uppercase tracking-wider";
@@ -95,12 +95,12 @@ export function Contato(): React.JSX.Element {
 
   function handleChange(
     e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement>
-  ) {
+  ): void {
     setForm((prev) => ({ ...prev, [e.target.name]: e.target.value }));
     setError(null);
   }
 
-  async function handleSubmit(e: React.FormEvent) {
+  async function handleSubmit(e: React.FormEvent): Promise<void> {
     e.preventDefault();
     const validationError = validateContactForm(form);
     if (validationError) {
@@ -148,7 +148,7 @@ export function Contato(): React.JSX.Element {
 
             {/* E-mail de referência */}
             <div className="flex items-center gap-3 mb-8">
-              <div className="w-11 h-11 rounded-xl bg-[#fff3ee] text-primary flex items-center justify-center flex-shrink-0">
+              <div className="w-11 h-11 rounded-xl bg-primary-soft text-primary flex items-center justify-center flex-shrink-0">
                 <svg
                   xmlns="http://www.w3.org/2000/svg"
                   width="16"
@@ -333,7 +333,7 @@ export function Contato(): React.JSX.Element {
                 <button
                   type="submit"
                   disabled={loading}
-                  className="w-full flex items-center justify-center gap-2 py-3.5 bg-primary text-white font-semibold rounded-xl hover:bg-[#e04d18] transition-colors shadow-sm text-[15px] disabled:opacity-50 disabled:cursor-not-allowed"
+                  className="w-full flex items-center justify-center gap-2 py-3.5 bg-primary text-white font-semibold rounded-xl hover:bg-primary-hover transition-colors shadow-sm text-[15px] disabled:opacity-50 disabled:cursor-not-allowed"
                 >
                   {loading ? "Enviando..." : "Enviar mensagem"}
                   <svg

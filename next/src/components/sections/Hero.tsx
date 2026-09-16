@@ -170,7 +170,7 @@ export async function Hero(): Promise<React.JSX.Element> {
               <div className="flex flex-wrap gap-3">
                 <a
                   href="#consulta-publica"
-                  className="inline-flex items-center gap-2 px-7 py-3.5 bg-primary text-white font-semibold rounded-full hover:bg-[#e04d18] transition-colors shadow-sm text-[15px]"
+                  className="inline-flex items-center gap-2 px-7 py-3.5 bg-primary text-white font-semibold rounded-full hover:bg-primary-hover transition-colors shadow-sm text-[15px]"
                 >
                   Explore o mapa
                   <svg

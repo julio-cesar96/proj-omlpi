@@ -42,10 +42,10 @@ const TYPE_CONFIG: Record<
   Exclude<MidiaFilterKey, 'all'>,
   { label: string; bg: string; color: string; mimeParam?: string }
 > = {
-  pdf:   { label: 'PDF', bg: '#FDE7DE', color: 'var(--primary)', mimeParam: 'application/pdf' },
+  pdf:   { label: 'PDF', bg: 'var(--type-pdf-bg)', color: 'var(--primary)', mimeParam: 'application/pdf' },
   img:   { label: 'IMG', bg: 'var(--accent)', color: 'var(--secondary)', mimeParam: 'image/' },
-  video: { label: 'VÍD', bg: '#efe6fb', color: '#8a6bd6', mimeParam: 'video/' },
-  doc:   { label: 'DOC', bg: '#e6eefb', color: '#3b6bd6' },
+  video: { label: 'VÍD', bg: 'var(--type-video-bg)', color: 'var(--type-video)', mimeParam: 'video/' },
+  doc:   { label: 'DOC', bg: 'var(--type-doc-bg)', color: 'var(--type-doc)' },
 };
 
 // ─── Icons ────────────────────────────────────────────────────────────────────
@@ -111,7 +111,7 @@ function DocumentCard({ guia }: { guia: StrapiGuia }): React.JSX.Element {
   return (
     <div className="bg-background rounded-2xl p-5 border border-border hover:shadow-md transition-shadow flex flex-col">
       <div className="flex items-start gap-3 mb-4">
-        <div className="w-11 h-11 rounded-xl bg-[#fff3ee] text-primary flex items-center justify-center flex-shrink-0">
+        <div className="w-11 h-11 rounded-xl bg-primary-soft text-primary flex items-center justify-center flex-shrink-0">
           <svg
             xmlns="http://www.w3.org/2000/svg"
             width="18"
@@ -176,7 +176,7 @@ function DocumentosTab({
 
   const hasMore = guias.length < totalGuias;
 
-  const handleLoadMore = async () => {
+  const handleLoadMore = async (): Promise<void> => {
     setLoading(true);
     try {
       const start = page * 6;
@@ -357,7 +357,12 @@ function MidiasTab({
   const [loading, setLoading] = useState(false);
 
   const fetchMidias = useCallback(
-    async (loadMore = false, currentOffset = 0, filter = activeFilter, search = searchQuery) => {
+    async (
+      loadMore = false,
+      currentOffset = 0,
+      filter = activeFilter,
+      search = searchQuery
+    ): Promise<void> => {
       setLoading(true);
       try {
         const params = new URLSearchParams();
@@ -407,12 +412,12 @@ function MidiasTab({
     [activeFilter, searchQuery]
   );
 
-  function handleSearch(e: React.FormEvent) {
+  function handleSearch(e: React.FormEvent): void {
     e.preventDefault();
     fetchMidias(false, 0, activeFilter, searchQuery);
   }
 
-  function handleFilter(filter: MidiaFilterKey) {
+  function handleFilter(filter: MidiaFilterKey): void {
     setActiveFilter(filter);
     fetchMidias(false, 0, filter, searchQuery);
   }
@@ -444,13 +449,14 @@ function MidiasTab({
             onChange={(e) => setSearchQuery(e.target.value)}
             placeholder="Buscar por nome do arquivo..."
             id="referencia-midia-search"
+            aria-label="Buscar por nome do arquivo"
             className="w-full pl-9 pr-4 py-2.5 rounded-xl border border-border bg-background text-sm text-foreground placeholder:text-muted-foreground focus:outline-none focus:border-primary transition-colors"
           />
         </div>
         <button
           type="submit"
           disabled={loading}
-          className="px-5 py-2.5 bg-primary text-white text-sm font-semibold rounded-xl hover:bg-[#e04d18] transition-colors disabled:opacity-60"
+          className="px-5 py-2.5 bg-primary text-white text-sm font-semibold rounded-xl hover:bg-primary-hover transition-colors disabled:opacity-60"
         >
           Buscar
         </button>

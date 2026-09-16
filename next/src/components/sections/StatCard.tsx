@@ -11,7 +11,7 @@ interface Props {
 export function StatCard({ value, label, tooltip }: Props): React.JSX.Element {
   const [open, setOpen] = React.useState(false);
   const tooltipId = React.useId();
-  const timeoutRef = React.useRef<NodeJS.Timeout | null>(null);
+  const timeoutRef = React.useRef<ReturnType<typeof setTimeout> | null>(null);
 
   const handleMouseEnter = () => {
     if (timeoutRef.current) clearTimeout(timeoutRef.current);

@@ -161,7 +161,7 @@ export function PnipiClient({
 
   const hasMore = guias.length < totalGuias;
 
-  const handleLoadMore = async () => {
+  const handleLoadMore = async (): Promise<void> => {
     setLoading(true);
     try {
       const start = page * 6;
@@ -265,7 +265,7 @@ export function PnipiClient({
                 key={plano.id}
                 className="bg-white rounded-2xl p-6 border border-border flex items-start gap-5 hover:shadow-md transition-shadow"
               >
-                <div className="w-12 h-12 rounded-2xl bg-[#fff3ee] text-primary flex items-center justify-center flex-shrink-0">
+                <div className="w-12 h-12 rounded-2xl bg-primary-soft text-primary flex items-center justify-center flex-shrink-0">
                   <svg
                     xmlns="http://www.w3.org/2000/svg"
                     width="20"
@@ -300,7 +300,7 @@ export function PnipiClient({
                       href={documentoUrl}
                       target="_blank"
                       rel="noopener noreferrer"
-                      className="inline-flex items-center gap-2 px-4 py-2 bg-primary text-white text-xs font-semibold rounded-full hover:bg-[#e04d18] transition-colors"
+                      className="inline-flex items-center gap-2 px-4 py-2 bg-primary text-white text-xs font-semibold rounded-full hover:bg-primary-hover transition-colors"
                     >
                       <DownloadIcon /> Baixar plano
                     </a>

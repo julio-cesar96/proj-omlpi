@@ -25,6 +25,10 @@
   --popover-foreground: #444525;
   --primary: #f25d27;
   --primary-foreground: #ffffff;
+  /* Hover do primary (botões) */
+  --primary-hover: #e04d18;
+  /* Fundo suave do primary (ícones em destaque) */
+  --primary-soft: #fff3ee;
   --secondary: #009045;
   --secondary-foreground: #ffffff;
   --muted: #f5f5e8;
@@ -46,6 +50,13 @@
   --chart-3: #444525;
   --chart-4: #a49a87;
   --chart-5: #e8a87c;
+
+  /* Cores — badges de tipo de mídia (Referências) */
+  --type-pdf-bg: #fde7de;
+  --type-video: #8a6bd6;
+  --type-video-bg: #efe6fb;
+  --type-doc: #3b6bd6;
+  --type-doc-bg: #e6eefb;
 
   /* Raio de borda */
   --radius: 1rem;
@@ -75,6 +86,8 @@
   --color-popover-foreground: var(--popover-foreground);
   --color-primary: var(--primary);
   --color-primary-foreground: var(--primary-foreground);
+  --color-primary-hover: var(--primary-hover);
+  --color-primary-soft: var(--primary-soft);
   --color-secondary: var(--secondary);
   --color-secondary-foreground: var(--secondary-foreground);
   --color-muted: var(--muted);
@@ -94,6 +107,11 @@
   --color-chart-3: var(--chart-3);
   --color-chart-4: var(--chart-4);
   --color-chart-5: var(--chart-5);
+  --color-type-pdf-bg: var(--type-pdf-bg);
+  --color-type-video: var(--type-video);
+  --color-type-video-bg: var(--type-video-bg);
+  --color-type-doc: var(--type-doc);
+  --color-type-doc-bg: var(--type-doc-bg);
 
   /* Raio */
   --radius-sm: var(--radius-sm);

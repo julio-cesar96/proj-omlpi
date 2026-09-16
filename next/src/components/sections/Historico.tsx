@@ -10,7 +10,7 @@
 import { getSobres, StrapiSobre } from "@/lib/strapi";
 import { HistoricoClient } from "./HistoricoClient";
 
-export async function Historico() {
+export async function Historico(): Promise<React.JSX.Element> {
   let sobres: StrapiSobre[] = [];
 
   try {

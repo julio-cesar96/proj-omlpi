@@ -29,7 +29,7 @@ export function PrivacyPolicyModal({ content }: Props): React.JSX.Element {
   // Fecha com Escape
   useEffect(() => {
     if (!open) return;
-    function handleKey(e: KeyboardEvent) {
+    function handleKey(e: KeyboardEvent): void {
       if (e.key === "Escape") close();
     }
     document.addEventListener("keydown", handleKey);
@@ -47,7 +47,7 @@ export function PrivacyPolicyModal({ content }: Props): React.JSX.Element {
     if (open) closeRef.current?.focus();
   }, [open]);
 
-  function close() {
+  function close(): void {
     setOpen(false);
     triggerRef.current?.focus();
   }
@@ -135,7 +135,7 @@ export function PrivacyPolicyModal({ content }: Props): React.JSX.Element {
               <button
                 type="button"
                 onClick={close}
-                className="px-6 py-2.5 bg-primary text-white text-sm font-semibold rounded-full hover:bg-[#e04d18] transition-colors"
+                className="px-6 py-2.5 bg-primary text-white text-sm font-semibold rounded-full hover:bg-primary-hover transition-colors"
               >
                 Fechar
               </button>

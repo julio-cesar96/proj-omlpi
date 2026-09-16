@@ -113,7 +113,7 @@ function ConteudoGuia({
             href={arquivoUrl}
             target="_blank"
             rel="noopener noreferrer"
-            className="inline-flex items-center gap-2.5 px-6 py-3 bg-primary text-white font-bold rounded-xl hover:bg-[#e04d18] transition-colors shadow-sm text-sm"
+            className="inline-flex items-center gap-2.5 px-6 py-3 bg-primary text-white font-bold rounded-xl hover:bg-primary-hover transition-colors shadow-sm text-sm"
           >
             <Download className="w-4 h-4" aria-hidden="true" />
             Baixar Guia
