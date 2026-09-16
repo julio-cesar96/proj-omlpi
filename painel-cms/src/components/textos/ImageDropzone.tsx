@@ -157,7 +157,7 @@ export const ImageDropzone: React.FC<ImageDropzoneProps> = ({
           }}
         >
           <img
-            src={`${STRAPI_URL}${file.url}`}
+            src={file.url.startsWith('http') ? file.url : `${STRAPI_URL}${file.url}`}
             alt="Capa"
             style={{
               width: '100%',

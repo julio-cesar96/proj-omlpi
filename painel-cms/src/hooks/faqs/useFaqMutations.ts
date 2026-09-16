@@ -87,7 +87,8 @@ export function useFaqMutations() {
         updates.map(({ faq, newOrdem }) =>
           apiFetch(`/faqs/${faq.id}`, {
             method: 'PUT',
-            body: JSON.stringify({ ordem: newOrdem }),
+            // published_at sempre explícito — omitir aciona auto-publicação (Strapi v3).
+            body: JSON.stringify({ ordem: newOrdem, published_at: faq.published_at ?? null }),
           })
         )
       );
@@ -116,7 +117,8 @@ export function useFaqMutations() {
         sorted.map((faq, index) =>
           apiFetch(`/faqs/${faq.id}`, {
             method: 'PUT',
-            body: JSON.stringify({ ordem: index + 1 }),
+            // published_at sempre explícito — omitir aciona auto-publicação (Strapi v3).
+            body: JSON.stringify({ ordem: index + 1, published_at: faq.published_at ?? null }),
           })
         )
       );

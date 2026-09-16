@@ -12,6 +12,11 @@ interface RichTextEditorProps {
 }
 
 export const RichTextEditor: React.FC<RichTextEditorProps> = ({ content, onChange }) => {
+  // Estados para controle dos modais de URL e Imagem
+  const [modalOpen, setModalOpen] = useState(false);
+  const [modalType, setModalType] = useState<'link' | 'image'>('link');
+  const [modalDefaultValue, setModalDefaultValue] = useState('');
+
   const editor = useEditor({
     extensions: [
       StarterKit.configure({
@@ -52,11 +57,6 @@ export const RichTextEditor: React.FC<RichTextEditorProps> = ({ content, onChang
       </div>
     );
   }
-
-  // Estados para controle dos modais de URL e Imagem
-  const [modalOpen, setModalOpen] = useState(false);
-  const [modalType, setModalType] = useState<'link' | 'image'>('link');
-  const [modalDefaultValue, setModalDefaultValue] = useState('');
 
   const handleLinkClick = () => {
     const previousUrl = editor.getAttributes('link').href || '';
