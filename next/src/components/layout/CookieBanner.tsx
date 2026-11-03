@@ -38,12 +38,13 @@ export function CookieBanner() {
       <div className="flex flex-col items-center justify-between gap-4 md:flex-row md:gap-8">
         <p className="text-sm text-foreground/90 text-center md:text-left leading-relaxed">
           A visitação a esse site implica no aceite do rastreio usando cookies do Google Analytics e do Facebook para propósitos estatísticos.{" "}
-          <a
-            href="/rastreio"
-            className="font-medium text-primary hover:underline transition-colors focus-visible:outline-none"
+          <button
+            type="button"
+            onClick={() => window.dispatchEvent(new CustomEvent("omlpi:open-privacy-modal"))}
+            className="font-medium text-primary hover:underline transition-colors focus-visible:outline-none cursor-pointer"
           >
             Saiba mais na Política de Privacidade
-          </a>
+          </button>
           .
         </p>
         <div className="flex items-center gap-3 shrink-0">

@@ -6,7 +6,9 @@
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
-    "lint": "eslint"
+    "lint": "eslint",
+    "audit:links": "node scripts/fix-redirect-links.mjs",
+    "fix:links": "node scripts/fix-redirect-links.mjs --fix"
   },
   "dependencies": {
     "@sentry/nextjs": "^10.65.0",

@@ -26,6 +26,15 @@ export function PrivacyPolicyModal({ content }: Props): React.JSX.Element {
   const triggerRef = useRef<HTMLButtonElement>(null);
   const closeRef = useRef<HTMLButtonElement>(null);
 
+  // Abre ao receber evento do CookieBanner ou outro componente
+  useEffect(() => {
+    function handleOpenEvent(): void {
+      setOpen(true);
+    }
+    window.addEventListener("omlpi:open-privacy-modal", handleOpenEvent);
+    return () => window.removeEventListener("omlpi:open-privacy-modal", handleOpenEvent);
+  }, []);
+
   // Fecha com Escape
   useEffect(() => {
     if (!open) return;

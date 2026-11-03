@@ -15,6 +15,7 @@
  * Lido no server para SSR; sincronizado no client ao interagir (router.replace).
  */
 
+import type { Metadata } from "next";
 import { Hero } from "@/components/sections/Hero";
 import { Sobre } from "@/components/sections/Sobre";
 import { Historico } from "@/components/sections/Historico";
@@ -23,6 +24,12 @@ import { ElaborePlano } from "@/components/sections/ElaborePlano";
 import { Referencia } from "@/components/sections/Referencia";
 import { Contato } from "@/components/sections/Contato";
 import { ConsultaPublica } from "@/components/consulta-publica/ConsultaPublica";
+
+export const metadata: Metadata = {
+  alternates: {
+    canonical: "/",
+  },
+};
 
 // Next.js App Router: searchParams disponível em Server Components de página
 export default async function Home({

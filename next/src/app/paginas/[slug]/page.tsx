@@ -25,6 +25,10 @@ export async function generateMetadata(
   if (!pagina) {
     return {
       title: "Página não encontrada",
+      robots: {
+        index: false,
+        follow: false,
+      },
     };
   }
 
