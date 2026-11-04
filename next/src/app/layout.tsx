@@ -57,7 +57,7 @@ export const metadata: Metadata = {
     url: "/",
     images: [
       {
-        url: "/facebook.jpg", // Imagem do FB copiada do omlpi-www
+        url: "/og-image.jpg?v=2",
         width: 1200,
         height: 630,
         alt: "Observa — Plataforma nacional de monitoramento de PNIPI",
@@ -72,7 +72,7 @@ export const metadata: Metadata = {
     title: "Observa — Monitoramento dos Planos pela Primeira Infância",
     description:
       "Plataforma de monitoramento e transparência dos Planos Municipais pela Primeira Infância (PNIPI). Acompanhe o status dos planos em todo o Brasil.",
-    images: ["/twitter.jpg"],
+    images: ["/og-image.jpg?v=2"],
   },
   icons: {
     icon: [
