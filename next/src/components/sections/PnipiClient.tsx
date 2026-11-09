@@ -80,7 +80,7 @@ function GuiaCard({ guia }: { guia: StrapiGuia }): React.JSX.Element {
         <a
           href={fileUrl}
           target="_blank"
-          rel="noopener noreferrer"
+          rel="noopener noreferrer nofollow"
           className="inline-flex items-center gap-1.5 text-xs text-secondary font-semibold hover:underline mt-auto"
         >
           <DownloadIcon /> Ver documento
@@ -299,7 +299,7 @@ export function PnipiClient({
                     <a
                       href={documentoUrl}
                       target="_blank"
-                      rel="noopener noreferrer"
+                      rel="noopener noreferrer nofollow"
                       className="inline-flex items-center gap-2 px-4 py-2 bg-primary text-white text-xs font-semibold rounded-full hover:bg-primary-hover transition-colors"
                     >
                       <DownloadIcon /> Baixar plano

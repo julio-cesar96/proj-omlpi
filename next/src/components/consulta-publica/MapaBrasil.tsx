@@ -224,7 +224,7 @@ export function MapaBrasil({ locales }: MapaBrasilProps) {
             if (planUrl) {
               const linkText = isLaw ? "↓ Baixar Lei" : "↓ Baixar Plano";
               return `<strong>${humanName}</strong><br>
-                <a href="${planUrl}" target="_blank" rel="noopener noreferrer"
+                <a href="${planUrl}" target="_blank" rel="noopener noreferrer nofollow"
                    style="color:var(--primary,#f25d27);font-weight:600;">
                   ${linkText}
                 </a>`;
@@ -240,7 +240,7 @@ export function MapaBrasil({ locales }: MapaBrasilProps) {
 
           let html = `<strong>${name}</strong><br>${total} plano${total === 1 ? "" : "s"} ${total === 1 ? "municipal" : "municipais"}`;
           if (planUrl) {
-            html += `<br><a href="${planUrl}" target="_blank" rel="noopener noreferrer"
+            html += `<br><a href="${planUrl}" target="_blank" rel="noopener noreferrer nofollow"
               style="color:var(--primary,#f25d27);font-weight:600;">
               ↓ Baixar Plano ${isDF ? "Distrital" : "Estadual"}
             </a>`;

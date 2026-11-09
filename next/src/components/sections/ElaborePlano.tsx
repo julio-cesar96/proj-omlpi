@@ -112,7 +112,7 @@ function ConteudoGuia({
           <a
             href={arquivoUrl}
             target="_blank"
-            rel="noopener noreferrer"
+            rel="noopener noreferrer nofollow"
             className="inline-flex items-center gap-2.5 px-6 py-3 bg-primary text-white font-bold rounded-xl hover:bg-primary-hover transition-colors shadow-sm text-sm"
           >
             <Download className="w-4 h-4" aria-hidden="true" />

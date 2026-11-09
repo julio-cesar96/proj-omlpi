@@ -149,7 +149,7 @@ function DocumentCard({ guia }: { guia: StrapiGuia }): React.JSX.Element {
         <a
           href={fileUrl}
           target="_blank"
-          rel="noopener noreferrer"
+          rel="noopener noreferrer nofollow"
           className="mt-auto flex items-center justify-center gap-2 py-2.5 border border-border text-foreground text-xs font-semibold rounded-xl hover:border-secondary hover:text-secondary transition-colors"
         >
           <DownloadIcon /> Baixar
@@ -289,7 +289,7 @@ function MidiaCard({ midia }: { midia: StrapiMidiaPublica }): React.JSX.Element 
     <a
       href={fileUrl}
       target="_blank"
-      rel="noopener noreferrer"
+      rel="noopener noreferrer nofollow"
       className="bg-background rounded-2xl border border-border hover:shadow-md hover:border-primary transition-all flex flex-col overflow-hidden group"
       aria-label={`Abrir ${midia.name}`}
     >

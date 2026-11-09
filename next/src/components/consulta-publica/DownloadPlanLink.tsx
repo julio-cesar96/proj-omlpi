@@ -22,7 +22,7 @@ export function DownloadPlanLink({ url, label }: DownloadPlanLinkProps) {
       <a
         href={url}
         target="_blank"
-        rel="noopener noreferrer"
+        rel="noopener noreferrer nofollow"
         onClick={(e) => e.stopPropagation()}
         className="relative z-10 text-xs text-primary font-medium hover:underline"
       >
