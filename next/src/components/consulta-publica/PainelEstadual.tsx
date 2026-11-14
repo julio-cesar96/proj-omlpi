@@ -1,6 +1,6 @@
 import { getStrapiUrl, type StrapiLocale } from "@/lib/strapi";
 import { LocalidadeBusca } from "./LocalidadeBusca";
-import { PainelMunicipal } from "./PainelMunicipal";
+import { PainelMunicipal, type CityPlanItem } from "./PainelMunicipal";
 import { DownloadPlanLink } from "./DownloadPlanLink";
 
 /**
@@ -14,7 +14,8 @@ import { DownloadPlanLink } from "./DownloadPlanLink";
 interface PainelEstadualProps {
   locationId?: number;
   areaId?: number;
-  allLocales: StrapiLocale[];
+  stateLocales: StrapiLocale[];
+  citiesWithPlan?: CityPlanItem[];
 }
 
 // Cores de status alinhadas com tokens do design
@@ -44,10 +45,9 @@ function getStatus(locale: StrapiLocale) {
 export async function PainelEstadual({
   locationId,
   areaId,
-  allLocales,
+  stateLocales,
+  citiesWithPlan,
 }: PainelEstadualProps) {
-  const stateLocales = allLocales.filter((l) => l.type === "state");
-
   // Se há estado selecionado, reutiliza PainelMunicipal
   if (locationId) {
     const stateLocale = stateLocales.find((l) => l.id === locationId);
@@ -69,7 +69,8 @@ export async function PainelEstadual({
         <PainelMunicipal
           locationId={locationId}
           areaId={areaId}
-          locales={allLocales}
+          selectedLocale={stateLocale}
+          citiesWithPlan={citiesWithPlan}
         />
       </div>
     );

@@ -434,9 +434,30 @@ export function getPrivacyPolicy(): Promise<StrapiPrivacyPolicy> {
   return strapiGet<StrapiPrivacyPolicy>("privacy-policy");
 }
 
+// Cache em memória do processo Node.js para evitar requisições pesadas repetidas ao Strapi
+let memoryLocalesCache: StrapiLocale[] | null = null;
+let memoryLocalesCacheExpiry = 0;
+const LOCALES_CACHE_TTL_MS = 60 * 60 * 1000; // 1 hora
+
 /** Localidades com dados de planos, cod_ibge, etc. */
-export function getStrapiLocales(params?: StrapiQueryParams): Promise<StrapiLocale[]> {
-  return strapiGet<StrapiLocale[]>("locales", params);
+export async function getStrapiLocales(params?: StrapiQueryParams): Promise<StrapiLocale[]> {
+  const isAll = !params || params._limit === -1;
+  const now = Date.now();
+
+  if (isAll && memoryLocalesCache && now < memoryLocalesCacheExpiry) {
+    return memoryLocalesCache;
+  }
+
+  const locales = await strapiGet<StrapiLocale[]>("locales", params, {
+    next: { revalidate: 3600 },
+  });
+
+  if (isAll && Array.isArray(locales) && locales.length > 0) {
+    memoryLocalesCache = locales;
+    memoryLocalesCacheExpiry = now + LOCALES_CACHE_TTL_MS;
+  }
+
+  return locales;
 }
 
 /** FAQs / Dúvidas frequentes (PNIPI) */

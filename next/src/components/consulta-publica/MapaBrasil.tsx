@@ -2,8 +2,7 @@
 
 import Script from "next/script";
 import { useRouter } from "next/navigation";
-import { useCallback, useEffect, useRef, useState, useMemo } from "react";
-import type { StrapiLocale } from "@/lib/strapi";
+import { useCallback, useEffect, useRef, useState } from "react";
 
 /**
  * MapaBrasil — Client Component
@@ -24,18 +23,6 @@ const MAP_COLORS = {
   border: "#ffffff",
 } as const;
 
-// Host do Strapi — usa variável pública (disponível no client)
-const STRAPI_BASE =
-  process.env.NEXT_PUBLIC_STRAPI_URL ||
-  "https://omlpi-strapi.rnpiobserva.org.br";
-
-/** Converte path relativo do Strapi (/uploads/...) em URL absoluta */
-function toAbsoluteUrl(url: string | null | undefined): string | null {
-  if (!url) return null;
-  return url.startsWith("http") ? url : `${STRAPI_BASE}${url}`;
-}
-
-
 declare global {
   interface Window {
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -43,8 +30,28 @@ declare global {
   }
 }
 
+export interface StateMapSummary {
+  id: number;
+  name: string;
+  state: string;
+  status: "approved" | "inProgress" | "none";
+  planUrl: string | null;
+  totalPlans: number;
+  totalCities: number;
+  isDF: boolean;
+}
+
 interface MapaBrasilProps {
-  locales: StrapiLocale[];
+  statesSummary: StateMapSummary[];
+}
+
+/** Shape retornado por GET /api/locales?state=UF */
+interface DrilldownCity {
+  cod_ibge: number;
+  name: string;
+  planUrl: string | null;
+  isLaw: boolean;
+  hasPlan: boolean;
 }
 
 const STATE_TO_HCKEY: Record<string, string> = {
@@ -56,15 +63,7 @@ const STATE_TO_HCKEY: Record<string, string> = {
   SP: "br-sp", TO: "br-to",
 };
 
-function getLocaleStatus(locale: StrapiLocale | undefined, plansCount: number = 0): "approved" | "inProgress" | "none" {
-  if (locale?.plan && !locale.hide_plan) {
-    return locale.is_law ? "inProgress" : "approved";
-  }
-  if (plansCount > 0) return "inProgress";
-  return "none";
-}
-
-export function MapaBrasil({ locales }: MapaBrasilProps) {
+export function MapaBrasil({ statesSummary }: MapaBrasilProps) {
   const router = useRouter();
   const containerRef = useRef<HTMLDivElement>(null);
   const chartRef = useRef<unknown>(null);
@@ -72,40 +71,25 @@ export function MapaBrasil({ locales }: MapaBrasilProps) {
   const [isDrilldown, setIsDrilldown] = useState(false);
   const [currentState, setCurrentState] = useState<{ id: number; name: string; state: string } | null>(null);
 
-  // Indexa locales por estado para lookup rápido
-  const stateLocales = useMemo(() => locales.filter((l) => l.type === "state"), [locales]);
-  const cityLocalesByState = useMemo(() => locales.reduce<Record<string, StrapiLocale[]>>(
-    (acc, l) => {
-      if (l.type === "city" && l.state) {
-        (acc[l.state] ??= []).push(l);
-      }
-      return acc;
-    },
-    {}
-  ), [locales]);
-
   const initChart = useCallback(() => {
     if (!containerRef.current || !window.Highcharts) return;
     const H = window.Highcharts;
     const mapData = H.geojson(H.maps["countries/br/br-all"]);
 
-    // Enriquece cada estado com dados de plano
+    // Enriquece cada estado com dados de plano a partir do resumo agregado
     mapData.forEach((item: Record<string, unknown>) => {
       const properties = (item["properties"] as Record<string, unknown>) || {};
       const hcKey = properties["hc-key"] as string | undefined;
       const stateAbbr = properties["hc-a2"] as string | undefined;
 
-      const statePlan = stateLocales.find((l) => l.state === stateAbbr);
-      const cities = stateAbbr ? (cityLocalesByState[stateAbbr] ?? []) : [];
-      const plansCount = cities.filter((c) => c.plan && !c.hide_plan).length;
-
-      const status = getLocaleStatus(statePlan, plansCount);
+      const stateData = statesSummary.find((s) => s.state === stateAbbr);
+      const status = stateData?.status ?? "none";
 
       item["planStatus"] = status;
-      item["planUrl"] = toAbsoluteUrl(statePlan?.plan?.url);
-      item["isDF"] = stateAbbr === "DF";
-      item["totalPlans"] = plansCount;
-      item["totalCities"] = cities.length;
+      item["planUrl"] = stateData?.planUrl ?? null;
+      item["isDF"] = stateData?.isDF ?? (stateAbbr === "DF");
+      item["totalPlans"] = stateData?.totalPlans ?? 0;
+      item["totalCities"] = stateData?.totalCities ?? 0;
       item["stateAbbr"] = stateAbbr;
       item["drilldown"] = hcKey;
       item["value"] = status === "approved" ? 2 : status === "inProgress" ? 1 : 0;
@@ -116,6 +100,7 @@ export function MapaBrasil({ locales }: MapaBrasilProps) {
         backgroundColor: "rgba(0,0,0,0)",
         style: { fontFamily: "var(--font-body, sans-serif)" },
         events: {
+          // eslint-disable-next-line @typescript-eslint/no-explicit-any
           drilldown(e: any) {
             setIsDrilldown(true);
             const point = e.point as Record<string, unknown>;
@@ -123,47 +108,55 @@ export function MapaBrasil({ locales }: MapaBrasilProps) {
             const stateAbbr = Object.entries(STATE_TO_HCKEY).find(
               ([, v]) => v === stateKey
             )?.[0];
-            const stateLocale = stateLocales.find((l) => l.state === stateAbbr);
-            if (stateLocale) {
+            const stateData = statesSummary.find((s) => s.state === stateAbbr);
+            if (stateData) {
               setCurrentState({
-                id: stateLocale.id,
-                name: stateLocale.name,
-                state: stateLocale.state || "",
+                id: stateData.id,
+                name: stateData.name,
+                state: stateData.state || "",
               });
             }
 
             if (e.seriesOptions) return;
 
+            // eslint-disable-next-line @typescript-eslint/no-explicit-any
             const chart = this as any;
-            const cities = stateAbbr ? (cityLocalesByState[stateAbbr] ?? []) : [];
-
             chart.showLoading("Carregando...");
 
-            fetch(`/maps/${stateKey}.json`)
-              .then((r) => r.json())
-              .then((json) => {
-                const cityMapData: Record<string, any>[] = json.mapData ?? [];
+            // Handler do Highcharts é síncrono — a carga assíncrona roda numa função interna
+            async function loadStateDrilldown() {
+              try {
+                const [geoRes, citiesRes] = await Promise.all([
+                  fetch(`/maps/${stateKey}.json`),
+                  fetch(`/api/locales?state=${stateAbbr}`),
+                ]);
+                if (!geoRes.ok) throw new Error(`GeoJSON ${stateKey}: ${geoRes.status}`);
+
+                const geoJson: { mapData?: Record<string, unknown>[] } = await geoRes.json();
+                const citiesData: DrilldownCity[] = citiesRes.ok ? await citiesRes.json() : [];
+
+                const cityMapData = geoJson.mapData ?? [];
                 cityMapData.forEach((city) => {
                   const codIbge = Number(String(city["name"]).replace("mun_", ""));
-                  const locale = cities.find((c) => c.cod_ibge === codIbge);
-                  const hasPlan = locale?.plan && !locale.hide_plan;
+                  const locale = citiesData.find((c) => c.cod_ibge === codIbge);
+                  const hasPlan = locale?.hasPlan ?? false;
 
                   city["isDrill"] = true;
                   city["humanName"] = locale?.name ?? String(city["name"]);
-                  city["planUrl"] = toAbsoluteUrl(locale?.plan?.url);
-                  city["isLaw"] = locale?.is_law ?? false;
+                  city["planUrl"] = locale?.planUrl ?? null;
+                  city["isLaw"] = locale?.isLaw ?? false;
                   city["value"] = hasPlan ? 100 : 0;
                 });
 
                 chart.hideLoading();
                 chart.addSeriesAsDrilldown(e.point, {
-                  name: stateLocale?.name ?? stateAbbr ?? "",
+                  name: stateData?.name ?? stateAbbr ?? "",
                   data: cityMapData,
                   joinBy: "id",
                 });
 
                 chart.setTitle(null, {
-                  text: stateLocale?.name ?? stateAbbr ?? "",
+                  text: stateData?.name ?? stateAbbr ?? "",
                   align: "right",
                   style: {
                     fontSize: "1rem",
@@ -171,15 +164,18 @@ export function MapaBrasil({ locales }: MapaBrasilProps) {
                     fontWeight: "700",
                   },
                 });
-              })
-              .catch((err) => {
-                console.error("Erro ao carregar mapa do estado:", err);
+              } catch (err) {
+                console.error("[MapaBrasil] Erro ao carregar mapa do estado:", err);
                 chart.hideLoading();
-              });
+              }
+            }
+
+            loadStateDrilldown();
           },
           drillup() {
             setIsDrilldown(false);
             setCurrentState(null);
+            // eslint-disable-next-line @typescript-eslint/no-explicit-any
             (this as any).setTitle(null, { text: "" });
           },
         },
@@ -260,7 +256,7 @@ export function MapaBrasil({ locales }: MapaBrasilProps) {
       drilldown: { activeAxisLabelStyle: { textDecoration: "none" } },
       credits: { enabled: false },
     });
-  }, [stateLocales, cityLocalesByState, router]);
+  }, [statesSummary]);
 
   /**
    * Sincronização de hcLoaded na remontagem do componente.
@@ -332,7 +328,7 @@ export function MapaBrasil({ locales }: MapaBrasilProps) {
             <button
               onClick={() => {
                 router.replace(
-                  `?tab=municipais&location_id=${currentState.id}#consulta-publica`,
+                  `?tab=estaduais&location_id=${currentState.id}#consulta-publica`,
                   { scroll: false }
                 );
               }}
@@ -343,6 +339,7 @@ export function MapaBrasil({ locales }: MapaBrasilProps) {
             <button
               onClick={() => {
                 if (chartRef.current) {
+                  // eslint-disable-next-line @typescript-eslint/no-explicit-any
                   (chartRef.current as any).drillUp?.();
                 }
               }}

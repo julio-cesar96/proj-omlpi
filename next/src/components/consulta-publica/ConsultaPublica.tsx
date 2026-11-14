@@ -1,9 +1,9 @@
 import { Suspense } from "react";
-import { getStrapiLocales } from "@/lib/strapi";
+import { getStrapiLocales, type StrapiLocale } from "@/lib/strapi";
 import { TABS, type TabId } from "./tabs-config";
 import { TabsNav } from "./TabsNav";
 
-import { MapaBrasil } from "./MapaBrasil";
+import { MapaBrasil, type StateMapSummary } from "./MapaBrasil";
 import { PainelMunicipal } from "./PainelMunicipal";
 import { PainelEstadual } from "./PainelEstadual";
 import { LocalidadeBusca } from "./LocalidadeBusca";
@@ -41,18 +41,32 @@ function parseId(raw: string | string[] | undefined): number | undefined {
   return value && !isNaN(n) && n > 0 ? n : undefined;
 }
 
-function parseMode(raw: string | string[] | undefined): "comparacao" | "historico" {
-  const value = Array.isArray(raw) ? raw[0] : raw;
-  return value === "historico" ? "historico" : "comparacao";
+const STRAPI_BASE =
+  process.env.NEXT_PUBLIC_STRAPI_URL ||
+  "https://omlpi-strapi.rnpiobserva.org.br";
+
+function toAbsoluteUrl(url: string | null | undefined): string | null {
+  if (!url) return null;
+  return url.startsWith("http") ? url : `${STRAPI_BASE}${url}`;
 }
 
+function getLocaleStatus(
+  locale: StrapiLocale | undefined,
+  plansCount: number = 0
+): "approved" | "inProgress" | "none" {
+  if (locale?.plan && !locale.hide_plan) {
+    return locale.is_law ? "inProgress" : "approved";
+  }
+  if (plansCount > 0) return "inProgress";
+  return "none";
+}
 
 export async function ConsultaPublica({ searchParams }: ConsultaPublicaProps) {
   const tab = parseTab(searchParams["tab"]);
   const locationId = parseId(searchParams["location_id"]);
   const areaId = parseId(searchParams["area"]);
 
-  // Locales carregados uma vez para todo o componente (mapa + busca + painel) via API Strapi
+  // Locales carregados no servidor com cache de 1 hora
   let locales = await getStrapiLocales({ _limit: -1 }).catch((err) => {
     console.error("[ConsultaPublica] Erro ao buscar locales do Strapi:", err);
     return [];
@@ -62,6 +76,53 @@ export async function ConsultaPublica({ searchParams }: ConsultaPublicaProps) {
   locales = locales.filter(
     (l) => l.type === "city" || l.type === "state"
   );
+
+  const stateLocales = locales.filter((l) => l.type === "state");
+  const cityLocalesByState = locales.reduce<Record<string, StrapiLocale[]>>(
+    (acc, l) => {
+      if (l.type === "city" && l.state) {
+        (acc[l.state] ??= []).push(l);
+      }
+      return acc;
+    },
+    {}
+  );
+
+  // Resume os 27 estados para o mapa inicial (payload RSC leve: ~2KB em vez de 2.48MB)
+  const statesSummary: StateMapSummary[] = stateLocales.map((statePlan) => {
+    const stateAbbr = statePlan.state || "";
+    const cities = cityLocalesByState[stateAbbr] ?? [];
+    const plansCount = cities.filter((c) => c.plan && !c.hide_plan).length;
+    const status = getLocaleStatus(statePlan, plansCount);
+    return {
+      id: statePlan.id,
+      name: statePlan.name,
+      state: stateAbbr,
+      status,
+      planUrl: toAbsoluteUrl(statePlan.plan?.url),
+      totalPlans: plansCount,
+      totalCities: cities.length,
+      isDF: stateAbbr === "DF",
+    };
+  });
+
+  const selectedLocale = locationId
+    ? locales.find((l) => l.id === locationId)
+    : undefined;
+
+  // Quando um estado é selecionado, prepara os municípios com plano daquele estado
+  const citiesWithPlan =
+    selectedLocale && selectedLocale.type === "state"
+      ? (cityLocalesByState[selectedLocale.state || ""] ?? [])
+          .filter((c) => c.plan && !c.hide_plan)
+          .map((c) => ({
+            id: c.id,
+            name: c.name,
+            isLaw: Boolean(c.is_law),
+            planUrl: toAbsoluteUrl(c.plan?.url),
+          }))
+          .sort((a, b) => a.name.localeCompare(b.name, "pt-BR"))
+      : undefined;
 
   return (
     <section
@@ -107,7 +168,7 @@ export async function ConsultaPublica({ searchParams }: ConsultaPublicaProps) {
           {tab === "mapa" && (
             <div className="grid lg:grid-cols-[1fr_320px] gap-8">
               <div>
-                <MapaBrasil locales={locales} />
+                <MapaBrasil statesSummary={statesSummary} />
               </div>
 
               {/* Painel lateral: busca + upload */}
@@ -118,7 +179,6 @@ export async function ConsultaPublica({ searchParams }: ConsultaPublicaProps) {
                   </h3>
                   <Suspense fallback={null}>
                     <LocalidadeBusca
-                      locales={locales}
                       placeholder="Município ou estado..."
                     />
                   </Suspense>
@@ -163,7 +223,8 @@ export async function ConsultaPublica({ searchParams }: ConsultaPublicaProps) {
                   <PainelMunicipal
                     locationId={locationId}
                     areaId={areaId}
-                    locales={locales}
+                    selectedLocale={selectedLocale}
+                    citiesWithPlan={citiesWithPlan}
                   />
                 </Suspense>
               ) : (
@@ -174,7 +235,7 @@ export async function ConsultaPublica({ searchParams }: ConsultaPublicaProps) {
                   <Suspense fallback={null}>
                     <div className="flex justify-center">
                       <LocalidadeBusca
-                        locales={locales.filter((l) => l.type === "city")}
+                        typeFilter="city"
                         placeholder="Buscar município..."
                       />
                     </div>
@@ -200,7 +261,8 @@ export async function ConsultaPublica({ searchParams }: ConsultaPublicaProps) {
               <PainelEstadual
                 locationId={locationId}
                 areaId={areaId}
-                allLocales={locales}
+                stateLocales={stateLocales}
+                citiesWithPlan={citiesWithPlan}
               />
             </Suspense>
           )}

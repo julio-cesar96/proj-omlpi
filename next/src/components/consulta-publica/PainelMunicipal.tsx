@@ -5,28 +5,38 @@ import { UploadPlanoDrawer } from "./UploadPlanoDrawer";
 /**
  * PainelMunicipal — Server Component
  *
- * Exibe a localidade selecionada e o card de download do plano municipal/lei,
+ * Exibe a localidade selecionada e o card de download do plano municipal/estadual/lei,
  * quando houver plano associado no Strapi.
- * Quando não há plano, exibe um estado vazio informativo com CTAs para:
- *   1. Seção "Elabore o Plano" (guia de elaboração)
- *   2. Formulário de upload de plano
+ * Se a localidade for um estado, exibe também a lista completa dos municípios daquele
+ * estado que possuem plano cadastrado.
+ * Quando não há plano, exibe um estado vazio informativo com CTAs.
  */
+
+export interface CityPlanItem {
+  id: number;
+  name: string;
+  isLaw: boolean;
+  planUrl: string | null;
+}
 
 interface PainelMunicipalProps {
   locationId: number;
   areaId?: number;
-  locales: StrapiLocale[];
+  selectedLocale?: StrapiLocale;
+  citiesWithPlan?: CityPlanItem[];
 }
 
 export function PainelMunicipal({
   locationId,
-  locales,
+  selectedLocale,
+  citiesWithPlan,
 }: PainelMunicipalProps) {
-  const matchedLocale = locales.find((l) => l.id === locationId);
+  const matchedLocale = selectedLocale;
   const planUrl = matchedLocale?.plan?.url
     ? `${getStrapiUrl()}${matchedLocale.plan.url}`
     : null;
   const isLaw = matchedLocale?.is_law ?? false;
+  const isState = matchedLocale?.type === "state";
 
   const localeName = matchedLocale?.name ?? "Município";
   const typeLabel =
@@ -40,21 +50,42 @@ export function PainelMunicipal({
 
   return (
     <div className="space-y-6">
+      {/* Navegação de volta ao mapa */}
+      <div className="flex items-center gap-3">
+        <a
+          href="?tab=mapa#consulta-publica"
+          className="text-sm font-semibold text-primary hover:underline inline-flex items-center gap-1.5 cursor-pointer"
+        >
+          ← Voltar ao mapa do Brasil
+        </a>
+        {isState && (
+          <span className="text-sm text-muted-foreground">
+            / {matchedLocale?.name} (Estado)
+          </span>
+        )}
+      </div>
+
       {/* Cabeçalho */}
       <div className="flex items-start justify-between flex-wrap gap-4">
         <div>
           <h3 className="text-xl font-bold text-foreground">{localeName}</h3>
           <p className="text-sm text-muted-foreground">{typeLabel}</p>
         </div>
-        <LocalidadeBusca locales={locales} selectedId={locationId} />
+        <LocalidadeBusca selectedId={locationId} initialName={matchedLocale?.name} />
       </div>
 
-      {/* Card de download do plano — ou estado vazio */}
-      {planUrl ? (
+      {/* Card de download do plano (quando existir) */}
+      {planUrl && (
         <div className="bg-white border border-border rounded-xl p-5 flex items-center justify-between gap-4">
           <div>
             <p className="text-xs font-medium text-primary uppercase tracking-wide mb-1">
-              {isLaw ? "Lei Municipal" : "Plano Municipal"}
+              {isState
+                ? isLaw
+                  ? "Lei Estadual"
+                  : "Plano Estadual"
+                : isLaw
+                ? "Lei Municipal"
+                : "Plano Municipal"}
             </p>
             <p className="text-sm font-semibold text-foreground">
               {matchedLocale?.name}
@@ -67,15 +98,94 @@ export function PainelMunicipal({
             href={planUrl}
             target="_blank"
             rel="noopener noreferrer nofollow"
-            className="flex items-center gap-2 bg-primary text-white text-sm font-semibold px-4 py-2.5 rounded-xl hover:bg-primary/90 transition-colors flex-shrink-0"
+            className="flex items-center gap-2 bg-primary text-white text-sm font-semibold px-4 py-2.5 rounded-xl hover:bg-primary/90 transition-colors flex-shrink-0 cursor-pointer"
           >
             <span>↓</span>
             {isLaw ? "Baixar Lei" : "Baixar Plano"}
           </a>
         </div>
-      ) : (
-        /* Estado vazio — município sem plano cadastrado */
-        <PlanoNaoEncontrado localeName={localeName} />
+      )}
+
+      {/* Se for estado e NÃO tiver plano estadual próprio */}
+      {isState && !planUrl && (
+        <div className="bg-muted/40 border border-border/80 rounded-xl p-5 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
+          <div>
+            <p className="text-xs font-semibold text-muted-foreground uppercase tracking-wide mb-1">
+              Plano Estadual
+            </p>
+            <p className="text-sm font-medium text-foreground">
+              O Estado de {matchedLocale?.name} ainda não possui um Plano Estadual cadastrado em nossa base.
+            </p>
+          </div>
+          <UploadPlanoDrawer localeName={localeName}>
+            <button
+              type="button"
+              className="text-xs font-semibold bg-background border border-border px-3.5 py-2 rounded-lg text-foreground hover:bg-muted transition-colors whitespace-nowrap cursor-pointer"
+            >
+              Enviar documento do estado
+            </button>
+          </UploadPlanoDrawer>
+        </div>
+      )}
+
+      {/* Lista de municípios do estado com plano cadastrado (quando for estado) */}
+      {isState && citiesWithPlan && citiesWithPlan.length > 0 && (
+        <div className="space-y-4 pt-2">
+          <div className="flex items-center justify-between flex-wrap gap-2">
+            <div>
+              <h4 className="text-lg font-bold text-foreground">
+                Planos Municipais em {localeName}
+              </h4>
+              <p className="text-sm text-muted-foreground">
+                {citiesWithPlan.length} município{citiesWithPlan.length === 1 ? "" : "s"} com plano cadastrado
+              </p>
+            </div>
+          </div>
+
+          <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3 max-h-[640px] overflow-y-auto pr-1">
+            {citiesWithPlan.map((city) => (
+              <div
+                key={city.id}
+                className="bg-card border border-border rounded-xl p-4 flex flex-col justify-between gap-3 hover:border-primary/50 transition-colors shadow-xs"
+              >
+                <div>
+                  <span className="text-[11px] font-semibold uppercase tracking-wider text-primary">
+                    {city.isLaw ? "Lei Municipal" : "Plano Municipal"}
+                  </span>
+                  <h5 className="font-semibold text-foreground text-sm mt-0.5">
+                    {city.name}
+                  </h5>
+                </div>
+                <div className="flex items-center justify-between gap-2 pt-2 border-t border-border/40">
+                  {city.planUrl ? (
+                    <a
+                      href={city.planUrl}
+                      target="_blank"
+                      rel="noopener noreferrer nofollow"
+                      className="text-xs font-semibold text-primary hover:underline inline-flex items-center gap-1 cursor-pointer"
+                    >
+                      <span>↓</span> {city.isLaw ? "Baixar Lei" : "Baixar Plano"}
+                    </a>
+                  ) : (
+                    <span className="text-xs text-muted-foreground">Documento indisponível</span>
+                  )}
+                  <a
+                    href={`?tab=municipais&location_id=${city.id}#consulta-publica`}
+                    className="text-xs text-muted-foreground hover:text-foreground hover:underline cursor-pointer"
+                  >
+                    Ver detalhes →
+                  </a>
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+      )}
+
+      {/* Estado vazio para município sem plano OU estado sem plano e sem municípios com plano */}
+      {((!isState && !planUrl) ||
+        (isState && !planUrl && (!citiesWithPlan || citiesWithPlan.length === 0))) && (
+        <PlanoNaoEncontrado localeName={localeName} localeType={matchedLocale?.type} />
       )}
     </div>
   );
@@ -83,7 +193,16 @@ export function PainelMunicipal({
 
 /* ─── Sub-componente: estado vazio ─────────────────────────────────────────── */
 
-function PlanoNaoEncontrado({ localeName }: { localeName: string }) {
+function PlanoNaoEncontrado({
+  localeName,
+  localeType,
+}: {
+  localeName: string;
+  localeType?: string;
+}) {
+  const isState = localeType === "state";
+  const entityText = isState ? "esse estado" : "esse município";
+
   return (
     <div className="rounded-2xl border border-border bg-card p-8 text-center space-y-5 animate-[fadeIn_0.3s_ease]">
       {/* Ícone ilustrativo */}
@@ -113,7 +232,7 @@ function PlanoNaoEncontrado({ localeName }: { localeName: string }) {
           Nenhum plano encontrado para {localeName}
         </p>
         <p className="text-sm text-muted-foreground max-w-md mx-auto leading-relaxed">
-          Ainda não temos um plano cadastrado para esse município. Você pode
+          Ainda não temos um plano cadastrado para {entityText}. Você pode
           aprender como elaborar um ou, se já tiver o documento, enviá-lo para
           nossa base de dados.
         </p>
@@ -147,7 +266,7 @@ function PlanoNaoEncontrado({ localeName }: { localeName: string }) {
         <UploadPlanoDrawer localeName={localeName}>
           <button
             type="button"
-            className="inline-flex items-center gap-2 px-5 py-2.5 rounded-xl border border-border bg-background text-foreground text-sm font-semibold hover:bg-muted active:scale-[0.98] transition-all"
+            className="inline-flex items-center gap-2 px-5 py-2.5 rounded-xl border border-border bg-background text-foreground text-sm font-semibold hover:bg-muted active:scale-[0.98] transition-all cursor-pointer"
           >
             <svg
               width="16"
@@ -167,6 +286,14 @@ function PlanoNaoEncontrado({ localeName }: { localeName: string }) {
             Sou o responsável — enviar plano
           </button>
         </UploadPlanoDrawer>
+
+        {/* CTA 3 — Voltar ao mapa do Brasil */}
+        <a
+          href="?tab=mapa#consulta-publica"
+          className="inline-flex items-center gap-2 px-5 py-2.5 rounded-xl border border-border bg-background text-muted-foreground text-sm font-semibold hover:text-foreground hover:bg-muted transition-all cursor-pointer"
+        >
+          ← Voltar ao mapa
+        </a>
       </div>
     </div>
   );
