@@ -2,7 +2,8 @@
 "use client";
 
 import React, { useEffect, useRef, useState, useMemo } from "react";
-import Script from "next/script";
+import Highcharts from "highcharts";
+import "highcharts/modules/exporting";
 import type { OmlpiHistoricalLocale } from "@/lib/omlpi-api";
 
 interface GraficoHistoricoProps {
@@ -28,8 +29,6 @@ function formatSingleIndicatorValue(val: number, isPercentage: boolean | string 
 }
 
 export function GraficoHistorico({ historicalData, selectedAreaId }: GraficoHistoricoProps) {
-  const [hcLoaded, setHcLoaded] = useState(false);
-
   // Filtra indicadores pertencentes à área selecionada
   const indicators = useMemo(() => {
     if (!historicalData || !historicalData.indicators) return [];
@@ -79,9 +78,9 @@ export function GraficoHistorico({ historicalData, selectedAreaId }: GraficoHist
 
   // Renderizar o gráfico do indicador principal
   useEffect(() => {
-    if (!hcLoaded || !window.Highcharts || !selectedIndicator || !indicatorChartRef.current) return;
+    if (!selectedIndicator || !indicatorChartRef.current) return;
 
-    const H = window.Highcharts;
+    const H = Highcharts;
 
     // Categorias são os anos da série histórica
     const values = selectedIndicator.values || [];
@@ -135,7 +134,7 @@ export function GraficoHistorico({ historicalData, selectedAreaId }: GraficoHist
         text: selectedIndicator.description || selectedIndicator.name,
         style: { fontSize: "16px", fontWeight: "600", color: "var(--foreground)" },
       },
-      subtitle: { text: null },
+      subtitle: { text: undefined },
       xAxis: {
         categories: isLine ? categories : [""], // Sem label extra para coluna única
         crosshair: true,
@@ -143,7 +142,7 @@ export function GraficoHistorico({ historicalData, selectedAreaId }: GraficoHist
       },
       yAxis: {
         min: 0,
-        title: { text: null },
+        title: { text: undefined },
         labels: {
           formatter(this: any) {
             return formatSingleIndicatorValue(this.value, selectedIndicator.is_percentage);
@@ -190,20 +189,18 @@ export function GraficoHistorico({ historicalData, selectedAreaId }: GraficoHist
       chartInstance1.current?.destroy();
       chartInstance1.current = null;
     };
-  }, [hcLoaded, selectedIndicator, historicalData]);
+  }, [selectedIndicator, historicalData]);
 
   // Renderizar o gráfico de subindicadores (horizontal bar)
   useEffect(() => {
     if (
-      !hcLoaded ||
-      !window.Highcharts ||
       !selectedIndicator ||
       !selectedSubindicator ||
       !subindicatorChartRef.current
     )
       return;
 
-    const H = window.Highcharts;
+    const H = Highcharts;
 
     // Eixo Y (categorias do xAxis no gráfico de barras horizontal) são os Anos
     const firstItem = selectedSubindicator.data[0];
@@ -250,12 +247,12 @@ export function GraficoHistorico({ historicalData, selectedAreaId }: GraficoHist
       },
       xAxis: {
         categories,
-        title: { text: null },
+        title: { text: undefined },
         labels: { style: { color: "var(--muted-foreground)" } },
       },
       yAxis: {
         min: 0,
-        title: { text: null },
+        title: { text: undefined },
         labels: {
           formatter(this: any) {
             return formatSingleIndicatorValue(this.value, firstItem.is_percentage);
@@ -296,22 +293,10 @@ export function GraficoHistorico({ historicalData, selectedAreaId }: GraficoHist
       chartInstance2.current?.destroy();
       chartInstance2.current = null;
     };
-  }, [hcLoaded, selectedIndicator, selectedSubindicator, historicalData]);
+  }, [selectedIndicator, selectedSubindicator, historicalData]);
 
   return (
     <div className="space-y-8">
-      {/* Script do Highcharts */}
-      <Script
-        src="https://unpkg.com/highcharts@10.0.0/highmaps.js"
-        strategy="afterInteractive"
-        onLoad={() => {
-          const exportScript = document.createElement("script");
-          exportScript.src = "https://unpkg.com/highcharts@10.0.0/modules/exporting.js";
-          exportScript.onload = () => setHcLoaded(true);
-          document.head.appendChild(exportScript);
-        }}
-      />
-
       {/* Seletores de Indicadores */}
       <div className="space-y-3">
         <label className="text-sm font-semibold text-foreground block">
@@ -349,11 +334,6 @@ export function GraficoHistorico({ historicalData, selectedAreaId }: GraficoHist
           {/* Container do Gráfico Principal */}
           <div className="relative">
             <div ref={indicatorChartRef} style={{ minHeight: "350px" }} />
-            {!hcLoaded && (
-              <div className="absolute inset-0 flex items-center justify-center bg-card/65 rounded-xl">
-                <div className="w-8 h-8 border-4 border-primary border-t-transparent rounded-full animate-spin" />
-              </div>
-            )}
           </div>
 
           {/* Subindicadores / Desagregações */}
@@ -384,11 +364,6 @@ export function GraficoHistorico({ historicalData, selectedAreaId }: GraficoHist
               {/* Container do Gráfico de Subindicadores */}
               <div className="relative border border-border/50 rounded-xl p-4 bg-muted/20">
                 <div ref={subindicatorChartRef} style={{ minHeight: "320px" }} />
-                {!hcLoaded && (
-                  <div className="absolute inset-0 flex items-center justify-center bg-card/65 rounded-xl">
-                    <div className="w-8 h-8 border-4 border-primary border-t-transparent rounded-full animate-spin" />
-                  </div>
-                )}
               </div>
             </div>
           )}

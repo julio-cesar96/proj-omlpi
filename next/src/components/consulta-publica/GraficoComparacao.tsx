@@ -2,7 +2,8 @@
 "use client";
 
 import React, { useEffect, useRef, useState, useMemo } from "react";
-import Script from "next/script";
+import Highcharts from "highcharts";
+import "highcharts/modules/exporting";
 import type { OmlpiCompareLocale } from "@/lib/omlpi-api";
 
 interface GraficoComparacaoProps {
@@ -28,22 +29,21 @@ function formatSingleIndicatorValue(val: number, isPercentage: boolean | string 
 }
 
 export function GraficoComparacao({ comparison, selectedAreaId }: GraficoComparacaoProps) {
-  const [hcLoaded, setHcLoaded] = useState(false);
-  
+  // A localidade principal é o último item do array de comparison
   const mainLocale = useMemo(() => {
-    // No compare.js: locale() { return this.locales.comparison[this.locales.comparison.length - 1]; }
+    if (!comparison || comparison.length === 0) return null;
     return comparison[comparison.length - 1];
   }, [comparison]);
 
-  // Filtra indicadores pertencentes à área selecionada
+  // Indicadores pertencentes à área selecionada na localidade principal
   const indicators = useMemo(() => {
-    if (!mainLocale) return [];
+    if (!mainLocale || !mainLocale.indicators) return [];
     return mainLocale.indicators.filter((ind) => ind.area.id === selectedAreaId);
   }, [mainLocale, selectedAreaId]);
 
   const [selectedIndicatorId, setSelectedIndicatorId] = useState<number | null>(null);
 
-  // Sincroniza indicador selecionado ao trocar de área
+  // Sincroniza indicador selecionado
   useEffect(() => {
     if (indicators.length > 0) {
       setSelectedIndicatorId(indicators[0].id);
@@ -56,25 +56,18 @@ export function GraficoComparacao({ comparison, selectedAreaId }: GraficoCompara
     return indicators.find((ind) => ind.id === selectedIndicatorId) || null;
   }, [indicators, selectedIndicatorId]);
 
-  // Anos disponíveis para o indicador selecionado
+  // Anos disponíveis para este indicador na localidade principal
   const availableYears = useMemo(() => {
     if (!selectedIndicator || !selectedIndicator.values) return [];
     return [...new Set(selectedIndicator.values.map((v) => v.year))].sort((a, b) => b - a);
   }, [selectedIndicator]);
 
-  const [selectedYear, setSelectedYear] = useState<number>(0); // 0 = todos
+  const [selectedYear, setSelectedYear] = useState<number>(0); // 0 = Todos os anos
 
-  // Reseta ano selecionado quando o indicador muda
+  // Sincroniza ano ao trocar de indicador
   useEffect(() => {
-    if (availableYears.length > 0) {
-      // Se o ano anteriormente selecionado não existe no novo indicador, coloca no primeiro ano disponível ou todos
-      if (selectedYear !== 0 && !availableYears.includes(selectedYear as any)) {
-        setSelectedYear(0);
-      }
-    } else {
-      setSelectedYear(0);
-    }
-  }, [availableYears, selectedYear]);
+    setSelectedYear(0); // Reseta para todos os anos ao trocar indicador
+  }, [selectedIndicatorId]);
 
   // Subindicadores disponíveis para o indicador selecionado
   const subindicators = useMemo(() => {
@@ -104,9 +97,9 @@ export function GraficoComparacao({ comparison, selectedAreaId }: GraficoCompara
 
   // Renderizar o gráfico principal do indicador
   useEffect(() => {
-    if (!hcLoaded || !window.Highcharts || !selectedIndicator || !indicatorChartRef.current) return;
+    if (!selectedIndicator || !indicatorChartRef.current) return;
 
-    const H = window.Highcharts;
+    const H = Highcharts;
 
     // Filtra os anos de categorias
     const categories = availableYears
@@ -144,12 +137,13 @@ export function GraficoComparacao({ comparison, selectedAreaId }: GraficoCompara
           data,
           isPercentage,
         };
-      });
+      })
+      .filter((item): item is NonNullable<typeof item> => Boolean(item));
 
     chartInstance1.current?.destroy();
     chartInstance1.current = H.chart(indicatorChartRef.current, {
       chart: {
-        type: categories.length > 2 ? "line" : "column",
+        type: "column",
         backgroundColor: "rgba(0,0,0,0)",
         style: { fontFamily: "var(--font-body, sans-serif)" },
       },
@@ -157,7 +151,7 @@ export function GraficoComparacao({ comparison, selectedAreaId }: GraficoCompara
         text: selectedIndicator.description || selectedIndicator.name,
         style: { fontSize: "16px", fontWeight: "600", color: "var(--foreground)" },
       },
-      subtitle: { text: null },
+      subtitle: { text: undefined },
       xAxis: {
         categories: categories.map(String),
         crosshair: true,
@@ -165,7 +159,7 @@ export function GraficoComparacao({ comparison, selectedAreaId }: GraficoCompara
       },
       yAxis: {
         min: 0,
-        title: { text: null },
+        title: { text: undefined },
         labels: {
           formatter(this: any) {
             return formatSingleIndicatorValue(this.value, selectedIndicator.is_percentage);
@@ -211,20 +205,18 @@ export function GraficoComparacao({ comparison, selectedAreaId }: GraficoCompara
       chartInstance1.current?.destroy();
       chartInstance1.current = null;
     };
-  }, [hcLoaded, selectedIndicator, selectedYear, availableYears, comparison, mainLocale]);
+  }, [selectedIndicator, selectedYear, comparison, availableYears, mainLocale]);
 
   // Renderizar o gráfico de subindicadores
   useEffect(() => {
     if (
-      !hcLoaded ||
-      !window.Highcharts ||
       !selectedIndicator ||
       !selectedSubindicator ||
       !subindicatorChartRef.current
     )
       return;
 
-    const H = window.Highcharts;
+    const H = Highcharts;
 
     // Categorias são os itens da classificação (ex: Feminino, Masculino)
     const categories = selectedSubindicator.data.map((d) => d.description);
@@ -274,7 +266,7 @@ export function GraficoComparacao({ comparison, selectedAreaId }: GraficoCompara
           isPercentage,
         };
       })
-      .filter(Boolean);
+      .filter((item): item is NonNullable<typeof item> => Boolean(item));
 
     chartInstance2.current?.destroy();
     chartInstance2.current = H.chart(subindicatorChartRef.current, {
@@ -297,7 +289,7 @@ export function GraficoComparacao({ comparison, selectedAreaId }: GraficoCompara
       },
       yAxis: {
         min: 0,
-        title: { text: null },
+        title: { text: undefined },
         labels: {
           formatter(this: any) {
             // Pega o primeiro item de percentagem do subindicador
@@ -341,7 +333,7 @@ export function GraficoComparacao({ comparison, selectedAreaId }: GraficoCompara
       chartInstance2.current?.destroy();
       chartInstance2.current = null;
     };
-  }, [hcLoaded, selectedIndicator, selectedSubindicator, selectedYear, comparison, mainLocale]);
+  }, [selectedIndicator, selectedSubindicator, selectedYear, comparison, mainLocale]);
 
   if (!mainLocale) {
     return (
@@ -353,18 +345,6 @@ export function GraficoComparacao({ comparison, selectedAreaId }: GraficoCompara
 
   return (
     <div className="space-y-8">
-      {/* Script do Highcharts */}
-      <Script
-        src="https://unpkg.com/highcharts@10.0.0/highmaps.js"
-        strategy="afterInteractive"
-        onLoad={() => {
-          const exportScript = document.createElement("script");
-          exportScript.src = "https://unpkg.com/highcharts@10.0.0/modules/exporting.js";
-          exportScript.onload = () => setHcLoaded(true);
-          document.head.appendChild(exportScript);
-        }}
-      />
-
       {/* Seletores de Indicadores */}
       <div className="space-y-3">
         <label className="text-sm font-semibold text-foreground block">
@@ -423,11 +403,6 @@ export function GraficoComparacao({ comparison, selectedAreaId }: GraficoCompara
           {/* Container do Gráfico Principal */}
           <div className="relative">
             <div ref={indicatorChartRef} style={{ minHeight: "350px" }} />
-            {!hcLoaded && (
-              <div className="absolute inset-0 flex items-center justify-center bg-card/65 rounded-xl">
-                <div className="w-8 h-8 border-4 border-primary border-t-transparent rounded-full animate-spin" />
-              </div>
-            )}
           </div>
 
           {/* Subindicadores / Desagregações */}
@@ -458,11 +433,6 @@ export function GraficoComparacao({ comparison, selectedAreaId }: GraficoCompara
               {/* Container do Gráfico de Subindicadores */}
               <div className="relative border border-border/50 rounded-xl p-4 bg-muted/20">
                 <div ref={subindicatorChartRef} style={{ minHeight: "320px" }} />
-                {!hcLoaded && (
-                  <div className="absolute inset-0 flex items-center justify-center bg-card/65 rounded-xl">
-                    <div className="w-8 h-8 border-4 border-primary border-t-transparent rounded-full animate-spin" />
-                  </div>
-                )}
               </div>
             </div>
           )}

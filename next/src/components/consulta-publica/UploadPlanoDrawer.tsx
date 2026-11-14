@@ -42,7 +42,7 @@ export function UploadPlanoDrawer({ children, localeName }: Props) {
     }
     document.addEventListener("keydown", handleKey);
     return () => document.removeEventListener("keydown", handleKey);
-  }, [open]); // eslint-disable-line react-hooks/exhaustive-deps
+  }, [open]);
 
   /* ── Bloqueia scroll do body ──────────────────────────────────────── */
   useEffect(() => {

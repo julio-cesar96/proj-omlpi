@@ -11,8 +11,10 @@
     "fix:links": "node scripts/fix-redirect-links.mjs --fix"
   },
   "dependencies": {
+    "@highcharts/map-collection": "^2.3.3",
     "@sentry/nextjs": "^10.65.0",
     "@tanstack/react-query": "^5.107.1",
+    "highcharts": "^13.1.1",
     "lucide-react": "^1.24.0",
     "next": "16.2.10",
     "react": "19.2.4",

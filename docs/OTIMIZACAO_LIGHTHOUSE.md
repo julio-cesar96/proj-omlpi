@@ -11,7 +11,7 @@
 | # | Problema | Prioridade | Status | Impacto / Meta |
 |---|---|---|---|---|
 | **1** | **Payload RSC Gigante** (2,48 MB inline) | Máxima | ✅ **Concluído** | HTML da Home reduzido de ~2,58 MB para < 100 KB descompactado |
-| **2** | **Highcharts via CDN unpkg** | Alta | ⏳ **Pendente** | Migrar para npm + dynamic import (ssr: false) com IntersectionObserver |
+| **2** | **Highcharts via CDN unpkg** | Alta | ✅ **Concluído** | Migrado para npm + dynamic import (ssr: false) com IntersectionObserver (eliminação de 3 scripts externos unpkg) |
 | **3** | **Imagem LCP (`bebe-ajoelhado.png`)** | Média-Alta | ⏳ **Pendente** | Ajustar `sizes`, `fetchPriority="high"` e `formats: avif/webp` |
 | **4** | **Contraste WCAG AA (24 elementos)** | Média | ⏳ **Pendente** | Ajustar `--primary` para `#c33d0c` e links do menu para `#6c6d56` |
 | **5** | **JS Legado / Polyfills (14 KiB)** | Baixa | ⏳ **Pendente** | Configurar `.browserslistrc` para navegadores modernos |
@@ -47,14 +47,22 @@
 
 ---
 
-### 2. Highcharts via npm e Dynamic Import (Pendente ⏳)
+### 2. Highcharts via npm e Dynamic Import (Concluído ✅)
 
-- **Diagnóstico**: Scripts carregados via CDN `unpkg.com` (`highmaps.js`, `drilldown.js`, `@highcharts/map-collection/br-all.js`) em `MapaBrasil.tsx`, `GraficoHistorico.tsx` e `GraficoComparacao.tsx`.
-- **Plano de ação**:
-  1. Instalar `highcharts` oficial via npm.
-  2. Substituir o carregamento por CDN por módulos locais empacotados.
-  3. Carregar o componente do mapa usando `next/dynamic(() => import(...), { ssr: false })`.
-  4. Envolver o container em um `IntersectionObserver` para carregar o bundle do Highcharts somente quando a seção `#consulta-publica` estiver próxima da viewport.
+- **Causa raiz**: Os componentes `MapaBrasil.tsx`, `GraficoHistorico.tsx` e `GraficoComparacao.tsx` injetavam scripts via CDN `unpkg.com` (`highmaps.js`, `drilldown.js`, `@highcharts/map-collection/br-all.js`, `exporting.js`), gerando chamadas de rede externas adicionais, bloqueio da thread principal no carregamento da página e poluição do objeto global `window.Highcharts`.
+- **O que foi implementado**:
+  - Instalados pacotes oficiais via npm: `highcharts` (v13.1.1) e `@highcharts/map-collection` (v2.3.3).
+  - **`MapaBrasilChart.tsx`**: Criado componente dedicado para a renderização interna do Highcharts Maps utilizando os pontos de entrada oficiais do pacote (`highcharts/highmaps`, `highcharts/modules/drilldown` e o GeoJSON oficial `@highcharts/map-collection/countries/br/br-all.geo.json`). Eliminados todos os scripts externos do `unpkg.com` e a dependência de `window.Highcharts`.
+  - **`MapaBrasil.tsx` (Wrapper)**:
+    - Componente leve sem dependência direta do bundle do Highcharts.
+    - Utiliza `next/dynamic` (`ssr: false`) para carregar `MapaBrasilChart` sob demanda, com `MapaBrasilSkeleton` para evitar qualquer Cumulative Layout Shift (CLS = 0).
+    - Envolvido em `IntersectionObserver` com `rootMargin: "300px"`: o bundle pesado do Highcharts só é requisitado e executado quando a seção `#consulta-publica` estiver a 300px da viewport, liberando a thread inicial de CPU para o LCP e TBT da Home.
+    - Suporte a deep-link: se a URL contiver âncora `#consulta-publica` ou parâmetros de consulta (`?tab=...`), o mapa carrega imediatamente.
+  - **`GraficoHistorico.tsx` e `GraficoComparacao.tsx`**:
+    - Migrados para os pontos de entrada oficiais (`highcharts` e `highcharts/modules/exporting`).
+    - Removidos `<Script>` do unpkg, estados de espera `hcLoaded` e referências a `window.Highcharts`.
+  - **`PainelNacional.tsx`**:
+    - Migrado para carregar `GraficoHistorico` e `GraficoComparacao` via `next/dynamic` com `ssr: false` e skeletons dedicados.
 
 ---
 

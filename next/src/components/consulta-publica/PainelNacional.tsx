@@ -1,10 +1,33 @@
 import React, { Suspense } from "react";
+import dynamic from "next/dynamic";
 import { getCompareData, getHistoricalData, getAreas } from "@/lib/omlpi-api";
 import type { StrapiLocale } from "@/lib/strapi";
 import { NacionalControls } from "./NacionalControls";
-import { GraficoComparacao } from "./GraficoComparacao";
-import { GraficoHistorico } from "./GraficoHistorico";
 import { LocalidadeBusca } from "./LocalidadeBusca";
+
+const GraficoHistorico = dynamic(
+  () => import("./GraficoHistorico").then((m) => m.GraficoHistorico),
+  {
+    ssr: false,
+    loading: () => (
+      <div className="h-80 w-full bg-muted/30 rounded-2xl animate-pulse flex items-center justify-center">
+        <p className="text-xs text-muted-foreground">Carregando gráfico...</p>
+      </div>
+    ),
+  }
+);
+
+const GraficoComparacao = dynamic(
+  () => import("./GraficoComparacao").then((m) => m.GraficoComparacao),
+  {
+    ssr: false,
+    loading: () => (
+      <div className="h-80 w-full bg-muted/30 rounded-2xl animate-pulse flex items-center justify-center">
+        <p className="text-xs text-muted-foreground">Carregando gráfico...</p>
+      </div>
+    ),
+  }
+);
 
 interface PainelNacionalProps {
   locationId: number | undefined;
