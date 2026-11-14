@@ -78,7 +78,8 @@ function BannerImage(): React.JSX.Element {
           fill
           className="object-cover"
           priority
-          sizes="(max-width: 768px) 100vw, 50vw"
+          fetchPriority="high"
+          sizes="(max-width: 768px) 100vw, 560px"
         />
       </div>
       {/* Floating stat badges */}
@@ -160,6 +161,7 @@ export async function Hero(): Promise<React.JSX.Element> {
                   width={420}
                   height={120}
                   priority
+                  sizes="(max-width: 640px) 280px, (max-width: 1024px) 340px, 420px"
                   className="w-[280px] sm:w-[340px] lg:w-[420px] max-w-full h-auto"
                 />
               </h1>

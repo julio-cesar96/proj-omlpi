@@ -12,7 +12,7 @@
 |---|---|---|---|---|
 | **1** | **Payload RSC Gigante** (2,48 MB inline) | Máxima | ✅ **Concluído** | HTML da Home reduzido de ~2,58 MB para < 100 KB descompactado |
 | **2** | **Highcharts via CDN unpkg** | Alta | ✅ **Concluído** | Migrado para npm + dynamic import (ssr: false) com IntersectionObserver (eliminação de 3 scripts externos unpkg) |
-| **3** | **Imagem LCP (`bebe-ajoelhado.png`)** | Média-Alta | ⏳ **Pendente** | Ajustar `sizes`, `fetchPriority="high"` e `formats: avif/webp` |
+| **3** | **Imagem LCP (`bebe-ajoelhado.png`)** | Média-Alta | ✅ **Concluído** | Formatos AVIF/WebP configurados, `sizes` otimizado para mobile/desktop e `fetchPriority="high"` |
 | **4** | **Contraste WCAG AA (24 elementos)** | Média | ⏳ **Pendente** | Ajustar `--primary` para `#c33d0c` e links do menu para `#6c6d56` |
 | **5** | **JS Legado / Polyfills (14 KiB)** | Baixa | ⏳ **Pendente** | Configurar `.browserslistrc` para navegadores modernos |
 
@@ -66,17 +66,16 @@
 
 ---
 
-### 3. Imagem do LCP & Assets (Pendente ⏳)
+### 3. Imagem do LCP & Assets (Concluído ✅)
 
-- **Diagnóstico**: `bebe-ajoelhado.png` com `fill` e `sizes="50vw"` baixa variante de 1920px (~140 KB) em telas desktop. Logo `logo-observa.png` sem `sizes`. `next.config.ts` sem formatos AVIF/WebP declarados.
-- **Plano de ação**:
-  1. `src/components/sections/Hero.tsx` (`bebe-ajoelhado.png`):
-     - Ajustar `sizes` para `"(max-width: 768px) 100vw, 560px"`.
-     - Confirmar `priority` e adicionar `fetchPriority="high"`.
-  2. `src/components/sections/Hero.tsx` (`logo-observa.png`):
-     - Adicionar `sizes="(max-width: 640px) 280px, (max-width: 1024px) 340px, 420px"`.
-  3. `next.config.ts`:
-     - Configurar `images: { formats: ["image/avif", "image/webp"] }`.
+- **Diagnóstico**: `bebe-ajoelhado.png` com `fill` e `sizes="50vw"` baixava variante de 1920px (~140 KB) em telas desktop. Logo `logo-observa.png` sem `sizes`. `next.config.ts` sem formatos AVIF/WebP declarados.
+- **O que foi implementado**:
+  - `next/next.config.ts`: Adicionado suporte a formatos modernos de imagem com `images: { formats: ["image/avif", "image/webp"] }`, permitindo que o Next.js gere e entregue variantes otimizadas em AVIF e WebP.
+  - `src/components/sections/Hero.tsx` (`bebe-ajoelhado.png`):
+    - Ajustado `sizes` para `"(max-width: 768px) 100vw, 560px"`, evitando o download desnecessário de variantes de 1920px em telas desktop (onde o container ocupa no máximo 560px).
+    - Mantido `priority` e adicionado explicitamente `fetchPriority="high"`, instruindo o navegador a priorizar a requisição da imagem LCP logo no início do parsing do HTML.
+  - `src/components/sections/Hero.tsx` (`logo-observa.png`):
+    - Adicionado `sizes="(max-width: 640px) 280px, (max-width: 1024px) 340px, 420px"`, servindo a versão dimensionada ideal para cada breakpoint.
 
 ---
 

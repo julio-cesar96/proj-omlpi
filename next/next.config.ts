@@ -2,6 +2,9 @@ import type { NextConfig } from "next";
 import { withSentryConfig } from "@sentry/nextjs";
 
 const nextConfig: NextConfig & { sentry?: Record<string, unknown> } = {
+  images: {
+    formats: ["image/avif", "image/webp"],
+  },
   /**
    * Redirects 301 — rotas do site atual → nova estrutura one-page.
    * /city, /comparacao e /historico foram removidos daqui e movidos para o middleware.ts
