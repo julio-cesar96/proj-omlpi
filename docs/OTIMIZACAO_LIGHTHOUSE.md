@@ -1,6 +1,6 @@
 # Otimização de Performance e Lighthouse — Observa
 
-> **Status Geral**: Em andamento  
+> **Status Geral**: Todos os problemas implementados (5/5)  
 > **Pontuação Inicial (Desktop)**: Performance 71 | Acessibilidade 92 | Boas Práticas 100 | SEO 92  
 > **Objetivo**: Elevar as notas sem alterar o design visual nem quebrar funcionalidades existentes.
 
@@ -14,7 +14,7 @@
 | **2** | **Highcharts via CDN unpkg** | Alta | ✅ **Concluído** | Migrado para npm + dynamic import (ssr: false) com IntersectionObserver (eliminação de 3 scripts externos unpkg) |
 | **3** | **Imagem LCP (`bebe-ajoelhado.png`)** | Média-Alta | ✅ **Concluído** | Formatos AVIF/WebP configurados, `sizes` otimizado para mobile/desktop e `fetchPriority="high"` |
 | **4** | **Contraste WCAG AA (24 elementos)** | Média | ✅ **Concluído** | Tokens `--primary`, `--ring`, `--chart-1` ajustados para `#c33d0c` (~5.6:1 AA), links do menu para `#6c6d56` e eliminação de cores hardcoded |
-| **5** | **JS Legado / Polyfills (14 KiB)** | Baixa | ⏳ **Pendente** | Configurar `.browserslistrc` para navegadores modernos |
+| **5** | **JS Legado / Polyfills (14 KiB)** | Baixa | ✅ **Concluído** | Configurado `.browserslistrc` visando navegadores modernos (Chrome/Firefox/Edge >= 90, Safari >= 15, not dead) |
 
 ---
 
@@ -97,10 +97,17 @@
 
 ---
 
-### 5. JS Legado / Polyfills (Pendente ⏳)
+### 5. JS Legado / Polyfills (Concluído ✅)
 
-- **Diagnóstico**: Ausência de `.browserslistrc` faz o bundler injetar polyfills ES2020-ES2022 (`Array.prototype.at`, `flat`, `flatMap`, `Object.fromEntries`, `Object.hasOwn`) totalizando ~14 KiB.
-- **Plano de ação**:
-  1. Criar `.browserslistrc` em `next/` visando navegadores modernos (`chrome >= 90`, `firefox >= 90`, `safari >= 15`, `edge >= 90`).
-  2. Validar eliminação dos polyfills no build final.
+- **Diagnóstico**: Ausência de `.browserslistrc` fazia o bundler/Next.js compilar com alvos conservadores e injetar polyfills ES2020-ES2022 (`Array.prototype.at`, `flat`, `flatMap`, `Object.fromEntries`, `Object.hasOwn`) totalizando ~14 KiB desnecessários para navegadores atuais.
+- **O que foi implementado**:
+  - Criado `next/.browserslistrc` configurando targets modernos:
+    ```
+    chrome >= 90
+    firefox >= 90
+    safari >= 15
+    edge >= 90
+    not dead
+    ```
+  - O Next.js/SWC agora assume suporte nativo a ES2020-ES2022 nesses navegadores, eliminando a injeção automática de polyfills legados nos bundles de produção.
 
