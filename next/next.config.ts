@@ -7,6 +7,7 @@ const nextConfig: NextConfig = {
   },
   images: {
     formats: ["image/avif", "image/webp"],
+    qualities: [60, 75],
   },
   /**
    * Redirects 301 — rotas do site atual → nova estrutura one-page.

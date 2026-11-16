@@ -79,6 +79,7 @@ function BannerImage(): React.JSX.Element {
           className="object-cover"
           priority
           fetchPriority="high"
+          quality={60}
           sizes="(max-width: 768px) 100vw, 560px"
         />
       </div>
