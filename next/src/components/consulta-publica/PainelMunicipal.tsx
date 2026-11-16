@@ -1,9 +1,12 @@
-import { getStrapiUrl, type StrapiLocale } from "@/lib/strapi";
 import { LocalidadeBusca } from "./LocalidadeBusca";
 import { UploadPlanoDrawer } from "./UploadPlanoDrawer";
 
 /**
- * PainelMunicipal — Server Component
+ * PainelMunicipal — componente puro (sem acesso a env/servidor)
+ *
+ * Renderizado dentro do ConsultaPublicaView (client), que resolve a
+ * localidade a partir da URL. Recebe a localidade já normalizada
+ * (planUrl absoluta), por isso não depende de getStrapiUrl().
  *
  * Exibe a localidade selecionada e o card de download do plano municipal/estadual/lei,
  * quando houver plano associado no Strapi.
@@ -19,10 +22,18 @@ export interface CityPlanItem {
   planUrl: string | null;
 }
 
+/** Localidade selecionada, já normalizada (planUrl absoluta ou null). */
+export interface SelectedLocaleInfo {
+  id: number;
+  name?: string;
+  type?: string;
+  isLaw: boolean;
+  planUrl: string | null;
+}
+
 interface PainelMunicipalProps {
   locationId: number;
-  areaId?: number;
-  selectedLocale?: StrapiLocale;
+  selectedLocale?: SelectedLocaleInfo;
   citiesWithPlan?: CityPlanItem[];
 }
 
@@ -32,10 +43,8 @@ export function PainelMunicipal({
   citiesWithPlan,
 }: PainelMunicipalProps) {
   const matchedLocale = selectedLocale;
-  const planUrl = matchedLocale?.plan?.url
-    ? `${getStrapiUrl()}${matchedLocale.plan.url}`
-    : null;
-  const isLaw = matchedLocale?.is_law ?? false;
+  const planUrl = matchedLocale?.planUrl ?? null;
+  const isLaw = matchedLocale?.isLaw ?? false;
   const isState = matchedLocale?.type === "state";
 
   const localeName = matchedLocale?.name ?? "Município";

@@ -33,7 +33,7 @@ Este projeto é **exclusivamente a migração do front-end**. A API Perl (`omlpi
 ## Regras gerais
 
 - Stack alvo: Next.js (App Router), TypeScript.
-- Site novo é **one-page**: seções institucionais (Início, Sobre, PNIPI, Midiateca, Contato) navegadas por âncora, sem query params. O bloco "Consulta pública" (mapa + dashboards) mantém estado sincronizado via `searchParams` no servidor e `useSearchParams`/`router.replace` no client — não usar `localStorage`/`sessionStorage` para esse estado.
+- Site novo é **one-page**: seções institucionais (Início, Sobre, PNIPI, Midiateca, Contato) navegadas por âncora, sem query params. O bloco "Consulta pública" (mapa + dashboards) mantém estado sincronizado na URL via `useSearchParams`/`router.replace` no client (dentro de Suspense, permitindo home estática/ISR para LCP ótimo) — não usar `localStorage`/`sessionStorage` para esse estado.
 - Mapa do Brasil: usar a geometria real existente no site atual (`src/static/maps`), não a forma livre do mockup do Figma Make. O design de referência define cores e estilo, não a geometria.
 - Formulário de contato: se não houver endpoint de backend confirmado, seguir alternativa descrita em `docs/PLANO_ONEPAGE.md` (Resend + Route Handler como primeira opção, Web3Forms como fallback de menor esforço).
 - Trabalhar por fase, conforme `docs/PLANO_ONEPAGE.md`. Não pular fases nem antecipar trabalho de uma fase posterior sem indicação explícita.

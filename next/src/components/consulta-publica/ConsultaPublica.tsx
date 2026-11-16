@@ -1,45 +1,33 @@
 import { Suspense } from "react";
 import { getStrapiLocales, type StrapiLocale } from "@/lib/strapi";
-import { TABS, type TabId } from "./tabs-config";
 import { TabsNav } from "./TabsNav";
 
 import { MapaBrasil, type StateMapSummary } from "./MapaBrasil";
-import { PainelMunicipal } from "./PainelMunicipal";
 import { PainelEstadual } from "./PainelEstadual";
 import { LocalidadeBusca } from "./LocalidadeBusca";
 import { UploadPlano } from "./UploadPlano";
+import {
+  ConsultaPublicaView,
+  type StateLocaleLite,
+} from "./ConsultaPublicaView";
 
 /**
- * ConsultaPublica — Server Component
+ * ConsultaPublica — Server Component (sem dependência da requisição)
  *
- * Orquestrador da seção de Consulta Pública.
- * Lê searchParams do servidor, decide qual painel renderizar.
- * Estado da consulta (tab, location_id, area) vive na URL — não em localStorage.
+ * Orquestrador da seção de Consulta Pública. NÃO lê searchParams: isso
+ * permite que a home seja pré-renderizada como estática/ISR.
+ * Estado da consulta (tab, location_id, area) continua na URL — não em
+ * localStorage — e é lido no client por ConsultaPublicaView (useSearchParams).
  *
- * Tabs implementadas nesta fase (3a):
- *   mapa       → MapaBrasil (Highcharts Maps)
- *   municipais → PainelMunicipal (GET /data)
- *   estaduais  → PainelEstadual (grid de estados + PainelMunicipal se selecionado)
+ * O servidor pré-renderiza o que não depende da URL:
+ *   mapa       → MapaBrasil (Highcharts Maps) + busca + upload
+ *   estaduais  → grid de estados (PainelEstadual)
+ * A localidade selecionada (municipais / estado selecionado) é resolvida no
+ * client via /api/locales.
  *
- * Tabs em placeholder (Fase 3b):
- *   monitoramento → MonitoramentoPlaceholder
+ * O fallback do Suspense é a aba "mapa" (padrão), então o HTML estático da
+ * home já contém a visão inicial completa.
  */
-
-interface ConsultaPublicaProps {
-  searchParams: Record<string, string | string[] | undefined>;
-}
-
-function parseTab(raw: string | string[] | undefined): TabId {
-  const value = Array.isArray(raw) ? raw[0] : raw;
-  const validIds = TABS.map((t) => t.id) as readonly string[];
-  return (validIds.includes(value as string) ? value : "mapa") as TabId;
-}
-
-function parseId(raw: string | string[] | undefined): number | undefined {
-  const value = Array.isArray(raw) ? raw[0] : raw;
-  const n = Number(value);
-  return value && !isNaN(n) && n > 0 ? n : undefined;
-}
 
 const STRAPI_BASE =
   process.env.NEXT_PUBLIC_STRAPI_URL ||
@@ -61,16 +49,32 @@ function getLocaleStatus(
   return "none";
 }
 
-export async function ConsultaPublica({ searchParams }: ConsultaPublicaProps) {
-  const tab = parseTab(searchParams["tab"]);
-  const locationId = parseId(searchParams["location_id"]);
-  const areaId = parseId(searchParams["area"]);
+/**
+ * Busca locales com novas tentativas. Se todas falharem, LANÇA o erro em vez
+ * de devolver []: como a home é estática/ISR, um [] seria congelado por 1h
+ * (mapa vazio). Lançando, o Next mantém a última versão boa na revalidação
+ * (e falha o build em vez de publicar um mapa vazio).
+ * O endpoint é pesado (~2,2 MB, 4–9 s) e já respondeu com ECONNRESET no build.
+ */
+async function getLocalesWithRetry(attempts = 3): Promise<StrapiLocale[]> {
+  let lastError: unknown;
+  for (let i = 1; i <= attempts; i++) {
+    try {
+      return await getStrapiLocales({ _limit: -1 });
+    } catch (err) {
+      lastError = err;
+      console.error(
+        `[ConsultaPublica] Erro ao buscar locales do Strapi (tentativa ${i}/${attempts}):`,
+        err
+      );
+    }
+  }
+  throw lastError;
+}
 
+export async function ConsultaPublica() {
   // Locales carregados no servidor com cache de 1 hora
-  let locales = await getStrapiLocales({ _limit: -1 }).catch((err) => {
-    console.error("[ConsultaPublica] Erro ao buscar locales do Strapi:", err);
-    return [];
-  });
+  let locales = await getLocalesWithRetry();
 
   // Filtra apenas municípios e estados (excluindo regiões e país)
   locales = locales.filter(
@@ -106,23 +110,54 @@ export async function ConsultaPublica({ searchParams }: ConsultaPublicaProps) {
     };
   });
 
-  const selectedLocale = locationId
-    ? locales.find((l) => l.id === locationId)
-    : undefined;
+  // Resumo leve dos estados para o client resolver ?location_id= de um estado
+  // (municípios com plano são buscados sob demanda via /api/locales?state=UF)
+  const stateLocalesLite: StateLocaleLite[] = stateLocales.map((l) => ({
+    id: l.id,
+    name: l.name,
+    type: l.type,
+    state: l.state || "",
+    isLaw: Boolean(l.is_law),
+    planUrl: toAbsoluteUrl(l.plan?.url),
+  }));
 
-  // Quando um estado é selecionado, prepara os municípios com plano daquele estado
-  const citiesWithPlan =
-    selectedLocale && selectedLocale.type === "state"
-      ? (cityLocalesByState[selectedLocale.state || ""] ?? [])
-          .filter((c) => c.plan && !c.hide_plan)
-          .map((c) => ({
-            id: c.id,
-            name: c.name,
-            isLaw: Boolean(c.is_law),
-            planUrl: toAbsoluteUrl(c.plan?.url),
-          }))
-          .sort((a, b) => a.name.localeCompare(b.name, "pt-BR"))
-      : undefined;
+  // Painel da aba "mapa" — não depende da URL, pré-renderizado no servidor
+  const mapaPanel = (
+    <div className="grid lg:grid-cols-[1fr_320px] gap-8">
+      <div>
+        <MapaBrasil statesSummary={statesSummary} />
+      </div>
+
+      {/* Painel lateral: busca + upload */}
+      <div className="space-y-8">
+        <div className="bg-card border border-border rounded-xl p-5 space-y-4">
+          <h3 className="font-semibold text-foreground">
+            Buscar localidade
+          </h3>
+          <Suspense fallback={null}>
+            <LocalidadeBusca
+              placeholder="Município ou estado..."
+            />
+          </Suspense>
+          <p className="text-xs text-muted-foreground">
+            Selecione um município ou estado para ver os dados detalhados.
+          </p>
+        </div>
+
+        <div id="upload-plano" className="bg-card border border-border rounded-xl p-5 space-y-4">
+          <div>
+            <h3 className="font-semibold text-foreground">
+              Enviar plano
+            </h3>
+            <p className="text-xs text-muted-foreground mt-0.5">
+              Contribua com a base de dados enviando o plano do seu município.
+            </p>
+          </div>
+          <UploadPlano />
+        </div>
+      </div>
+    </div>
+  );
 
   return (
     <section
@@ -149,124 +184,29 @@ export async function ConsultaPublica({ searchParams }: ConsultaPublicaProps) {
           </p>
         </div>
 
-        {/* Tabs — client component envolto em Suspense (usa useSearchParams) */}
+        {/* Abas + conteúdo — client (useSearchParams). Fallback = aba "mapa",
+            renderizada no HTML estático com a mesma marcação. */}
         <Suspense
           fallback={
-            <div className="h-12 bg-muted/50 rounded animate-pulse mb-6" />
+            <>
+              <TabsNav currentTab="mapa" />
+              <div
+                role="tabpanel"
+                id="panel-mapa"
+                aria-labelledby="tab-mapa"
+                className="mt-8"
+              >
+                {mapaPanel}
+              </div>
+            </>
           }
         >
-          <TabsNav currentTab={tab} />
+          <ConsultaPublicaView
+            mapaPanel={mapaPanel}
+            estaduaisGrid={<PainelEstadual stateLocales={stateLocales} />}
+            stateLocales={stateLocalesLite}
+          />
         </Suspense>
-
-        {/* Conteúdo da aba ativa */}
-        <div
-          role="tabpanel"
-          id={`panel-${tab}`}
-          aria-labelledby={`tab-${tab}`}
-          className="mt-8"
-        >
-          {tab === "mapa" && (
-            <div className="grid lg:grid-cols-[1fr_320px] gap-8">
-              <div>
-                <MapaBrasil statesSummary={statesSummary} />
-              </div>
-
-              {/* Painel lateral: busca + upload */}
-              <div className="space-y-8">
-                <div className="bg-card border border-border rounded-xl p-5 space-y-4">
-                  <h3 className="font-semibold text-foreground">
-                    Buscar localidade
-                  </h3>
-                  <Suspense fallback={null}>
-                    <LocalidadeBusca
-                      placeholder="Município ou estado..."
-                    />
-                  </Suspense>
-                  <p className="text-xs text-muted-foreground">
-                    Selecione um município ou estado para ver os dados detalhados.
-                  </p>
-                </div>
-
-                <div id="upload-plano" className="bg-card border border-border rounded-xl p-5 space-y-4">
-                  <div>
-                    <h3 className="font-semibold text-foreground">
-                      Enviar plano
-                    </h3>
-                    <p className="text-xs text-muted-foreground mt-0.5">
-                      Contribua com a base de dados enviando o plano do seu município.
-                    </p>
-                  </div>
-                  <UploadPlano />
-                </div>
-              </div>
-            </div>
-          )}
-
-          {tab === "municipais" && (
-            <div>
-              {locationId ? (
-                <Suspense
-                  fallback={
-                    <div className="space-y-4">
-                      <div className="h-10 bg-muted/50 rounded animate-pulse w-64" />
-                      <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
-                        {Array.from({ length: 6 }).map((_, i) => (
-                          <div
-                            key={i}
-                            className="h-40 bg-muted/50 rounded-xl animate-pulse"
-                          />
-                        ))}
-                      </div>
-                    </div>
-                  }
-                >
-                  <PainelMunicipal
-                    locationId={locationId}
-                    areaId={areaId}
-                    selectedLocale={selectedLocale}
-                    citiesWithPlan={citiesWithPlan}
-                  />
-                </Suspense>
-              ) : (
-                <div className="py-16 text-center space-y-4">
-                  <p className="text-muted-foreground">
-                    Selecione um município para ver os dados.
-                  </p>
-                  <Suspense fallback={null}>
-                    <div className="flex justify-center">
-                      <LocalidadeBusca
-                        typeFilter="city"
-                        placeholder="Buscar município..."
-                      />
-                    </div>
-                  </Suspense>
-                </div>
-              )}
-            </div>
-          )}
-
-          {tab === "estaduais" && (
-            <Suspense
-              fallback={
-                <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
-                  {Array.from({ length: 8 }).map((_, i) => (
-                    <div
-                      key={i}
-                      className="h-28 bg-muted/50 rounded-xl animate-pulse"
-                    />
-                  ))}
-                </div>
-              }
-            >
-              <PainelEstadual
-                locationId={locationId}
-                areaId={areaId}
-                stateLocales={stateLocales}
-                citiesWithPlan={citiesWithPlan}
-              />
-            </Suspense>
-          )}
-        </div>
       </div>
     </section>
   );

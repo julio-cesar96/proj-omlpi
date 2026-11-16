@@ -1,32 +1,20 @@
 "use client";
 
-import { useRouter, useSearchParams } from "next/navigation";
-import { useCallback } from "react";
 import { TABS, type TabId } from "./tabs-config";
 
-
+/**
+ * TabsNav — apresentacional.
+ *
+ * Não lê a URL: a aba ativa e o handler vêm do ConsultaPublicaView
+ * (que usa useSearchParams). Sem `onTabChange`, é renderizado como
+ * fallback estático no HTML pré-renderizado da home.
+ */
 interface TabsNavProps {
   currentTab: TabId;
+  onTabChange?: (tabId: TabId) => void;
 }
 
-export function TabsNav({ currentTab }: TabsNavProps) {
-  const router = useRouter();
-  const searchParams = useSearchParams();
-
-  const handleTab = useCallback(
-    (tabId: TabId) => {
-      const params = new URLSearchParams(searchParams.toString());
-      params.set("tab", tabId);
-      // Limpa location_id e area ao voltar para o mapa
-      if (tabId === "mapa") {
-        params.delete("location_id");
-        params.delete("area");
-      }
-      router.replace(`?${params.toString()}#consulta-publica`, { scroll: false });
-    },
-    [router, searchParams]
-  );
-
+export function TabsNav({ currentTab, onTabChange }: TabsNavProps) {
   return (
     <div className="border-b border-border overflow-x-auto">
       <nav
@@ -43,7 +31,7 @@ export function TabsNav({ currentTab }: TabsNavProps) {
               aria-selected={isActive}
               aria-controls={`panel-${tab.id}`}
               id={`tab-${tab.id}`}
-              onClick={() => handleTab(tab.id)}
+              onClick={() => onTabChange?.(tab.id)}
               className={[
                 "px-5 py-3.5 text-sm font-medium whitespace-nowrap transition-colors relative",
                 "focus-visible:outline-2 focus-visible:outline-ring focus-visible:outline-offset-0",

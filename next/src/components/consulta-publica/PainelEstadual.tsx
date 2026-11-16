@@ -1,21 +1,17 @@
 import { getStrapiUrl, type StrapiLocale } from "@/lib/strapi";
 import { LocalidadeBusca } from "./LocalidadeBusca";
-import { PainelMunicipal, type CityPlanItem } from "./PainelMunicipal";
 import { DownloadPlanLink } from "./DownloadPlanLink";
 
 /**
  * PainelEstadual — Server Component
  *
- * Exibe estados/Distrito Federal com seus dados.
- * Usa getLocales() para obter locales do tipo "state" (inclui dados de plano).
- * Se um estado for selecionado via location_id, exibe seus dados via PainelMunicipal.
+ * Grid de estados/Distrito Federal (não depende da URL → pré-renderizado
+ * na home estática). A visão de um estado selecionado (?location_id=)
+ * é resolvida no client, em ConsultaPublicaView.
  */
 
 interface PainelEstadualProps {
-  locationId?: number;
-  areaId?: number;
   stateLocales: StrapiLocale[];
-  citiesWithPlan?: CityPlanItem[];
 }
 
 // Cores de status alinhadas com tokens do design
@@ -42,40 +38,7 @@ function getStatus(locale: StrapiLocale) {
   return locale.is_law ? "inProgress" as const : "approved" as const;
 }
 
-export async function PainelEstadual({
-  locationId,
-  areaId,
-  stateLocales,
-  citiesWithPlan,
-}: PainelEstadualProps) {
-  // Se há estado selecionado, reutiliza PainelMunicipal
-  if (locationId) {
-    const stateLocale = stateLocales.find((l) => l.id === locationId);
-    return (
-      <div className="space-y-6">
-        <div className="flex items-center gap-3 flex-wrap">
-          <a
-            href="?tab=estaduais#consulta-publica"
-            className="text-sm text-primary font-medium hover:underline"
-          >
-            ← Todos os estados
-          </a>
-          {stateLocale && (
-            <span className="text-muted-foreground text-sm">
-              / {stateLocale.name}
-            </span>
-          )}
-        </div>
-        <PainelMunicipal
-          locationId={locationId}
-          areaId={areaId}
-          selectedLocale={stateLocale}
-          citiesWithPlan={citiesWithPlan}
-        />
-      </div>
-    );
-  }
-
+export function PainelEstadual({ stateLocales }: PainelEstadualProps) {
   // Grid de todos os estados
   return (
     <div className="space-y-6">

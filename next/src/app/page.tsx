@@ -7,12 +7,13 @@
  *   #historico       → <Historico />     (server + HistoricoClient)
  *   #pnipi           → <Pnipi />         (server + PnipiClient)
  *   #referencia      → <Referencia />    (server + ReferenciaClient)
- *   #consulta-publica → <ConsultaPublica /> (server, lê searchParams — Fase 3a)
+ *   #consulta-publica → <ConsultaPublica /> (server estático + ConsultaPublicaView client)
  *   #contato         → <Contato />       (client)
  *
  * Navegação institucional: âncoras simples (#sobre, #historico, #pnipi…)
  * Consulta pública: estado em query string (?tab=…&location_id=…&area=…)
- * Lido no server para SSR; sincronizado no client ao interagir (router.replace).
+ * Lido no client (useSearchParams) para manter a home estática/ISR;
+ * sincronizado ao interagir (router.replace).
  */
 
 import type { Metadata } from "next";
@@ -31,20 +32,18 @@ export const metadata: Metadata = {
   },
 };
 
-// Next.js App Router: searchParams disponível em Server Components de página
-export default async function Home({
-  searchParams,
-}: {
-  searchParams: Promise<Record<string, string | string[] | undefined>>;
-}) {
-  const params = await searchParams;
+// Home estática com ISR: regenerada a cada 1h (mesmo TTL dos fetches do Strapi).
+// Nada aqui pode depender da requisição (searchParams, cookies, headers) —
+// o estado da Consulta pública é lido no client (ConsultaPublicaView).
+export const revalidate = 3600;
 
+export default function Home() {
   return (
     <>
       <Hero />
       <Sobre />
       <Historico />
-      <ConsultaPublica searchParams={params} />
+      <ConsultaPublica />
       {/* <Pnipi /> — seção Legislação ocultada a pedido do cliente */}
       <ElaborePlano />
       <Referencia />
