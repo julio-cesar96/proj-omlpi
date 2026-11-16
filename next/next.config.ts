@@ -1,7 +1,7 @@
 import type { NextConfig } from "next";
 import { withSentryConfig } from "@sentry/nextjs";
 
-const nextConfig: NextConfig & { sentry?: Record<string, unknown> } = {
+const nextConfig: NextConfig = {
   images: {
     formats: ["image/avif", "image/webp"],
   },
@@ -92,18 +92,11 @@ const nextConfig: NextConfig & { sentry?: Record<string, unknown> } = {
     ];
   },
 
-  // Sentry SDK options
-  sentry: {
-    widenClientFileUpload: true,
-    hideSourceMaps: true,
-    disableLogger: true,
-  },
 };
 
 export default withSentryConfig(nextConfig, {
-  // For all available options, see:
-  // https://github.com/getsentry/sentry-webpack-plugin#options
   silent: true,
   org: process.env.SENTRY_ORG || "observa-rnpi",
   project: process.env.SENTRY_PROJECT || "observa-nextjs",
+  widenClientFileUpload: true,
 });

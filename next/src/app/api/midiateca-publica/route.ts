@@ -41,7 +41,7 @@ export async function GET(req: NextRequest) {
   const upstream = `${strapiUrl.replace(/\/$/, '')}/midiateca-publica${outgoing.toString() ? `?${outgoing}` : ''}`;
 
   try {
-    const res = await fetch(upstream, { cache: 'no-store' });
+    const res = await fetch(upstream, { next: { revalidate: 3600 } });
     if (!res.ok) {
       return NextResponse.json(
         { error: `Strapi retornou ${res.status}` },

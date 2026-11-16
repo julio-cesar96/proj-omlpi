@@ -60,8 +60,17 @@ async function strapiGet<T>(
 ): Promise<T> {
   const base = getStrapiUrl();
   const url = `${base}/${collection}${buildQuery(params)}`;
+
+  // Por padrão, usa ISR (revalidate: 3600 = 1 hora) para cache no servidor do Next.js.
+  // Evita múltiplas chamadas externas ao Strapi em cada renderização SSR.
+  // Permite override via fetchOptions caso o chamador precise de no-store ou TTL diferente.
+  const isExplicitCache = fetchOptions && "cache" in fetchOptions;
+  const defaultOptions: RequestInit = isExplicitCache
+    ? {}
+    : { next: { revalidate: 3600 } };
+
   const res = await fetch(url, {
-    cache: "no-store", // seguro por padrão; ajustar por seção na Fase 2
+    ...defaultOptions,
     ...fetchOptions,
   });
   if (!res.ok) {
