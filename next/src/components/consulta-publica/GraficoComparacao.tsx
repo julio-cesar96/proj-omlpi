@@ -171,7 +171,7 @@ export function GraficoComparacao({ comparison, selectedAreaId }: GraficoCompara
         shared: false,
         formatter(this: any) {
           return `<strong>${this.series.name} (${this.key})</strong><br/>
-                  Valor: <span style="color:var(--primary,#f25d27);font-weight:600;">
+                  Valor: <span style="color:var(--primary,#c33d0c);font-weight:600;">
                     ${formatSingleIndicatorValue(this.y, this.series.userOptions.isPercentage)}
                   </span>`;
         },
@@ -303,7 +303,7 @@ export function GraficoComparacao({ comparison, selectedAreaId }: GraficoCompara
         shared: false,
         formatter(this: any) {
           return `<strong>${this.series.name} (${this.key})</strong><br/>
-                  Valor: <span style="color:var(--primary,#f25d27);font-weight:600;">
+                  Valor: <span style="color:var(--primary,#c33d0c);font-weight:600;">
                     ${formatSingleIndicatorValue(this.y, this.series.userOptions.isPercentage)}
                   </span>`;
         },

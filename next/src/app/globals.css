@@ -23,10 +23,10 @@
   --card-foreground: #444525;
   --popover: #ffffff;
   --popover-foreground: #444525;
-  --primary: #f25d27;
+  --primary: #c33d0c;
   --primary-foreground: #ffffff;
   /* Hover do primary (botões) */
-  --primary-hover: #e04d18;
+  --primary-hover: #a83207;
   /* Fundo suave do primary (ícones em destaque) */
   --primary-soft: #fff3ee;
   --secondary: #009045;
@@ -42,10 +42,10 @@
   --input: transparent;
   --input-background: #fafaf5;
   --switch-background: #cbced4;
-  --ring: #f25d27;
+  --ring: #c33d0c;
 
   /* Cores — gráficos */
-  --chart-1: #f25d27;
+  --chart-1: #c33d0c;
   --chart-2: #17a649;
   --chart-3: #444525;
   --chart-4: #a49a87;

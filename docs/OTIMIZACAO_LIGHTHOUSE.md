@@ -13,7 +13,7 @@
 | **1** | **Payload RSC Gigante** (2,48 MB inline) | Máxima | ✅ **Concluído** | HTML da Home reduzido de ~2,58 MB para < 100 KB descompactado |
 | **2** | **Highcharts via CDN unpkg** | Alta | ✅ **Concluído** | Migrado para npm + dynamic import (ssr: false) com IntersectionObserver (eliminação de 3 scripts externos unpkg) |
 | **3** | **Imagem LCP (`bebe-ajoelhado.png`)** | Média-Alta | ✅ **Concluído** | Formatos AVIF/WebP configurados, `sizes` otimizado para mobile/desktop e `fetchPriority="high"` |
-| **4** | **Contraste WCAG AA (24 elementos)** | Média | ⏳ **Pendente** | Ajustar `--primary` para `#c33d0c` e links do menu para `#6c6d56` |
+| **4** | **Contraste WCAG AA (24 elementos)** | Média | ✅ **Concluído** | Tokens `--primary`, `--ring`, `--chart-1` ajustados para `#c33d0c` (~5.6:1 AA), links do menu para `#6c6d56` e eliminação de cores hardcoded |
 | **5** | **JS Legado / Polyfills (14 KiB)** | Baixa | ⏳ **Pendente** | Configurar `.browserslistrc` para navegadores modernos |
 
 ---
@@ -79,18 +79,21 @@
 
 ---
 
-### 4. Contraste de Cores — WCAG AA (Pendente ⏳)
+### 4. Contraste de Cores — WCAG AA (Concluído ✅)
 
-- **Diagnóstico**: Laranja `#f25d27` sobre fundo claro e texto branco sobre botão laranja têm contraste de ~3.0:1 (reprova no critério AA de 4.5:1). Links do nav com `text-foreground/70` resultam em `#7c7d62` (abaixo de 4.5:1).
-- **Plano de ação**:
-  1. `src/app/globals.css`:
-     - Atualizar `--primary: #f25d27` → `#c33d0c` (contraste ~5.6:1, aprovado AA).
-     - Atualizar `--primary-hover` para tom proporcional (ex: `#a83207`).
-     - Atualizar `--ring` e `--chart-1` para `#c33d0c`.
-  2. `src/components/layout/Header.tsx`:
-     - Substituir `text-foreground/70` por cor com contraste aprovado (ex: `#6c6d56`).
-     - Atualizar hover hardcoded `#F25D27` para `var(--primary)`.
-  3. Conferir ocorrências pontuais hardcoded nos gráficos.
+- **Diagnóstico**: Laranja `#f25d27` sobre fundo claro e texto branco sobre botão laranja tinham contraste de ~3.0:1 (reprovando no critério AA de 4.5:1). Links do nav com `text-foreground/70` resultavam em `#7c7d62` (abaixo de 4.5:1).
+- **O que foi implementado**:
+  - `src/app/globals.css`:
+    - `--primary` atualizado para `#c33d0c` (garante contraste ~5.6:1 contra fundos claros e texto branco em botões, em total conformidade com WCAG AA).
+    - `--primary-hover` atualizado para `#a83207`.
+    - `--ring` e `--chart-1` atualizados para `#c33d0c`.
+  - `src/components/layout/Header.tsx`:
+    - Substituído `text-foreground/70` por `text-[#6c6d56]` nos links de navegação desktop e mobile, elevando o contraste acima de 4.5:1.
+    - Substituídas todas as ocorrências de cor hardcoded `#F25D27` (no ponto da logo, hover dos links desktop e mobile, e borda ativa do botão de menu mobile) por classes Tailwind `text-primary`, `hover:text-primary` e `border-primary`.
+  - `src/components/layout/Footer.tsx`:
+    - Ponto da logo atualizado de `#F25D27` para `text-primary`.
+  - Gráficos e visualizações (`MapaBrasilChart.tsx`, `GraficoHistorico.tsx`, `GraficoComparacao.tsx`):
+    - Atualizados fallbacks e cores em elaboração/lei de `#f25d27` para `#c33d0c`.
 
 ---
 

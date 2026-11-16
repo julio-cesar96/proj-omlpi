@@ -53,7 +53,7 @@ export async function Footer() {
                 className="object-contain"
               />
               <span className="font-black text-xl" style={{ fontFamily: "var(--font-heading)", color: "var(--foreground)" }}>
-                OBSERVA<span className="text-[#F25D27]">.</span>
+                OBSERVA<span className="text-primary">.</span>
               </span>
             </div>
             <p className="text-sm leading-[1.7]" style={{ color: "var(--foreground)" }}>

@@ -18,7 +18,7 @@ import type { StateMapSummary } from "./MapaBrasil";
 // Cores do mapa — alinhadas com tokens do design (theme.css)
 const MAP_COLORS = {
   approved: "#009045",       // --secondary: verde = aprovado
-  inProgress: "#f25d27",     // --primary: laranja = em elaboração / lei
+  inProgress: "#c33d0c",     // --primary: laranja = em elaboração / lei
   none: "#e8f0e8",           // branco-esverdeado sutil para "sem plano"
   hover: "#444525",          // --foreground: escuro no hover
   border: "#ffffff",
@@ -146,7 +146,7 @@ export function MapaBrasilChart({ statesSummary }: MapaBrasilChartProps) {
                   align: "right",
                   style: {
                     fontSize: "1rem",
-                    color: "var(--primary, #f25d27)",
+                    color: "var(--primary, #c33d0c)",
                     fontWeight: "700",
                   },
                 });
@@ -206,7 +206,7 @@ export function MapaBrasilChart({ statesSummary }: MapaBrasilChartProps) {
               const linkText = isLaw ? "↓ Baixar Lei" : "↓ Baixar Plano";
               return `<strong>${humanName}</strong><br>
                 <a href="${planUrl}" target="_blank" rel="noopener noreferrer nofollow"
-                   style="color:var(--primary,#f25d27);font-weight:600;">
+                   style="color:var(--primary,#c33d0c);font-weight:600;">
                   ${linkText}
                 </a>`;
             }
@@ -222,7 +222,7 @@ export function MapaBrasilChart({ statesSummary }: MapaBrasilChartProps) {
           let html = `<strong>${name}</strong><br>${total} plano${total === 1 ? "" : "s"} ${total === 1 ? "municipal" : "municipais"}`;
           if (planUrl) {
             html += `<br><a href="${planUrl}" target="_blank" rel="noopener noreferrer nofollow"
-              style="color:var(--primary,#f25d27);font-weight:600;">
+              style="color:var(--primary,#c33d0c);font-weight:600;">
               ↓ Baixar Plano ${isDF ? "Distrital" : "Estadual"}
             </a>`;
           }

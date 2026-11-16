@@ -50,7 +50,7 @@ export function Header() {
               priority
             />
             <span className="font-black text-foreground text-xl">
-              OBSERVA<span className="text-[#F25D27]">.</span>
+              OBSERVA<span className="text-primary">.</span>
             </span>
           </a>
 
@@ -85,7 +85,7 @@ export function Header() {
               <li key={href}>
                 <a
                   href={href}
-                  className="block whitespace-nowrap px-3 py-1.5 text-[13px] font-medium text-foreground/70 rounded-full transition-colors hover:text-[#F25D27] hover:bg-muted/50"
+                  className="block whitespace-nowrap px-3 py-1.5 text-[13px] font-medium text-[#6c6d56] rounded-full transition-colors hover:text-primary hover:bg-muted/50"
                 >
                   {label}
                 </a>
@@ -101,7 +101,7 @@ export function Header() {
           <button
             aria-label={isMobileMenuOpen ? "Fechar menu" : "Abrir menu"}
             className={`flex md:hidden items-center justify-center rounded-md p-2 text-foreground/80 hover:bg-muted ${
-              isMobileMenuOpen ? "border border-[#F25D27]" : ""
+              isMobileMenuOpen ? "border border-primary" : ""
             }`}
             type="button"
             onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
@@ -123,7 +123,7 @@ export function Header() {
               <li key={href}>
                 <a
                   href={href}
-                  className="block px-4 py-3 text-sm font-medium text-foreground/70 rounded-md transition-colors hover:text-[#F25D27] hover:bg-white"
+                  className="block px-4 py-3 text-sm font-medium text-[#6c6d56] rounded-md transition-colors hover:text-primary hover:bg-white"
                   onClick={() => setIsMobileMenuOpen(false)}
                 >
                   {label}
