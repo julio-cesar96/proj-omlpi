@@ -3,6 +3,7 @@ import { withSentryConfig } from "@sentry/nextjs";
 
 const nextConfig: NextConfig = {
   experimental: {
+    inlineCss: true,
     optimizePackageImports: ["lucide-react"],
   },
   images: {
