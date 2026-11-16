@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { Nunito, Plus_Jakarta_Sans } from "next/font/google";
+import localFont from "next/font/local";
 import "./globals.css";
 import { Header } from "@/components/layout/Header";
 import { Footer } from "@/components/layout/Footer";
@@ -7,22 +7,21 @@ import { CookieBanner } from "@/components/layout/CookieBanner";
 import { AnalyticsScripts } from "@/components/layout/AnalyticsScripts";
 import { BackToTopButton } from "@/components/ui/BackToTopButton";
 
-// ─── Fontes ──────────────────────────────────────────────────────────────────
+// ─── Fontes locais (self-hosted, zero requisições externas ao Google no build/CI) ─
 // Nunito: títulos (headings) — preload desativado para liberar 38 KB de banda para a imagem LCP
-const nunito = Nunito({
+const nunito = localFont({
+  src: "../fonts/nunito-latin.woff2",
   variable: "--font-nunito",
-  subsets: ["latin"],
-  weight: ["400", "600", "700", "800"],
   display: "swap",
   preload: false,
 });
 
 // Plus Jakarta Sans: corpo de texto (acima da dobra no Hero)
-const plusJakartaSans = Plus_Jakarta_Sans({
+const plusJakartaSans = localFont({
+  src: "../fonts/plus-jakarta-sans-latin.woff2",
   variable: "--font-plus-jakarta-sans",
-  subsets: ["latin"],
-  weight: ["400", "500", "600", "700"],
   display: "swap",
+  preload: true,
 });
 
 // ─── Metadata base ────────────────────────────────────────────────────────────
