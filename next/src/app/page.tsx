@@ -17,14 +17,18 @@
  */
 
 import type { Metadata } from "next";
+import dynamic from "next/dynamic";
 import { Hero } from "@/components/sections/Hero";
 import { Sobre } from "@/components/sections/Sobre";
 import { Historico } from "@/components/sections/Historico";
 // import { Pnipi } from "@/components/sections/Pnipi"; // ocultada a pedido do cliente
 import { ElaborePlano } from "@/components/sections/ElaborePlano";
 import { Referencia } from "@/components/sections/Referencia";
-import { Contato } from "@/components/sections/Contato";
 import { ConsultaPublica } from "@/components/consulta-publica/ConsultaPublica";
+
+const Contato = dynamic(
+  () => import("@/components/sections/Contato").then((mod) => mod.Contato)
+);
 
 export const metadata: Metadata = {
   alternates: {

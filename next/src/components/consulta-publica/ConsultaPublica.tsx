@@ -1,15 +1,19 @@
 import { Suspense } from "react";
+import dynamic from "next/dynamic";
 import { getStrapiLocales, type StrapiLocale } from "@/lib/strapi";
 import { TabsNav } from "./TabsNav";
 
 import { MapaBrasil, type StateMapSummary } from "./MapaBrasil";
 import { PainelEstadual } from "./PainelEstadual";
 import { LocalidadeBusca } from "./LocalidadeBusca";
-import { UploadPlano } from "./UploadPlano";
 import {
   ConsultaPublicaView,
   type StateLocaleLite,
 } from "./ConsultaPublicaView";
+
+const UploadPlano = dynamic(
+  () => import("./UploadPlano").then((mod) => mod.UploadPlano)
+);
 
 /**
  * ConsultaPublica — Server Component (sem dependência da requisição)

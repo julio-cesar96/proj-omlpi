@@ -15,9 +15,13 @@
  * Referência: docs/API_CONTRACTS.md §1 — CMS (Strapi)
  */
 
+import dynamic from 'next/dynamic';
 import { getGuias, getGuiasCount, getMidiaPublica, StrapiGuia, StrapiMidiaPublica } from '@/lib/strapi';
 import { SectionLabel } from '@/components/ui/SectionLabel';
-import { ReferenciaClient } from './ReferenciaClient';
+
+const ReferenciaClient = dynamic(
+  () => import('./ReferenciaClient').then((mod) => mod.ReferenciaClient)
+);
 
 export async function Referencia(): Promise<React.JSX.Element> {
   let guias: StrapiGuia[] = [];

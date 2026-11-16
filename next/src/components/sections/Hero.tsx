@@ -159,11 +159,10 @@ export async function Hero(): Promise<React.JSX.Element> {
                   src="/logo-observa.png"
                   alt="Observa — Observatório do Marco Legal da Primeira Infância"
                   width={420}
-                  height={120}
+                  height={87}
                   priority
                   sizes="(max-width: 640px) 280px, (max-width: 1024px) 340px, 420px"
                   className="w-[280px] sm:w-[340px] lg:w-[420px] max-w-full h-auto"
-                  style={{ height: "auto" }}
                 />
               </h1>
               <p className="text-[17px] text-muted-foreground leading-[1.75] mb-9 max-w-xl">

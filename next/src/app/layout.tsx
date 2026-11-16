@@ -8,15 +8,16 @@ import { AnalyticsScripts } from "@/components/layout/AnalyticsScripts";
 import { BackToTopButton } from "@/components/ui/BackToTopButton";
 
 // ─── Fontes ──────────────────────────────────────────────────────────────────
-// Nunito: títulos (headings)
+// Nunito: títulos (headings) — preload desativado para liberar 38 KB de banda para a imagem LCP
 const nunito = Nunito({
   variable: "--font-nunito",
   subsets: ["latin"],
   weight: ["400", "600", "700", "800"],
   display: "swap",
+  preload: false,
 });
 
-// Plus Jakarta Sans: corpo de texto
+// Plus Jakarta Sans: corpo de texto (acima da dobra no Hero)
 const plusJakartaSans = Plus_Jakarta_Sans({
   variable: "--font-plus-jakarta-sans",
   subsets: ["latin"],
