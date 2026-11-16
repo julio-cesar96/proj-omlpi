@@ -83,7 +83,15 @@ export function MapaBrasilChart({ statesSummary }: MapaBrasilChartProps) {
       item["value"] = status === "approved" ? 2 : status === "inProgress" ? 1 : 0;
     });
 
+    // Permite atributo 'rel' nos links do tooltip sem disparar Highcharts warning #33
+    if ((H as any).AST && !(H as any).AST.allowedAttributes.includes("rel")) {
+      (H as any).AST.allowedAttributes.push("rel");
+    }
+
     chartRef.current = H.mapChart(containerRef.current, {
+      accessibility: {
+        enabled: false,
+      },
       chart: {
         backgroundColor: "rgba(0,0,0,0)",
         style: { fontFamily: "var(--font-body, sans-serif)" },

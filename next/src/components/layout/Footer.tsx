@@ -51,6 +51,7 @@ export async function Footer() {
                 width={38}
                 height={38}
                 className="object-contain"
+                style={{ width: "auto", height: "auto" }}
               />
               <span className="font-black text-xl" style={{ fontFamily: "var(--font-heading)", color: "var(--foreground)" }}>
                 OBSERVA<span className="text-primary">.</span>

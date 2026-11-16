@@ -47,6 +47,7 @@ export function Header() {
               width={38}
               height={38}
               className="object-contain"
+              style={{ width: "auto", height: "auto" }}
               priority
             />
             <span className="font-black text-foreground text-xl">

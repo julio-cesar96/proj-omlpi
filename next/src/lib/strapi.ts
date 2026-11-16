@@ -449,7 +449,10 @@ let memoryLocalesCacheExpiry = 0;
 const LOCALES_CACHE_TTL_MS = 60 * 60 * 1000; // 1 hora
 
 /** Localidades com dados de planos, cod_ibge, etc. */
-export async function getStrapiLocales(params?: StrapiQueryParams): Promise<StrapiLocale[]> {
+export async function getStrapiLocales(
+  params?: StrapiQueryParams,
+  fetchOptions?: RequestInit
+): Promise<StrapiLocale[]> {
   const isAll = !params || params._limit === -1;
   const now = Date.now();
 
@@ -457,9 +460,13 @@ export async function getStrapiLocales(params?: StrapiQueryParams): Promise<Stra
     return memoryLocalesCache;
   }
 
-  const locales = await strapiGet<StrapiLocale[]>("locales", params, {
-    next: { revalidate: 3600 },
-  });
+  const defaultOptions: RequestInit = { next: { revalidate: 3600 } };
+
+  const locales = await strapiGet<StrapiLocale[]>(
+    "locales",
+    params,
+    fetchOptions || defaultOptions
+  );
 
   if (isAll && Array.isArray(locales) && locales.length > 0) {
     memoryLocalesCache = locales;
